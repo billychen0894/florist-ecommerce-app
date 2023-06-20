@@ -5,7 +5,7 @@ import { useState } from 'react';
 import DesktopMenu from './DesktopMenu';
 import MobileMenu from './MobileMenu';
 
-export default function Navigation() {
+export function Navigation() {
   const [open, setOpen] = useState(false);
 
   return (
