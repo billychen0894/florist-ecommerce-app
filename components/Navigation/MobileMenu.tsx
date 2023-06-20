@@ -3,7 +3,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Fragment } from 'react';
 
-import { navigation } from '@const/navigation';
+import { headerNavigation } from '@const/navigation';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -49,7 +49,7 @@ export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
               </div>
               {/* Links */}
               <div className="space-y-6 px-4 py-6">
-                {navigation.pages.map((page) => (
+                {headerNavigation.pages.map((page) => (
                   <div key={page.name} className="flow-root">
                     <Link
                       href={page.href}

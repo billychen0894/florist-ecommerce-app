@@ -6,7 +6,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { navigation } from '@const/navigation';
+import { headerNavigation } from '@const/navigation';
 
 interface DesktopMenuProps {
   onOpen: (open: boolean) => void;
@@ -49,7 +49,7 @@ export default function DesktopMenu({ onOpen }: DesktopMenuProps) {
             {/* Menu */}
             <div className="hidden lg:ml-8 lg:block lg:self-stretch">
               <div className="flex h-full space-x-8">
-                {navigation.pages.map((page) => (
+                {headerNavigation.pages.map((page) => (
                   <Link
                     key={page.name}
                     href={page.href}
