@@ -5,7 +5,7 @@ import { Footer } from '@components/Footer';
 import { Navigation } from '@components/Navigation';
 import '@styles/globals.css';
 
-const inter = Inter({ subsets: ['latin'], weight: ['400', '700'] });
+const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
 export const metadata: Metadata = {
   title: 'Blossom Lane',
