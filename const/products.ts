@@ -13,6 +13,12 @@ export interface Product {
   shippingDetails: string;
 }
 
+export interface ProductCategory {
+  id: number;
+  name: string;
+  products: Product[];
+}
+
 // Bouquets or flowers products
 export const products: Product[] = [
   {
@@ -140,5 +146,28 @@ export const products: Product[] = [
     specifications: 'Bouquet 9 specifications',
     notes: 'Bouquet 9 notes',
     shippingDetails: 'Bouquet 9 shipping details',
+  },
+];
+
+export const productCategories: ProductCategory[] = [
+  {
+    id: 1,
+    name: 'Bouquets',
+    products: products,
+  },
+  {
+    id: 2,
+    name: 'Flowers',
+    products: products,
+  },
+  {
+    id: 3,
+    name: 'Plants',
+    products: products,
+  },
+  {
+    id: 4,
+    name: 'Gifts',
+    products: products,
   },
 ];

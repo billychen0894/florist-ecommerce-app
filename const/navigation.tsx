@@ -18,7 +18,7 @@ export interface PageWithIcon extends Page {
 export const headerNavigation: Navigation<Page[]> = {
   pages: [
     { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
+    { name: 'Product', href: '/products' },
     { name: 'Company', href: '/company' },
     { name: 'FAQ', href: '/faq' },
   ],
