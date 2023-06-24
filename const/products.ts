@@ -19,6 +19,11 @@ export interface ProductCategory {
   products: Product[];
 }
 
+export interface ProductSortOption {
+  name: string;
+  href: string;
+}
+
 // Bouquets or flowers products
 export const products: Product[] = [
   {
@@ -170,4 +175,11 @@ export const productCategories: ProductCategory[] = [
     name: 'Gifts',
     products: products,
   },
+];
+
+export const productSortOptions: ProductSortOption[] = [
+  { name: 'Most Popular', href: '#' },
+  { name: 'Newest', href: '#' },
+  { name: 'Price: Low to High', href: '#' },
+  { name: 'Price: High to Low', href: '#' },
 ];
