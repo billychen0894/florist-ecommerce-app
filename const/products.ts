@@ -18,6 +18,8 @@ export interface Product {
   description: string;
   images: ProductImage[];
   details: ProductDetails[];
+  inStock: boolean;
+  leadTime?: string;
   notes: string;
   shippingDetails: string;
 }
@@ -95,6 +97,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 1 notes',
     shippingDetails: 'Bouquet 1 shipping details',
   },
@@ -156,6 +160,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: false,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 2 notes',
     shippingDetails: 'Bouquet 2 shipping details',
   },
@@ -217,6 +223,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 3 notes',
     shippingDetails: 'Bouquet 3 shipping details',
   },
@@ -278,6 +286,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 4 notes',
     shippingDetails: 'Bouquet 4 shipping details',
   },
@@ -339,6 +349,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 5 notes',
     shippingDetails: 'Bouquet 5 shipping details',
   },
@@ -400,6 +412,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 6 notes',
     shippingDetails: 'Bouquet 6 shipping details',
   },
@@ -461,6 +475,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 7 notes',
     shippingDetails: 'Bouquet 7 shipping details',
   },
@@ -522,6 +538,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 8 notes',
     shippingDetails: 'Bouquet 8 shipping details',
   },
@@ -583,6 +601,8 @@ export const products: Product[] = [
         ],
       },
     ],
+    inStock: true,
+    leadTime: '1-2 weeks',
     notes: 'Bouquet 9 notes',
     shippingDetails: 'Bouquet 9 shipping details',
   },
