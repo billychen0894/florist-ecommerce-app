@@ -16,7 +16,7 @@ export function ProductItem({
     <div key={product.id} className="group relative">
       <div className="aspect-h-4 aspect-w-3 overflow-hidden rounded-lg bg-gray-100">
         <Image
-          src={product.imageUrl.primaryImage}
+          src={product.images[0].imageUrl}
           alt={product.name}
           className="object-cover object-center"
           width={200}

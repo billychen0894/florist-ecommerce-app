@@ -1,14 +1,23 @@
+export interface ProductImage {
+  id: number;
+  name: string;
+  imageUrl: string;
+  alt?: string;
+}
+
+export interface ProductDetails {
+  name: string;
+  items: string[];
+}
+
 export interface Product {
   id: number;
   name: string;
   price: number;
   category: string;
   description: string;
-  imageUrl: {
-    primaryImage: string;
-    otherImages?: string[];
-  };
-  specifications: string;
+  images: ProductImage[];
+  details: ProductDetails[];
   notes: string;
   shippingDetails: string;
 }
@@ -31,12 +40,61 @@ export const products: Product[] = [
     name: 'Signature Seasonal Bouquet',
     price: 100,
     category: 'Bouquets',
-    description: 'Bouquet 1 description',
-    imageUrl: {
-      primaryImage: '/images/products/product1.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 1 specifications',
+    description:
+      'Discover the beauty of our exquisite bouquet, a captivating blend of vibrant and fragrant flowers. Handcrafted with care, this stunning arrangement is designed to bring joy and elegance to any occasion.',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product1.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Our Bouquet',
+        items: [
+          'Beautiful arrangement of fresh flowers',
+          'Includes a variety of roses, lilies, and daisies',
+          'Carefully handcrafted by expert florists',
+          'Comes with a decorative vase',
+          'Perfect for birthdays, anniversaries, or any special occasion',
+        ],
+      },
+      {
+        name: 'Care',
+        items: [
+          'Always keep your bouquet in a cool spot, away from direct heat or sunlight',
+          'Take special care when moving your bouquet - there is a vase with water inside, so the bouquet must always be level',
+          'Lift the roses out of the box to check water levels every 2-3 days, and cut the stems on a diagonal every 4-5 days to ensure optimal hydration',
+        ],
+      },
+      {
+        name: 'Delivery and Pickup',
+        items: [
+          'In Toronto, Vancouver and Kelowna we offer the option to either have your bouquet delivered, or picked up from any of our local studios on the date of your choice',
+          'Delivery rates are determined by your postal code, and will be displayed upon checkout. They range from $14.99 up to $70 depending on distance from our central studios.',
+        ],
+      },
+    ],
     notes: 'Bouquet 1 notes',
     shippingDetails: 'Bouquet 1 shipping details',
   },
@@ -46,11 +104,58 @@ export const products: Product[] = [
     price: 200,
     category: 'Bouquets',
     description: 'Bouquet 2 description',
-    imageUrl: {
-      primaryImage: '/images/products/product2.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 2 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 2 notes',
     shippingDetails: 'Bouquet 2 shipping details',
   },
@@ -60,11 +165,58 @@ export const products: Product[] = [
     price: 300,
     category: 'Bouquets',
     description: 'Bouquet 3 description',
-    imageUrl: {
-      primaryImage: '/images/products/product3.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 3 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 3 notes',
     shippingDetails: 'Bouquet 3 shipping details',
   },
@@ -74,11 +226,58 @@ export const products: Product[] = [
     price: 400,
     category: 'Bouquets',
     description: 'Bouquet 4 description',
-    imageUrl: {
-      primaryImage: '/images/products/product4.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 4 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 4 notes',
     shippingDetails: 'Bouquet 4 shipping details',
   },
@@ -88,11 +287,58 @@ export const products: Product[] = [
     price: 500,
     category: 'Bouquets',
     description: 'Bouquet 5 description',
-    imageUrl: {
-      primaryImage: '/images/products/product5.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 5 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product5.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 5 notes',
     shippingDetails: 'Bouquet 5 shipping details',
   },
@@ -102,11 +348,58 @@ export const products: Product[] = [
     price: 600,
     category: 'Bouquets',
     description: 'Bouquet 6 description',
-    imageUrl: {
-      primaryImage: '/images/products/product6.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 6 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product6.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 6 notes',
     shippingDetails: 'Bouquet 6 shipping details',
   },
@@ -116,11 +409,58 @@ export const products: Product[] = [
     price: 700,
     category: 'Bouquets',
     description: 'Bouquet 7 description',
-    imageUrl: {
-      primaryImage: '/images/products/product7.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 7 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product7.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 7 notes',
     shippingDetails: 'Bouquet 7 shipping details',
   },
@@ -130,11 +470,58 @@ export const products: Product[] = [
     price: 800,
     category: 'Bouquets',
     description: 'Bouquet 8 description',
-    imageUrl: {
-      primaryImage: '/images/products/product8.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 8 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product8.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 8 notes',
     shippingDetails: 'Bouquet 8 shipping details',
   },
@@ -144,11 +531,58 @@ export const products: Product[] = [
     price: 900,
     category: 'Bouquets',
     description: 'Bouquet 9 description',
-    imageUrl: {
-      primaryImage: '/images/products/product9.jpg',
-      otherImages: [],
-    },
-    specifications: 'Bouquet 9 specifications',
+    images: [
+      {
+        id: 1,
+        name: 'Bouquet 1 image 1',
+        imageUrl: '/images/products/product9.jpg',
+        alt: 'Bouquet 1 image 1',
+      },
+      {
+        id: 2,
+        name: 'Bouquet 1 image 2',
+        imageUrl: '/images/products/product2.jpg',
+        alt: 'Bouquet 1 image 2',
+      },
+      {
+        id: 3,
+        name: 'Bouquet 1 image 3',
+        imageUrl: '/images/products/product3.jpg',
+        alt: 'Bouquet 1 image 3',
+      },
+      {
+        id: 4,
+        name: 'Bouquet 1 image 4',
+        imageUrl: '/images/products/product4.jpg',
+        alt: 'Bouquet 1 image 4',
+      },
+    ],
+    details: [
+      {
+        name: 'Bouquet 1 detail 1',
+        items: [
+          'Bouquet 1 detail 1 item 1',
+          'Bouquet 1 detail 1 item 2',
+          'Bouquet 1 detail 1 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 2',
+        items: [
+          'Bouquet 1 detail 2 item 1',
+          'Bouquet 1 detail 2 item 2',
+          'Bouquet 1 detail 2 item 3',
+        ],
+      },
+      {
+        name: 'Bouquet 1 detail 3',
+        items: [
+          'Bouquet 1 detail 3 item 1',
+          'Bouquet 1 detail 3 item 2',
+          'Bouquet 1 detail 3 item 3',
+        ],
+      },
+    ],
     notes: 'Bouquet 9 notes',
     shippingDetails: 'Bouquet 9 shipping details',
   },
