@@ -47,7 +47,9 @@ const paymentMethods = [
 type CheckoutFormSchema = ObjectSchema<CheckoutFormValues>;
 
 // define the shape of form data
-const stringRequired = string().required();
+const stringRequired = (errorMsg: string) => {
+  return string().required(errorMsg);
+};
 
 const sameAsShippingAddressValidation = () => {
   return string().when('billingSameAsShipping', {
@@ -74,19 +76,19 @@ const creditCardValidation = (length?: number) => {
 };
 
 const validationSchema: CheckoutFormSchema = object({
-  contactEmail: stringRequired.email(),
-  shippingFirstName: stringRequired,
-  shippingLastName: stringRequired,
-  shippingAddressLine1: stringRequired,
+  contactEmail: stringRequired('Your email address is required').email(),
+  shippingFirstName: stringRequired('Your first name is required'),
+  shippingLastName: stringRequired('Your last name is required'),
+  shippingAddressLine1: stringRequired('Your address is required'),
   shippingAddressLine2: string().optional(),
   shippingCompany: string().optional(),
-  shippingCity: stringRequired,
-  shippingArea: stringRequired,
-  shippingPostalCode: stringRequired,
-  shippingCountry: stringRequired,
-  shippingPhone: stringRequired,
-  deliveryMethod: stringRequired,
-  billingSameAsShipping: stringRequired,
+  shippingCity: stringRequired('Please enter your city'),
+  shippingArea: stringRequired('Please enter your State or Province'),
+  shippingPostalCode: stringRequired('Please enter your Postal Code'),
+  shippingCountry: stringRequired('Please enter your Country'),
+  shippingPhone: stringRequired('Please enter your phone number'),
+  deliveryMethod: string().required(),
+  billingSameAsShipping: string().required(),
   billingCompany: sameAsShippingAddressValidation(),
   billingAddressLine1: sameAsShippingAddressValidation(),
   billingAddressLine2: sameAsShippingAddressValidation(),
@@ -94,7 +96,7 @@ const validationSchema: CheckoutFormSchema = object({
   billingArea: sameAsShippingAddressValidation(),
   billingPostalCode: sameAsShippingAddressValidation(),
   billingCountry: sameAsShippingAddressValidation(),
-  paymentMethod: stringRequired,
+  paymentMethod: string().required(),
   creditCardNumber: creditCardValidation(16),
   creditCardName: creditCardValidation(),
   creditCardExpiry: creditCardValidation(4),
