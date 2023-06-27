@@ -1,5 +1,5 @@
 import { HoverCard } from '@components/ui';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/OrderInfo';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
 
 interface OrderSummaryProps {
   subtotal: number;
