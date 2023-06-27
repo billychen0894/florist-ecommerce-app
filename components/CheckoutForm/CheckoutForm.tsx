@@ -3,7 +3,6 @@
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Image from 'next/image';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { InferType, ObjectSchema, object, string } from 'yup';
 
@@ -104,10 +103,6 @@ const validationSchema: CheckoutFormSchema = object({
 export type FormData = InferType<typeof validationSchema>;
 
 export function CheckoutForm() {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
-    deliveryMethods[0]
-  );
-
   // initialize form with default values
   const form = useForm<FormData>({
     resolver: yupResolver(validationSchema),
