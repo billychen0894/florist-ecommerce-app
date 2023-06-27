@@ -1,17 +1,15 @@
 'use client';
 
-import { RadioGroup } from '@headlessui/react';
-import { CheckCircleIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { TrashIcon } from '@heroicons/react/20/solid';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { InferType, ObjectSchema, object, string } from 'yup';
 
 import { Form } from '@components/ui/form';
-import { cn } from '@lib/classNames';
 import ContactInfo from './ContactInfo';
+import DeliveryMethod from './DeliveryMethod';
 import ShippingInfo from './ShippingInfo';
 import { CheckoutFormValues } from './checkout.type';
 
@@ -156,100 +154,13 @@ export function CheckoutForm() {
       >
         <div>
           <div>
-            <div className="sm:flex sm:justify-between sm:items-center">
-              <h2 className="text-lg font-medium text-gray-900">
-                Contact information
-              </h2>
-              <span className="text-xs sm:text-sm">
-                Already have an account?{' '}
-                <Link
-                  href="/signin"
-                  className="text-blue-500 hover:text-blue-400"
-                >
-                  Sign in
-                </Link>
-              </span>
-            </div>
-
             <ContactInfo form={form} />
           </div>
-
           <div className="mt-10 border-t border-gray-200 pt-10">
-            <h2 className="text-lg font-medium text-gray-900">
-              Shipping information
-            </h2>
-
             <ShippingInfo form={form} />
           </div>
-
           <div className="mt-10 border-t border-gray-200 pt-10">
-            <RadioGroup
-              value={selectedDeliveryMethod}
-              onChange={setSelectedDeliveryMethod}
-            >
-              <RadioGroup.Label className="text-lg font-medium text-gray-900">
-                Delivery method
-              </RadioGroup.Label>
-
-              <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                {deliveryMethods.map((deliveryMethod) => (
-                  <RadioGroup.Option
-                    key={deliveryMethod.id}
-                    value={deliveryMethod}
-                    className={({ checked, active }) =>
-                      cn(
-                        checked ? 'border-transparent' : 'border-gray-300',
-                        active ? 'ring-2 ring-indigo-500' : '',
-                        'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none'
-                      )
-                    }
-                  >
-                    {({ checked, active }) => (
-                      <>
-                        <span className="flex flex-1">
-                          <span className="flex flex-col">
-                            <RadioGroup.Label
-                              as="span"
-                              className="block text-sm font-medium text-gray-900"
-                            >
-                              {deliveryMethod.title}
-                            </RadioGroup.Label>
-                            <RadioGroup.Description
-                              as="span"
-                              className="mt-1 flex items-center text-sm text-gray-500"
-                            >
-                              {deliveryMethod.turnaround}
-                            </RadioGroup.Description>
-                            <RadioGroup.Description
-                              as="span"
-                              className="mt-6 text-sm font-medium text-gray-900"
-                            >
-                              {deliveryMethod.price}
-                            </RadioGroup.Description>
-                          </span>
-                        </span>
-                        {checked ? (
-                          <CheckCircleIcon
-                            className="h-5 w-5 text-indigo-600"
-                            aria-hidden="true"
-                          />
-                        ) : null}
-                        <span
-                          className={cn(
-                            active ? 'border' : 'border-2',
-                            checked
-                              ? 'border-indigo-500'
-                              : 'border-transparent',
-                            'pointer-events-none absolute -inset-px rounded-lg'
-                          )}
-                          aria-hidden="true"
-                        />
-                      </>
-                    )}
-                  </RadioGroup.Option>
-                ))}
-              </div>
-            </RadioGroup>
+            <DeliveryMethod form={form} />
           </div>
 
           {/* Payment */}
