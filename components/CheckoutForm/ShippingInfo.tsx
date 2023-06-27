@@ -1,7 +1,14 @@
 import { UseFormReturn } from 'react-hook-form';
 
-import { Input, Select } from '@components/ui';
-import { SelectOption } from '@components/ui/Select';
+import { Input } from '@components/ui';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/Select';
 import {
   FormControl,
   FormField,
@@ -9,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@components/ui/form';
+import { shippingLocations } from '@const/shippingLocation';
 import { type FormData } from './CheckoutForm';
 
 interface ShippingInfoProps {
@@ -126,13 +134,22 @@ export default function ShippingInfo({ form }: ShippingInfoProps) {
             name="shippingCountry"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor={field.name}>Country</FormLabel>
-                <FormControl className="mt-1">
-                  <Select {...field}>
-                    <SelectOption value="US">United States</SelectOption>
-                    <SelectOption value="CA">Canada</SelectOption>
-                  </Select>
-                </FormControl>
+                <FormLabel>Country</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="mt-1">
+                    <SelectTrigger>
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="CA">Canada</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -145,10 +162,28 @@ export default function ShippingInfo({ form }: ShippingInfoProps) {
             name="shippingArea"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor={field.name}>State / Province</FormLabel>
-                <FormControl className="mt-1">
-                  <Input {...field} type="text" autoComplete="address-level1" />
-                </FormControl>
+                <FormLabel>State / Province</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="mt-1">
+                    <SelectTrigger>
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {shippingLocations[0].stateOrProvince.map(
+                        (state, idx) => (
+                          <SelectItem key={idx} value={state.value}>
+                            {state.name}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
