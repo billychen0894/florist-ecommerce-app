@@ -1,16 +1,15 @@
 'use client';
 
 import { TrashIcon } from '@heroicons/react/20/solid';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { InferType, ObjectSchema, object, string } from 'yup';
 
 import { Form } from '@components/ui/form';
+import { useForm } from 'react-hook-form';
 import ContactInfo from './ContactInfo';
 import DeliveryMethod from './DeliveryMethod';
 import ShippingInfo from './ShippingInfo';
-import { CheckoutFormValues } from './checkout.type';
+import { FormData, formSchema } from './formValidator';
 
 const products = [
   {
@@ -26,86 +25,16 @@ const products = [
   },
   // More products...
 ];
-const deliveryMethods = [
-  {
-    id: 1,
-    title: 'Standard',
-    turnaround: '4–10 business days',
-    price: '$5.00',
-  },
-  { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
-];
 const paymentMethods = [
   { id: 'credit-card', title: 'Credit card' },
   { id: 'paypal', title: 'PayPal' },
   { id: 'etransfer', title: 'eTransfer' },
 ];
 
-type CheckoutFormSchema = ObjectSchema<CheckoutFormValues>;
-
-// define the shape of form data
-const stringRequired = (errorMsg: string) => {
-  return string().required(errorMsg);
-};
-
-const sameAsShippingAddressValidation = () => {
-  return string().when('billingSameAsShipping', {
-    is: 'sameAsShippingAddress',
-    then: (schema) => schema.nullable(),
-    otherwise: (schema) => schema.required(),
-  });
-};
-
-const creditCardValidation = (length?: number) => {
-  if (!length) {
-    return string().when('paymentMethod', {
-      is: 'creditCard',
-      then: (schema) => schema.required(),
-      otherwise: (schema) => schema.optional(),
-    });
-  }
-
-  return string().when('paymentMethod', {
-    is: 'creditCard',
-    then: (schema) => schema.length(length).required(),
-    otherwise: (schema) => schema.optional(),
-  });
-};
-
-const validationSchema: CheckoutFormSchema = object({
-  contactEmail: stringRequired('Your email address is required').email(),
-  shippingFirstName: stringRequired('Your first name is required'),
-  shippingLastName: stringRequired('Your last name is required'),
-  shippingAddressLine1: stringRequired('Your address is required'),
-  shippingAddressLine2: string().optional(),
-  shippingCompany: string().optional(),
-  shippingCity: stringRequired('Please enter your city'),
-  shippingArea: stringRequired('Please enter your State or Province'),
-  shippingPostalCode: stringRequired('Please enter your Postal Code'),
-  shippingCountry: stringRequired('Please enter your Country'),
-  shippingPhone: stringRequired('Please enter your phone number'),
-  deliveryMethod: string().required(),
-  billingSameAsShipping: string().required(),
-  billingCompany: sameAsShippingAddressValidation(),
-  billingAddressLine1: sameAsShippingAddressValidation(),
-  billingAddressLine2: sameAsShippingAddressValidation(),
-  billingCity: sameAsShippingAddressValidation(),
-  billingArea: sameAsShippingAddressValidation(),
-  billingPostalCode: sameAsShippingAddressValidation(),
-  billingCountry: sameAsShippingAddressValidation(),
-  paymentMethod: string().required(),
-  creditCardNumber: creditCardValidation(16),
-  creditCardName: creditCardValidation(),
-  creditCardExpiry: creditCardValidation(4),
-  creditCardCvc: creditCardValidation(3),
-  // notes: string().optional(),
-}).required();
-export type FormData = InferType<typeof validationSchema>;
-
 export function CheckoutForm() {
   // initialize form with default values
   const form = useForm<FormData>({
-    resolver: yupResolver(validationSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       contactEmail: '',
       shippingFirstName: '',
@@ -118,25 +47,25 @@ export function CheckoutForm() {
       shippingPostalCode: '',
       shippingCountry: '',
       shippingPhone: '',
-      deliveryMethod: '',
-      billingSameAsShipping: '',
-      billingCompany: '',
-      billingAddressLine1: '',
-      billingAddressLine2: '',
-      billingCity: '',
-      billingArea: '',
-      billingPostalCode: '',
-      billingCountry: '',
-      paymentMethod: '',
-      creditCardNumber: '',
-      creditCardName: '',
-      creditCardExpiry: '',
-      creditCardCvc: '',
+      deliveryMethod: 'delivery',
+      billingSameAsShipping: true,
+      // billingCompany: '',
+      // billingAddressLine1: '',
+      // billingAddressLine2: '',
+      // billingCity: '',
+      // billingArea: '',
+      // billingPostalCode: '',
+      // billingCountry: '',
+      paymentMethod: 'creditCard',
+      // creditCardNumber: '',
+      // creditCardName: '',
+      // creditCardExpiry: '',
+      // creditCardCvc: '',
       // notes: '',
     },
   });
 
-  // handle form submission
+  // // handle form submission
   const onSubmit = (data: FormData) => {
     console.log(data);
   };
