@@ -1,16 +1,15 @@
 'use client';
 
 import { TrashIcon } from '@heroicons/react/20/solid';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { InferType, ObjectSchema, object, string } from 'yup';
+import * as z from 'zod';
 
 import { Form } from '@components/ui/form';
+import { useForm } from 'react-hook-form';
 import ContactInfo from './ContactInfo';
 import DeliveryMethod from './DeliveryMethod';
 import ShippingInfo from './ShippingInfo';
-import { CheckoutFormValues } from './checkout.type';
 
 const products = [
   {
@@ -26,86 +25,142 @@ const products = [
   },
   // More products...
 ];
-const deliveryMethods = [
-  {
-    id: 1,
-    title: 'Standard',
-    turnaround: '4–10 business days',
-    price: '$5.00',
-  },
-  { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
-];
 const paymentMethods = [
   { id: 'credit-card', title: 'Credit card' },
   { id: 'paypal', title: 'PayPal' },
   { id: 'etransfer', title: 'eTransfer' },
 ];
 
-type CheckoutFormSchema = ObjectSchema<CheckoutFormValues>;
-
-// define the shape of form data
-const stringRequired = (errorMsg: string) => {
-  return string().required(errorMsg);
+const stringRequired = (errorMsg?: string) => {
+  return z.string().min(1, { message: errorMsg });
 };
 
-const sameAsShippingAddressValidation = () => {
-  return string().when('billingSameAsShipping', {
-    is: 'sameAsShippingAddress',
-    then: (schema) => schema.nullable(),
-    otherwise: (schema) => schema.required(),
-  });
-};
-
-const creditCardValidation = (length?: number) => {
-  if (!length) {
-    return string().when('paymentMethod', {
-      is: 'creditCard',
-      then: (schema) => schema.required(),
-      otherwise: (schema) => schema.optional(),
-    });
-  }
-
-  return string().when('paymentMethod', {
-    is: 'creditCard',
-    then: (schema) => schema.length(length).required(),
-    otherwise: (schema) => schema.optional(),
-  });
-};
-
-const validationSchema: CheckoutFormSchema = object({
-  contactEmail: stringRequired('Your email address is required').email(),
-  shippingFirstName: stringRequired('Your first name is required'),
-  shippingLastName: stringRequired('Your last name is required'),
-  shippingAddressLine1: stringRequired('Your address is required'),
-  shippingAddressLine2: string().optional(),
-  shippingCompany: string().optional(),
-  shippingCity: stringRequired('Please enter your city'),
-  shippingArea: stringRequired('Please enter your State or Province'),
-  shippingPostalCode: stringRequired('Please enter your Postal Code'),
-  shippingCountry: stringRequired('Please enter your Country'),
-  shippingPhone: stringRequired('Please enter your phone number'),
-  deliveryMethod: string().required(),
-  billingSameAsShipping: string().required(),
-  billingCompany: sameAsShippingAddressValidation(),
-  billingAddressLine1: sameAsShippingAddressValidation(),
-  billingAddressLine2: sameAsShippingAddressValidation(),
-  billingCity: sameAsShippingAddressValidation(),
-  billingArea: sameAsShippingAddressValidation(),
-  billingPostalCode: sameAsShippingAddressValidation(),
-  billingCountry: sameAsShippingAddressValidation(),
-  paymentMethod: string().required(),
-  creditCardNumber: creditCardValidation(16),
-  creditCardName: creditCardValidation(),
-  creditCardExpiry: creditCardValidation(4),
-  creditCardCvc: creditCardValidation(3),
+const defaultformProps = z.object({
+  contactEmail: z.string().email({ message: 'Please enter a valid email' }),
+  shippingFirstName: stringRequired('Your first name is required').max(50, {
+    message: 'Your first name is too long',
+  }),
+  shippingLastName: stringRequired('Your last name is required').max(50, {
+    message: 'Your last name is too long',
+  }),
+  shippingAddressLine1: stringRequired('Your address is required').max(100, {
+    message: 'Your address is too long',
+  }),
+  shippingAddressLine2: z
+    .string()
+    .max(50, { message: 'Apartment, suite, etc. is too long' })
+    .optional(),
+  shippingCompany: z
+    .string()
+    .max(50, { message: 'Your company name is too long' })
+    .optional(),
+  shippingCity: stringRequired('Please enter your city').max(20, {
+    message: 'Your city name is too long',
+  }),
+  shippingArea: stringRequired('Please enter your State or Province').max(20, {
+    message: 'Your State or Province name is too long',
+  }),
+  shippingPostalCode: stringRequired('Please enter your Postal Code').max(7, {
+    message: 'Your Postal Code is invalid',
+  }),
+  shippingCountry: stringRequired('Please enter your Country').max(20, {
+    message: 'Your Country name is too long',
+  }),
+  shippingPhone: stringRequired('Please enter your phone number').max(20, {
+    message: 'Your phone number is too long',
+  }),
+  deliveryMethod: z
+    .union([z.literal('delivery'), z.literal('pickup')])
+    .refine((val) => val === 'delivery' || val === 'pickup', {
+      message: 'Please select a delivery method',
+    }),
+  billingSameAsShipping: z.boolean(),
+  paymentMethod: z
+    .union([z.literal('creditCard'), z.literal('paypal')])
+    .refine((val) => val === 'creditCard' || val === 'paypal', {
+      message: 'Please select a payment method',
+    }),
   // notes: string().optional(),
-}).required();
-export type FormData = InferType<typeof validationSchema>;
+});
+
+const billingIsSameAsShippingSchema = z.object({
+  billingSameAsShipping: z.literal(true),
+});
+
+const billingIsNotSameAsShippingSchema = z.object({
+  billingSameAsShipping: z.literal(false),
+  billingCompany: stringRequired('Your company name is required').max(50, {
+    message: 'Your company name is too long',
+  }),
+  billingAddressLine1: stringRequired('Your address is required').max(100, {
+    message: 'Your address is too long',
+  }),
+  billingAddressLine2: z
+    .string()
+    .max(50, { message: 'Apartment, suite, etc. is too long' })
+    .optional(),
+  billingCity: stringRequired('Please enter your city').max(20, {
+    message: 'Your city name is too long',
+  }),
+  billingArea: stringRequired('Please enter your State or Province').max(20, {
+    message: 'Your State or Province name is too long',
+  }),
+  billingPostalCode: stringRequired('Please enter your Postal Code').max(7, {
+    message: 'Your Postal Code is invalid',
+  }),
+  billingCountry: stringRequired('Please enter your Country').max(20, {
+    message: 'Your Country name is too long',
+  }),
+});
+
+const isCreditCardSchema = z.object({
+  paymentMethod: z.literal('creditCard'),
+  creditCardNumber: z
+    .string()
+    .min(1, { message: 'Your credit card number is required' })
+    .max(16, { message: 'Your credit card number is invalid' }),
+  creditCardName: z
+    .string()
+    .min(1, { message: 'Your credit card name is required' })
+    .max(50, { message: 'Your credit card name is too long' }),
+  creditCardExpiry: z
+    .string()
+    .min(1, { message: 'Your credit card expiry is required' })
+    .max(4, { message: 'Your credit card expiry is invalid' }),
+  creditCardCvc: z
+    .string()
+    .min(1, { message: 'Your credit card CVC is required' })
+    .max(3, { message: 'Your credit card CVC is invalid' }),
+});
+
+const isPaypalSchema = z.object({
+  paymentMethod: z.literal('paypal'),
+});
+
+// Mark union depends on billingSameAsShipping attribute
+const billingSameAsShippingSchemaCond = z.discriminatedUnion(
+  'billingSameAsShipping',
+  [billingIsSameAsShippingSchema, billingIsNotSameAsShippingSchema]
+);
+// Mark union depends on paymentMethod attribute
+const paymentMethodSchemaCond = z.discriminatedUnion('paymentMethod', [
+  isCreditCardSchema,
+  isPaypalSchema,
+]);
+
+// Intersect with defaultSchema
+const formSchema = z.intersection(
+  defaultformProps,
+  billingSameAsShippingSchemaCond,
+  paymentMethodSchemaCond
+);
+
+export type FormData = z.infer<typeof formSchema>;
 
 export function CheckoutForm() {
   // initialize form with default values
   const form = useForm<FormData>({
-    resolver: yupResolver(validationSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       contactEmail: '',
       shippingFirstName: '',
@@ -118,25 +173,25 @@ export function CheckoutForm() {
       shippingPostalCode: '',
       shippingCountry: '',
       shippingPhone: '',
-      deliveryMethod: '',
-      billingSameAsShipping: '',
-      billingCompany: '',
-      billingAddressLine1: '',
-      billingAddressLine2: '',
-      billingCity: '',
-      billingArea: '',
-      billingPostalCode: '',
-      billingCountry: '',
-      paymentMethod: '',
-      creditCardNumber: '',
-      creditCardName: '',
-      creditCardExpiry: '',
-      creditCardCvc: '',
+      deliveryMethod: 'delivery',
+      billingSameAsShipping: true,
+      // billingCompany: '',
+      // billingAddressLine1: '',
+      // billingAddressLine2: '',
+      // billingCity: '',
+      // billingArea: '',
+      // billingPostalCode: '',
+      // billingCountry: '',
+      paymentMethod: 'creditCard',
+      // creditCardNumber: '',
+      // creditCardName: '',
+      // creditCardExpiry: '',
+      // creditCardCvc: '',
       // notes: '',
     },
   });
 
-  // handle form submission
+  // // handle form submission
   const onSubmit = (data: FormData) => {
     console.log(data);
   };
