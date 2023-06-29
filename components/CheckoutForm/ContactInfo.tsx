@@ -4,10 +4,6 @@ import { useFormContext } from 'react-hook-form';
 
 import { Input, Label } from '@components/ui';
 
-// interface ContactInfoProps {
-//   form: UseFormReturn<FormData>;
-// }
-
 export default function ContactInfo() {
   const {
     register,
@@ -36,7 +32,6 @@ export default function ContactInfo() {
             {...register('contactEmail')}
           />
         </div>
-
         <ErrorMessage
           errors={errors}
           name="contactEmail"
