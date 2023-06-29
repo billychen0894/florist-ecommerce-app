@@ -1,21 +1,18 @@
-import { Input } from '@components/ui';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@components/ui/form';
-import { UseFormReturn } from 'react-hook-form';
-
+import { ErrorMessage } from '@hookform/error-message';
 import Link from 'next/link';
-import { type FormData } from './CheckoutForm';
+import { useFormContext } from 'react-hook-form';
 
-interface ContactInfoProps {
-  form: UseFormReturn<FormData>;
-}
+import { Input, Label } from '@components/ui';
 
-export default function ContactInfo({ form }: ContactInfoProps) {
+// interface ContactInfoProps {
+//   form: UseFormReturn<FormData>;
+// }
+
+export default function ContactInfo() {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
   return (
     <>
       <div className="sm:flex sm:justify-between sm:items-center">
@@ -30,18 +27,21 @@ export default function ContactInfo({ form }: ContactInfoProps) {
         </span>
       </div>
       <div className="mt-4">
-        <FormField
-          control={form.control}
+        <Label htmlFor="contactEmail">Email address</Label>
+        <div className="mt-1">
+          <Input
+            id="contactEmail"
+            type="email"
+            autoComplete="email"
+            {...register('contactEmail')}
+          />
+        </div>
+
+        <ErrorMessage
+          errors={errors}
           name="contactEmail"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel htmlFor={field.name}>Email address</FormLabel>
-              <FormControl className="mt-1">
-                <Input {...field} type="email" autoComplete="email" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          as="p"
+          className="text-sm font-medium text-red-500 mt-1 ml-1"
         />
       </div>
     </>
