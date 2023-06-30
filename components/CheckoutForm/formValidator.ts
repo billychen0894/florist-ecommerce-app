@@ -5,7 +5,10 @@ const stringRequired = (errorMsg?: string) => {
 };
 
 const defaultformProps = z.object({
-  contactEmail: z.string().email({ message: 'Please enter a valid email' }),
+  contactEmail: z
+    .string()
+    .email({ message: 'Please enter a valid email' })
+    .min(1, { message: 'Your email is required' }),
   shippingFirstName: stringRequired('Your first name is required').max(50, {
     message: 'Your first name is too long',
   }),

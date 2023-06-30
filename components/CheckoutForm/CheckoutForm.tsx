@@ -4,8 +4,8 @@ import { TrashIcon } from '@heroicons/react/20/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 
-import { Form } from '@components/ui/form';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
+
 import ContactInfo from './ContactInfo';
 import DeliveryMethod from './DeliveryMethod';
 import ShippingInfo from './ShippingInfo';
@@ -33,7 +33,7 @@ const paymentMethods = [
 
 export function CheckoutForm() {
   // initialize form with default values
-  const form = useForm<FormData>({
+  const methods = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       contactEmail: '',
@@ -71,20 +71,20 @@ export function CheckoutForm() {
   };
 
   return (
-    <Form {...form}>
+    <FormProvider {...methods}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(onSubmit)}
         className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
       >
         <div>
           <div>
-            <ContactInfo form={form} />
+            <ContactInfo />
           </div>
           <div className="mt-10 border-t border-gray-200 pt-10">
-            <ShippingInfo form={form} />
+            <ShippingInfo />
           </div>
           <div className="mt-10 border-t border-gray-200 pt-10">
-            <DeliveryMethod form={form} />
+            <DeliveryMethod />
           </div>
 
           {/* Payment */}
@@ -308,6 +308,6 @@ export function CheckoutForm() {
           </div>
         </div>
       </form>
-    </Form>
+    </FormProvider>
   );
 }
