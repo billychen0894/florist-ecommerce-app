@@ -47,9 +47,14 @@ const defaultformProps = z
     shippingCountry: stringRequired('Please enter your Country').max(20, {
       message: 'Your Country name is too long',
     }),
-    shippingPhone: stringRequired('Please enter your phone number').max(20, {
-      message: 'Your phone number is too long',
-    }),
+    // Regex Phone Number for Canada Only
+    shippingPhone: stringRequired('Please enter your phone number')
+      .max(20, {
+        message: 'Your phone number is too long',
+      })
+      .regex(/^(\+?1[ -]?)?\(?([0-9]{3})\)?[ -]?([0-9]{3})[ -]?([0-9]{4})$/, {
+        message: 'Your phone number is invalid',
+      }),
     deliveryMethod: z.union([
       z.literal('delivery', {
         errorMap: () => ({
