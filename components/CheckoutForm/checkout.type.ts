@@ -24,5 +24,4 @@ export interface CheckoutFormValues {
   creditCardName?: string;
   creditCardExpiry?: string;
   creditCardCvc?: string;
-  // notes?: string;
 }
