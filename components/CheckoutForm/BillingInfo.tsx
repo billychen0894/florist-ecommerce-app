@@ -10,10 +10,7 @@ export default function BillingInfo() {
     control,
     formState: { errors },
     watch,
-    getValues,
   } = useFormContext();
-
-  console.log('billingSameAsShipping', getValues('billingSameAsShipping'));
 
   return (
     <>
