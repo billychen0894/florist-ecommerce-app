@@ -6,6 +6,7 @@ import Image from 'next/image';
 
 import { FormProvider, useForm } from 'react-hook-form';
 
+import BillingInfo from './BillingInfo';
 import ContactInfo from './ContactInfo';
 import DeliveryMethod from './DeliveryMethod';
 import Payment from './Payment';
@@ -45,17 +46,17 @@ export function CheckoutForm() {
       shippingPhone: '',
       deliveryMethod: 'delivery',
       billingSameAsShipping: true,
-      // billingCompany: '',
-      // billingAddressLine1: '',
-      // billingAddressLine2: '',
-      // billingCity: '',
-      // billingArea: '',
-      // billingPostalCode: '',
-      // billingCountry: '',
+      billingCompany: '',
+      billingAddressLine1: '',
+      billingAddressLine2: '',
+      billingCity: '',
+      billingArea: '',
+      billingPostalCode: '',
+      billingCountry: '',
       paymentMethod: 'creditCard',
-      // creditCardNumber: '',
-      // creditCardName: '',
-      // creditCardExpiry: '',
+      creditCardNumber: '',
+      creditCardName: '',
+      creditCardExpiry: '',
       creditCardCvc: '',
     },
   });
@@ -79,9 +80,11 @@ export function CheckoutForm() {
             <ShippingInfo />
           </div>
           <div className="mt-10 border-t border-gray-200 pt-10">
+            <BillingInfo />
+          </div>
+          <div className="mt-10 border-t border-gray-200 pt-10">
             <DeliveryMethod />
           </div>
-
           <Payment />
         </div>
 
