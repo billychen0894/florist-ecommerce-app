@@ -68,7 +68,7 @@ export default function OrderSummary({ products }: OrderSummaryProps) {
                     <select
                       id="quantity"
                       name="quantity"
-                      className="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                      className="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
                     >
                       <option value={1}>1</option>
                       <option value={2}>2</option>
