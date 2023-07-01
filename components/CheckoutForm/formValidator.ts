@@ -36,9 +36,14 @@ const defaultformProps = z
         message: 'Your State or Province name is too long',
       }
     ),
-    shippingPostalCode: stringRequired('Please enter your Postal Code').max(7, {
-      message: 'Your Postal Code is invalid',
-    }),
+    // Regex Postal Code for Canada Only
+    shippingPostalCode: stringRequired('Please enter your Postal Code')
+      .max(7, {
+        message: 'Your Postal Code is invalid',
+      })
+      .regex(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/, {
+        message: 'Your Postal Code is invalid',
+      }),
     shippingCountry: stringRequired('Please enter your Country').max(20, {
       message: 'Your Country name is too long',
     }),
@@ -84,6 +89,44 @@ const defaultformProps = z
       .length(3, { message: 'Your credit card CVC is invalid' })
       .regex(/^[0-9]*$/, { message: 'Your credit card CVC is invalid' })
       .or(z.literal('')),
+    billingAddressLine1: stringRequired('Your address is required')
+      .max(100, {
+        message: 'Your address is too long',
+      })
+      .or(z.literal('')),
+    billingAddressLine2: z
+      .string()
+      .max(50, { message: 'Apartment, suite, etc. is too long' })
+      .optional()
+      .or(z.literal('')),
+    billingCompany: z
+      .string()
+      .max(50, { message: 'Your company name is too long' })
+      .optional()
+      .or(z.literal('')),
+    billingCity: stringRequired('Please enter your city')
+      .max(20, {
+        message: 'Your city name is too long',
+      })
+      .or(z.literal('')),
+    billingArea: stringRequired('Please enter your State or Province')
+      .max(20, {
+        message: 'Your State or Province name is too long',
+      })
+      .or(z.literal('')),
+    billingPostalCode: stringRequired('Please enter your Postal Code')
+      .max(7, {
+        message: 'Your Postal Code is invalid',
+      })
+      .regex(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/, {
+        message: 'Your Postal Code is invalid',
+      })
+      .or(z.literal('')),
+    billingCountry: stringRequired('Please enter your Country')
+      .max(20, {
+        message: 'Your Country name is too long',
+      })
+      .or(z.literal('')),
   })
   .superRefine((data, ctx) => {
     if (data.paymentMethod === 'creditCard' && !data.creditCardNumber) {
@@ -125,80 +168,47 @@ const defaultformProps = z
         message: 'Please enter your email',
       });
     }
+
+    if (!data.billingSameAsShipping && !data.billingAddressLine1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['billingAddressLine1'],
+        message: 'Please enter your address',
+      });
+    }
+
+    if (!data.billingSameAsShipping && !data.billingCity) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['billingCity'],
+        message: 'Please enter your city',
+      });
+    }
+
+    if (!data.billingSameAsShipping && !data.billingArea) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['billingArea'],
+        message: 'Please enter your State or Province',
+      });
+    }
+
+    if (!data.billingSameAsShipping && !data.billingPostalCode) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['billingPostalCode'],
+        message: 'Please enter your Postal Code',
+      });
+    }
+
+    if (!data.billingSameAsShipping && !data.billingCountry) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['billingCountry'],
+        message: 'Please enter your Country',
+      });
+    }
   });
-
-const billingIsSameAsShippingSchema = z.object({
-  billingSameAsShipping: z.literal(true),
-});
-
-const billingIsNotSameAsShippingSchema = z.object({
-  billingSameAsShipping: z.literal(false),
-  billingCompany: stringRequired('Your company name is required').max(50, {
-    message: 'Your company name is too long',
-  }),
-  billingAddressLine1: stringRequired('Your address is required').max(100, {
-    message: 'Your address is too long',
-  }),
-  billingAddressLine2: z
-    .string()
-    .max(50, { message: 'Apartment, suite, etc. is too long' })
-    .optional(),
-  billingCity: stringRequired('Please enter your city').max(20, {
-    message: 'Your city name is too long',
-  }),
-  billingArea: stringRequired('Please enter your State or Province').max(20, {
-    message: 'Your State or Province name is too long',
-  }),
-  billingPostalCode: stringRequired('Please enter your Postal Code').max(7, {
-    message: 'Your Postal Code is invalid',
-  }),
-  billingCountry: stringRequired('Please enter your Country').max(20, {
-    message: 'Your Country name is too long',
-  }),
-});
-
-const isCreditCardSchema = z.object({
-  paymentMethod: z.literal('creditCard'),
-  creditCardNumber: z
-    .string()
-    .min(15, { message: 'Your credit card number is invalid' })
-    .max(19, { message: 'Your credit card number is invalid' })
-    .or(z.string().min(1, { message: 'Your credit card number is required' })),
-  creditCardName: z
-    .string()
-    .min(1, { message: 'Your credit card name is required' })
-    .max(50, { message: 'Your credit card name is too long' }),
-  creditCardExpiry: z
-    .string()
-    .min(1, { message: 'Your credit card expiry is required' })
-    .max(4, { message: 'Your credit card expiry is invalid' }),
-  creditCardCvc: z
-    .string()
-    .min(1, { message: 'Your credit card CVC is required' })
-    .max(3, { message: 'Your credit card CVC is invalid' }),
-});
-
-const isPaypalSchema = z.object({
-  paymentMethod: z.literal('paypal'),
-});
-
-// Mark union depends on billingSameAsShipping attribute
-const billingSameAsShippingSchemaCond = z.discriminatedUnion(
-  'billingSameAsShipping',
-  [billingIsSameAsShippingSchema, billingIsNotSameAsShippingSchema]
-);
-// Mark union depends on paymentMethod attribute
-const paymentMethodSchemaCond = z.discriminatedUnion('paymentMethod', [
-  isCreditCardSchema,
-  isPaypalSchema,
-]);
-
-// Intersect with defaultSchema
-// export const formSchema = z.intersection(
-//   defaultformProps,
-//   billingSameAsShippingSchemaCond,
-//   paymentMethodSchemaCond
-// );
 
 export const formSchema = defaultformProps;
 

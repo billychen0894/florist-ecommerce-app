@@ -24,7 +24,6 @@ export default function Payment() {
               <input
                 id={paymentMethod.id}
                 type="radio"
-                // defaultChecked
                 value={paymentMethod.id}
                 {...register('paymentMethod')}
                 className="h-4 w-4 border-gray-300 text-primary-400 focus:ring-primary-500"
