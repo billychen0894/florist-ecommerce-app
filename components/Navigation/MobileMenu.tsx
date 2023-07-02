@@ -3,6 +3,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Fragment } from 'react';
 
+import { UserButton } from '@clerk/nextjs';
 import { headerNavigation } from '@const/navigation';
 
 interface MobileMenuProps {
@@ -62,6 +63,10 @@ export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
               </div>
 
               <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+                <div className="flow-root">
+                  <UserButton afterSignOutUrl="/" />
+                </div>
+
                 <div className="flow-root">
                   <Link
                     href="/signin"
