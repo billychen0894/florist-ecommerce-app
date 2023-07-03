@@ -17,7 +17,7 @@ export default function ContactInfo() {
         </h2>
         <span className="text-xs sm:text-sm">
           Already have an account?{' '}
-          <Link href="/signin" className="text-blue-500 hover:text-blue-400">
+          <Link href="/sign-in" className="text-blue-500 hover:text-blue-400">
             Sign in
           </Link>
         </span>

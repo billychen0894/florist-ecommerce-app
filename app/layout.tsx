@@ -19,7 +19,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        layout: {
+          logoImageUrl: '/images/logo.png',
+          logoPlacement: 'inside',
+        },
+        elements: {
+          formButtonPrimary: 'bg-primary-500 hover:bg-primary-400',
+          logoImage: 'w-[100px] h-[100px] relative left-[-30px]',
+        },
+      }}
+    >
       <html lang="en">
         <body className={inter.className}>
           <Navigation />
