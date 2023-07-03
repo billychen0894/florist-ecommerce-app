@@ -66,14 +66,14 @@ export default function DesktopMenu({ onOpen }: DesktopMenuProps) {
               <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                 <UserButton afterSignOutUrl="/" />
                 <Link
-                  href="/signin"
+                  href="/sign-in"
                   className="text-sm font-medium text-gray-700 hover:text-secondary-500"
                 >
                   Sign in
                 </Link>
                 <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
                 <Link
-                  href="/signup"
+                  href="/sign-up"
                   className="text-sm font-medium text-gray-700 hover:text-secondary-500"
                 >
                   Create account
