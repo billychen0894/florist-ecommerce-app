@@ -6,6 +6,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
+import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
 import { headerNavigation } from '@const/navigation';
 
 interface DesktopMenuProps {
@@ -62,24 +63,10 @@ export default function DesktopMenu({ onOpen }: DesktopMenuProps) {
             </div>
 
             <div className="ml-auto flex items-center">
-              <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                <Link
-                  href="/sign-in"
-                  className="text-sm font-medium text-gray-700 hover:text-secondary-500"
-                >
-                  Sign in
-                </Link>
-                <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                <Link
-                  href="/sign-up"
-                  className="text-sm font-medium text-gray-700 hover:text-secondary-500"
-                >
-                  Create account
-                </Link>
-              </div>
+              <AuthenticationButtons isMobile={false} />
 
               {/* Search */}
-              <div className="flex lg:ml-6">
+              <div className="ml-4 flow-root lg:ml-6">
                 <Link
                   href="#"
                   className="p-2 text-gray-400 hover:text-secondary-500"
