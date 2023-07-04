@@ -1,4 +1,3 @@
-import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
@@ -19,25 +18,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      appearance={{
-        layout: {
-          logoImageUrl: '/images/logo.png',
-          logoPlacement: 'inside',
-        },
-        elements: {
-          formButtonPrimary: 'bg-primary-500 hover:bg-primary-400',
-          logoImage: 'w-[100px] h-[100px] relative left-[-30px]',
-        },
-      }}
-    >
-      <html lang="en">
-        <body className={inter.className}>
-          <Navigation />
-          {children}
-          <Footer />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        <Navigation />
+        {children}
+        <Footer />
+      </body>
+    </html>
   );
 }

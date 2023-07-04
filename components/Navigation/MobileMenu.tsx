@@ -3,7 +3,6 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Fragment } from 'react';
 
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { headerNavigation } from '@const/navigation';
 
 interface MobileMenuProps {
@@ -63,29 +62,22 @@ export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
               </div>
 
               <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                <SignedIn>
-                  <div className="flow-root">
-                    <UserButton afterSignOutUrl="/" />
-                  </div>
-                </SignedIn>
-                <SignedOut>
-                  <div className="flow-root">
-                    <Link
-                      href="/sign-in"
-                      className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-                    >
-                      Sign in
-                    </Link>
-                  </div>
-                  <div className="flow-root">
-                    <Link
-                      href="/sign-up"
-                      className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-                    >
-                      Create account
-                    </Link>
-                  </div>
-                </SignedOut>
+                <div className="flow-root">
+                  <Link
+                    href="/sign-in"
+                    className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+                  >
+                    Sign in
+                  </Link>
+                </div>
+                <div className="flow-root">
+                  <Link
+                    href="/sign-up"
+                    className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+                  >
+                    Create account
+                  </Link>
+                </div>
               </div>
             </Dialog.Panel>
           </Transition.Child>
