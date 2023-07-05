@@ -35,4 +35,19 @@ export const options: NextAuthOptions = {
       },
     }),
   ],
+  // NextAuth callback functions
+  callbacks: {
+    async jwt({ token, user }) {
+      // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated
+      // To persist the data to the token, the callback should return a JSON object with the data
+      return { ...token, ...user };
+    },
+    async session({ session, token }) {
+      // This callback is called whenever a session is checked (i.e. on any request to Next.js pages)
+      // By default, only a subset of the token is returned for increased security. If you want to make something available you added to the token (like access_token and user.id from above) via the jwt() callback, you have to explicitly forward it here to make it available to the client.
+      // jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
+      session.user = token as any;
+      return session;
+    },
+  },
 };
