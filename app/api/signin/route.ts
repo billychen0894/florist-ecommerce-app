@@ -8,7 +8,7 @@ interface RequestBody {
   password: string;
 }
 
-// POST: Sign in user
+// POST: Sign in user with credentials
 export async function POST(req: Request, res: Response) {
   const body: RequestBody = await req.json();
   const { email, password } = body;
