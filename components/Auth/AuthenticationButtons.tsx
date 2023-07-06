@@ -9,8 +9,6 @@ interface AuthenticationButtonsProps {
 function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
   const { data: session, status } = useSession();
 
-  console.log('session', session?.user);
-
   if (session && status === 'authenticated') {
     return (
       <Avatar
