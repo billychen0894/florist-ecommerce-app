@@ -2,19 +2,21 @@ import { prisma } from '@lib/prisma';
 import * as bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
 
-interface RequestBody {
-  email: string;
-  name: string;
-  password: string;
-  confirmPassword: string;
-}
+import type { SignUpFormData } from '@components/Auth/SignUpForm';
 
 // POST: Create new user
 export async function POST(req: Request, res: Response) {
-  const body: RequestBody = await req.json();
-  const { email, name, password, confirmPassword } = body;
+  const body: SignUpFormData = await req.json();
+  const { email, password, confirmPassword, firstName, lastName } = body;
 
-  if (!email || !name || !password || !confirmPassword) {
+  // Validate form data
+  if (
+    email === '' ||
+    password === '' ||
+    confirmPassword === '' ||
+    firstName === '' ||
+    lastName === ''
+  ) {
     return NextResponse.json({
       success: false,
       data: null,
@@ -39,16 +41,42 @@ export async function POST(req: Request, res: Response) {
     });
   }
 
-  if (!/\S+@\S+\.\S+/.test(email)) {
+  // Check email is valid
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
     return NextResponse.json({
       success: false,
       data: null,
       status: '401',
       error: 'ValidationError',
-      message: 'Please enter a valid email address',
+      message: 'Please enter a valid email',
     });
   }
 
+  if (firstName.length > 50 || lastName.length > 50) {
+    return NextResponse.json({
+      success: false,
+      data: null,
+      status: '401',
+      error: 'ValidationError',
+      message: 'First and last name must be less than 50 characters',
+    });
+  }
+
+  // Check password is valid
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return NextResponse.json({
+      success: false,
+      data: null,
+      status: '401',
+      error: 'ValidationError',
+      message:
+        'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number',
+    });
+  }
+
+  // Check passwords match
   if (password !== confirmPassword) {
     return NextResponse.json({
       success: false,
@@ -59,54 +87,15 @@ export async function POST(req: Request, res: Response) {
     });
   }
 
-  if (password.length < 8) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: '401',
-      error: 'ValidationError',
-      message: 'Password must be at least 8 characters long',
-    });
-  }
-
-  if (!/\d/.test(password)) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: '401',
-      error: 'ValidationError',
-      message: 'Password must contain at least one number',
-    });
-  }
-
-  if (!/[a-z]/.test(password)) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: '401',
-      error: 'ValidationError',
-      message: 'Password must contain at least one lowercase letter',
-    });
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: '401',
-      error: 'ValidationError',
-      message: 'Password must contain at least one uppercase letter',
-    });
-  }
-
   // hash password with bcrypt before storing in database
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // create user in database
   const user = await prisma.user.create({
     data: {
+      firstName,
+      lastName,
       email,
-      name,
       password: hashedPassword,
     },
   });
