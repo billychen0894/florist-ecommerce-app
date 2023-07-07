@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-const stringRequired = (errorMsg?: string) => {
+export const stringRequired = (errorMsg?: string) => {
   return z.string().min(1, { message: errorMsg });
 };
 
