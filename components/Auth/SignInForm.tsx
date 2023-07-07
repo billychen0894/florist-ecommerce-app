@@ -59,7 +59,6 @@ function SignInForm() {
   });
 
   const onSubmit = async (data: SignInFormData) => {
-    console.log(data);
     await signIn('credentials', {
       email: data.email,
       password: data.password,
