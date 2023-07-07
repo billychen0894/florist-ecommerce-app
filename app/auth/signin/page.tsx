@@ -3,6 +3,7 @@ import { FcGoogle } from 'react-icons/fc';
 
 import OAuthProviderButton from '@components/Auth/OAuthProviderButton';
 import SignInForm from '@components/Auth/SignInForm';
+import Link from 'next/link';
 
 export default function SignIn() {
   return (
@@ -62,6 +63,15 @@ export default function SignIn() {
                   icon={<FcGoogle className="h-5 w-5" aria-hidden="true" />}
                 />
               </div>
+              <p className="mt-10 text-center text-sm text-gray-500">
+                Don&apos;t have an account?{' '}
+                <Link
+                  href="/auth/signup"
+                  className="font-semibold leading-6 text-secondary-500 hover:text-secondary-400"
+                >
+                  Sign up here
+                </Link>
+              </p>
             </div>
           </div>
         </div>
