@@ -7,6 +7,7 @@ import * as z from 'zod';
 
 import { stringRequired } from '@components/CheckoutForm/formValidator';
 import { Input, Label } from '@components/ui';
+import { isNotRegisteredEmail } from './actions';
 
 const signUpFormSchema = z
   .object({
@@ -19,10 +20,9 @@ const signUpFormSchema = z
     email: z
       .string()
       .email({ message: 'Invalid email address' })
-      // TODO: uncomment this when email verification is implemented - create API endpoint to check if email is already registered
-      // .refine(async (email) => await isEmailAlreadyRegistered(email), {
-      //   message: 'Email is already taken',
-      // })
+      .refine(async (email) => await isNotRegisteredEmail(email), {
+        message: 'Email is already taken',
+      })
       .or(z.literal('')),
     // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
     password: z
@@ -97,7 +97,10 @@ function SignUpForm() {
       });
 
       if (!res.ok) {
-        throw new Error('Something went wrong');
+        throw {
+          status: res.status,
+          message: 'Something went wrong',
+        };
       }
 
       const user = await res.json();
@@ -105,8 +108,6 @@ function SignUpForm() {
     } catch (error) {
       console.error(error);
     }
-
-    //  TODO: After successful sign up, redirect to login page and display success message
   };
 
   return (
