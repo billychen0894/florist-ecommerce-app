@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 
 import type { SignUpFormData } from '@components/Auth/SignUpForm';
 
+// TODO: Check Why the endpoint always returns 200
 // POST: Create new user
 export async function POST(req: Request, res: Response) {
   const body: SignUpFormData = await req.json();

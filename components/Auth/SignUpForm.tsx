@@ -7,7 +7,6 @@ import * as z from 'zod';
 
 import { stringRequired } from '@components/CheckoutForm/formValidator';
 import { Input, Label } from '@components/ui';
-import { isNotRegisteredEmail } from './actions';
 
 const signUpFormSchema = z
   .object({
@@ -20,9 +19,6 @@ const signUpFormSchema = z
     email: z
       .string()
       .email({ message: 'Invalid email address' })
-      .refine(async (email) => await isNotRegisteredEmail(email), {
-        message: 'Email is already taken',
-      })
       .or(z.literal('')),
     // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
     password: z
