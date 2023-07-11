@@ -1,6 +1,6 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { products } from '@const/products';
@@ -15,7 +15,7 @@ import { FormData, formSchema } from './formValidator';
 export function CheckoutForm() {
   // initialize form with default values
   const methods = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: yupResolver(formSchema),
     defaultValues: {
       contactEmail: '',
       shippingFirstName: '',
@@ -30,6 +30,7 @@ export function CheckoutForm() {
       shippingPhone: '',
       deliveryMethod: 'delivery',
       billingSameAsShipping: true,
+      paymentMethod: 'creditCard',
       billingCompany: '',
       billingAddressLine1: '',
       billingAddressLine2: '',
@@ -37,7 +38,6 @@ export function CheckoutForm() {
       billingArea: '',
       billingPostalCode: '',
       billingCountry: '',
-      paymentMethod: 'creditCard',
       creditCardNumber: '',
       creditCardName: '',
       creditCardExpiry: '',
@@ -47,6 +47,7 @@ export function CheckoutForm() {
 
   // // handle form submission
   const onSubmit = (data: FormData) => {
+    //TODO: If billing is same as shipping, copy shipping info to billing info
     console.log(data);
   };
 
