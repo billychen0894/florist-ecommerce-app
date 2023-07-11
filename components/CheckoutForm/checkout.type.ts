@@ -10,8 +10,8 @@ export interface CheckoutFormValues {
   shippingPostalCode: string;
   shippingCountry: string;
   shippingPhone: string;
-  deliveryMethod: string;
-  billingSameAsShipping?: string;
+  deliveryMethod: 'delivery' | 'pickup';
+  billingSameAsShipping?: boolean;
   billingCompany?: string;
   billingAddressLine1?: string;
   billingAddressLine2?: string;
@@ -19,7 +19,7 @@ export interface CheckoutFormValues {
   billingArea?: string;
   billingPostalCode?: string;
   billingCountry?: string;
-  paymentMethod: string;
+  paymentMethod: 'creditCard' | 'paypal';
   creditCardNumber?: string;
   creditCardName?: string;
   creditCardExpiry?: string;

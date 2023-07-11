@@ -1,220 +1,169 @@
-import * as z from 'zod';
+import * as yup from 'yup';
+import { CheckoutFormValues } from './checkout.type';
 
 export const stringRequired = (errorMsg?: string) => {
-  return z.string().min(1, { message: errorMsg });
+  return yup.string().required(errorMsg || 'This field is required');
 };
-
-const defaultformProps = z
-  .object({
-    contactEmail: z
-      .string()
-      .email({ message: 'Your email is invalid' })
-      .or(z.literal('')),
-    shippingFirstName: stringRequired('Your first name is required').max(50, {
-      message: 'Your first name is too long',
-    }),
-    shippingLastName: stringRequired('Your last name is required').max(50, {
-      message: 'Your last name is too long',
-    }),
-    shippingAddressLine1: stringRequired('Your address is required').max(100, {
-      message: 'Your address is too long',
-    }),
-    shippingAddressLine2: z
-      .string()
-      .max(50, { message: 'Apartment, suite, etc. is too long' })
-      .optional(),
-    shippingCompany: z
-      .string()
-      .max(50, { message: 'Your company name is too long' })
-      .optional(),
-    shippingCity: stringRequired('Please enter your city').max(20, {
-      message: 'Your city name is too long',
-    }),
-    shippingArea: stringRequired('Please enter your State or Province').max(
-      20,
-      {
-        message: 'Your State or Province name is too long',
-      }
-    ),
-    // Regex Postal Code for Canada Only
-    shippingPostalCode: stringRequired('Please enter your Postal Code')
-      .max(7, {
-        message: 'Your Postal Code is invalid',
-      })
-      .regex(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/, {
-        message: 'Your Postal Code is invalid',
-      }),
-    shippingCountry: stringRequired('Please enter your Country').max(20, {
-      message: 'Your Country name is too long',
-    }),
-    // Regex Phone Number for Canada Only
-    shippingPhone: stringRequired('Please enter your phone number')
-      .max(20, {
-        message: 'Your phone number is too long',
-      })
-      .regex(/^(\+?1[ -]?)?\(?([0-9]{3})\)?[ -]?([0-9]{3})[ -]?([0-9]{4})$/, {
-        message: 'Your phone number is invalid',
-      }),
-    deliveryMethod: z.union([
-      z.literal('delivery', {
-        errorMap: () => ({
-          message: 'Please select a delivery method',
-        }),
-      }),
-      z.literal('pickup'),
-    ]),
-    billingSameAsShipping: z.boolean(),
-    paymentMethod: z.union([
-      z.literal('creditCard', {
-        errorMap: () => ({
-          message: 'Please select a payment method',
-        }),
-      }),
-      z.literal('paypal'),
-    ]),
-    creditCardNumber: z
-      .string()
-      .min(15, { message: 'Your credit card number is invalid' })
-      .max(19, { message: 'Your credit card number is invalid' })
-      .regex(/^[0-9]*$/, { message: 'Your credit card number is invalid' })
-      .or(z.literal('')),
-    creditCardName: z
-      .string()
-      .min(1, { message: 'Your credit card name is required' })
-      .max(50, { message: 'Your credit card name is invalid' })
-      .regex(/^[a-zA-Z ]*$/, { message: 'Your credit card name is invalid' })
-      .or(z.literal('')),
-    creditCardExpiry: z
-      .string()
-      .length(4, { message: 'Your credit card expiry is invalid' })
-      .regex(/^[0-9]*$/, { message: 'Your credit card expiry is invalid' })
-      .or(z.literal('')),
-    creditCardCvc: z
-      .string()
-      .length(3, { message: 'Your credit card CVC is invalid' })
-      .regex(/^[0-9]*$/, { message: 'Your credit card CVC is invalid' })
-      .or(z.literal('')),
-    billingAddressLine1: stringRequired('Your address is required')
-      .max(100, {
-        message: 'Your address is too long',
-      })
-      .or(z.literal('')),
-    billingAddressLine2: z
-      .string()
-      .max(50, { message: 'Apartment, suite, etc. is too long' })
-      .optional()
-      .or(z.literal('')),
-    billingCompany: z
-      .string()
-      .max(50, { message: 'Your company name is too long' })
-      .optional()
-      .or(z.literal('')),
-    billingCity: stringRequired('Please enter your city')
-      .max(20, {
-        message: 'Your city name is too long',
-      })
-      .or(z.literal('')),
-    billingArea: stringRequired('Please enter your State or Province')
-      .max(20, {
-        message: 'Your State or Province name is too long',
-      })
-      .or(z.literal('')),
-    billingPostalCode: stringRequired('Please enter your Postal Code')
-      .max(7, {
-        message: 'Your Postal Code is invalid',
-      })
-      .regex(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/, {
-        message: 'Your Postal Code is invalid',
-      })
-      .or(z.literal('')),
-    billingCountry: stringRequired('Please enter your Country')
-      .max(20, {
-        message: 'Your Country name is too long',
-      })
-      .or(z.literal('')),
-  })
-  .superRefine((data, ctx) => {
-    if (data.paymentMethod === 'creditCard' && !data.creditCardNumber) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['creditCardNumber'],
-        message: 'Please enter your credit card number',
-      });
-    }
-
-    if (data.paymentMethod === 'creditCard' && !data.creditCardName) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['creditCardName'],
-        message: 'Please enter your credit card name',
-      });
-    }
-
-    if (data.paymentMethod === 'creditCard' && !data.creditCardExpiry) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['creditCardExpiry'],
-        message: 'Please enter your credit card expiry',
-      });
-    }
-
-    if (data.paymentMethod === 'creditCard' && !data.creditCardCvc) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['creditCardCvc'],
-        message: 'Please enter CVC',
-      });
-    }
-
-    if (data.contactEmail === '') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['contactEmail'],
-        message: 'Please enter your email',
-      });
-    }
-
-    if (!data.billingSameAsShipping && !data.billingAddressLine1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['billingAddressLine1'],
-        message: 'Please enter your address',
-      });
-    }
-
-    if (!data.billingSameAsShipping && !data.billingCity) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['billingCity'],
-        message: 'Please enter your city',
-      });
-    }
-
-    if (!data.billingSameAsShipping && !data.billingArea) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['billingArea'],
-        message: 'Please enter your State or Province',
-      });
-    }
-
-    if (!data.billingSameAsShipping && !data.billingPostalCode) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['billingPostalCode'],
-        message: 'Please enter your Postal Code',
-      });
-    }
-
-    if (!data.billingSameAsShipping && !data.billingCountry) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['billingCountry'],
-        message: 'Please enter your Country',
-      });
-    }
+// Override default email regex
+yup.addMethod(yup.string, 'email', function validateEmail(message) {
+  return this.matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+    message,
+    excludeEmptyString: true,
   });
+});
+
+const defaultformProps: yup.ObjectSchema<CheckoutFormValues> = yup.object({
+  contactEmail: yup
+    .string()
+    .email('Your email is invalid')
+    .required('Your email is required'),
+  shippingFirstName: stringRequired('Your first name is required').max(
+    50,
+    'Your first name is too long'
+  ),
+  shippingLastName: stringRequired('Your last name is required').max(
+    50,
+    'Your last name is too long'
+  ),
+  shippingAddressLine1: stringRequired('Your address is required').max(
+    100,
+    'Your address is too long'
+  ),
+  shippingAddressLine2: yup.string().defined(),
+  shippingCompany: yup
+    .string()
+    .max(50, 'Your company name is too long')
+    .defined(),
+  shippingCity: stringRequired('Please enter your city').max(
+    20,
+    'Your city name is too long'
+  ),
+  shippingArea: stringRequired('Please enter your State or Province').max(
+    20,
+    'Your State or Province name is too long'
+  ),
+  // Regex Postal Code for Canada Only
+  shippingPostalCode: stringRequired('Please enter your Postal Code')
+    .max(7, 'Your Postal Code is invalid')
+    .matches(
+      /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+      'Your Postal Code is invalid'
+    ),
+  shippingCountry: stringRequired('Please enter your Country').max(
+    20,
+    'Your Country name is too long'
+  ),
+  // Regex Phone Number for Canada Only
+  shippingPhone: stringRequired('Please enter your phone number')
+    .max(20, 'Your phone number is too long')
+    .matches(
+      /^(\+?1[ -]?)?\(?([0-9]{3})\)?[ -]?([0-9]{3})[ -]?([0-9]{4})$/,
+      'Your phone number is invalid'
+    ),
+  deliveryMethod: yup
+    .string()
+    .oneOf(['delivery', 'pickup'])
+    .required('Please select a delivery method'),
+  billingSameAsShipping: yup.boolean().defined('Please select an option'),
+  paymentMethod: yup
+    .string()
+    .oneOf(['creditCard', 'paypal'])
+    .required('Please select a payment method'),
+  creditCardNumber: yup.string().when('paymentMethod', {
+    is: 'creditCard',
+    then: (schema) =>
+      schema
+        .required('Your credit card number is required')
+        .min(15, 'Your credit card number is invalid')
+        .max(19, 'Your credit card number is invalid')
+        .matches(/^[0-9]*$/, 'Your credit card number is invalid'),
+    otherwise: (schema) => schema.optional(),
+  }),
+  creditCardName: yup.string().when('paymentMethod', {
+    is: 'creditCard',
+    then: (schema) =>
+      schema
+        .required('Your credit card name is required')
+        .min(1, 'Your credit card name is required')
+        .max(50, 'Your credit card name is invalid')
+        .matches(/^[a-zA-Z ]*$/, 'Your credit card name is invalid'),
+    otherwise: (schema) => schema.defined(),
+  }),
+  creditCardExpiry: yup.string().when('paymentMethod', {
+    is: 'creditCard',
+    then: (schema) =>
+      schema
+        .required('Your credit card expiry is required')
+        .length(4, 'Your credit card expiry is invalid')
+        .matches(/^[0-9]*$/, 'Your credit card expiry is invalid'),
+    otherwise: (schema) => schema.defined(),
+  }),
+  creditCardCvc: yup.string().when('paymentMethod', {
+    is: 'creditCard',
+    then: (schema) =>
+      schema
+        .required('Your credit card CVC is required')
+        .length(3, 'Your credit card CVC is invalid')
+        .matches(/^[0-9]*$/, 'Your credit card CVC is invalid'),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingAddressLine1: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) =>
+      schema
+        .required('Your address is required')
+        .max(100, 'Your address is too long'),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingAddressLine2: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) =>
+      schema.max(50, 'Apartment, suite, etc. is too long').defined(),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingCompany: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) => schema.max(50, 'Your company name is too long').defined(),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingCity: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) =>
+      schema
+        .required('Please enter your city')
+        .max(20, 'Your city name is too long'),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingArea: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) =>
+      schema
+        .required('Please enter your State or Province')
+        .max(20, 'Your State or Province name is too long'),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingPostalCode: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) =>
+      schema
+        .required('Please enter your Postal Code')
+        .max(7, 'Your Postal Code is invalid')
+        .matches(
+          /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+          'Your Postal Code is invalid'
+        ),
+    otherwise: (schema) => schema.defined(),
+  }),
+  billingCountry: yup.string().when('billingSameAsShipping', {
+    is: false,
+    then: (schema) =>
+      schema
+        .required('Please enter your Country')
+        .max(20, 'Your Country name is too long'),
+    otherwise: (schema) => schema.defined(),
+  }),
+});
 
 export const formSchema = defaultformProps;
 
-export type FormData = z.infer<typeof formSchema>;
+export type FormData = yup.InferType<typeof formSchema>;
