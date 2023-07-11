@@ -2,47 +2,38 @@
 
 import { Input, Label } from '@components/ui';
 import { ErrorMessage } from '@hookform/error-message';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import * as yup from 'yup';
 
-const signInFormSchema = z
-  .object({
-    email: z
-      .string()
-      .email({ message: 'Invalid email address' })
-      .or(z.literal('')),
-    // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
-    password: z
-      .string()
-      .min(8, { message: 'Password must be at least 8 characters long' })
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
-        message:
-          'Password must contain at least one uppercase and lowercase letter, and one number',
-      })
-      .or(z.literal('')),
-    rememberMe: z.boolean().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.email === '') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['email'],
-        message: 'Email address is required',
-      });
-    }
-    if (data.password === '') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['password'],
-        message: 'Password is required',
-      });
-    }
+// Override default email regex
+yup.addMethod(yup.string, 'email', function validateEmail(message) {
+  return this.matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+    message,
+    excludeEmptyString: true,
   });
+});
 
-export type SignInFormData = z.infer<typeof signInFormSchema>;
+const signInFormSchema = yup.object({
+  email: yup
+    .string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
+  password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      'Password must contain at least one uppercase and lowercase letter, and one number'
+    )
+    .required('Password is required'),
+  rememberMe: yup.boolean().defined(),
+});
+
+export type SignInFormData = yup.InferType<typeof signInFormSchema>;
 
 function SignInForm() {
   const {
@@ -50,7 +41,7 @@ function SignInForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormData>({
-    resolver: zodResolver(signInFormSchema),
+    resolver: yupResolver(signInFormSchema),
     defaultValues: {
       email: '',
       password: '',
