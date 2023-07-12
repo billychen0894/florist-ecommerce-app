@@ -1,12 +1,28 @@
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@lib/prisma';
 import type { NextAuthOptions } from 'next-auth';
+import { Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
+import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
 const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
 export const options: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     GoogleProvider({
+      profile(profile: GoogleProfile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          accessToken: profile.id_token,
+          email: profile.email,
+          image: profile.picture,
+          role: profile.role ?? 'user',
+        };
+      },
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
@@ -35,23 +51,41 @@ export const options: NextAuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+  },
+  session: {
+    strategy: 'jwt',
+  },
   // NextAuth callback functions
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, profile }) {
       // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated
       // To persist the data to the token, the callback should return a JSON object with the data
-      return { ...token, ...user };
+      if (user) {
+        token.id = user.id;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.email = user.email;
+        token.role = user.role;
+        token.accessToken = user.accessToken;
+      }
+      return token;
     },
     async session({ session, token, user }) {
       // This callback is called whenever a session is checked (i.e. on any request to Next.js pages)
       // By default, only a subset of the token is returned for increased security. If you want to make something available you added to the token (like access_token and user.id from above) via the jwt() callback, you have to explicitly forward it here to make it available to the client.
       // jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
-      session.user = token as any;
+      if (session.user) {
+        session.user.role = token.role;
+        session.user.accessToken = token.accessToken;
+        session.user.id = token.id;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+        session.user.email = token.email;
+      }
       return session;
     },
-  },
-  pages: {
-    signIn: '/auth/signin',
-    signOut: '/auth/signout',
   },
 };
