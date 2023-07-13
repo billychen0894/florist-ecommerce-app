@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { Input, Label } from '@components/ui';
+import { debounce } from 'lodash';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -28,21 +29,27 @@ const signUpFormSchema = yup.object().shape({
   // source from this github issue: https://github.com/jquense/yup/issues/256
   email: yup
     .string()
+    .email('Invalid email address')
     .required('Your email is required')
     .test('unique-email', 'This email is already registered', async (value) => {
-      await yup
-        .object({
-          email: yup
-            .string()
-            .email('Invalid email address')
-            .required('Your email is required'),
-        })
-        .validate({ email: value });
+      try {
+        await yup
+          .object({
+            email: yup
+              .string()
+              .email('Invalid email address')
+              .required('Your email is required'),
+          })
+          .validate({ email: value });
 
-      const result = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/${value}`
-      );
-      return result.status === 200;
+        const result = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/${value}`
+        );
+
+        return result.status === 200;
+      } catch (error) {
+        return false;
+      }
     }),
 
   // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
@@ -83,7 +90,6 @@ function SignUpForm() {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      signUpFormSchema.validate(data.email, { abortEarly: false });
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
         method: 'POST',
         headers: {
@@ -105,6 +111,15 @@ function SignUpForm() {
       console.error(error);
     }
   };
+
+  // Desctructure the register method to register the email input for async validation
+  // so that we can use debounce to delay the API call in every keystroke (onChange)
+  const {
+    ref: emailRef,
+    onChange: emailOnChange,
+    onBlur: emailOnBlur,
+    name: emailName,
+  } = register('email');
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -157,7 +172,10 @@ function SignUpForm() {
             id="email"
             type="email"
             autoComplete="email"
-            {...register('email')}
+            name={emailName}
+            ref={emailRef}
+            onChange={debounce(emailOnChange, 500)}
+            onBlur={emailOnBlur}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
           />
         </div>
