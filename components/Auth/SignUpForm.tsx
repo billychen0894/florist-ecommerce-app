@@ -1,12 +1,14 @@
 'use client';
 
+import { Input, Label } from '@components/ui';
 import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { debounce } from 'lodash';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import * as yup from 'yup';
 
-import { Input, Label } from '@components/ui';
-import { debounce } from 'lodash';
+import { asyncCacheTest } from '@lib/asyncCacheTest';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -16,7 +18,24 @@ yup.addMethod(yup.string, 'email', function validateEmail(message) {
   });
 });
 
-const signUpFormSchema = yup.object().shape({
+// If the email validation result same as the previous one, return the previous result instead of calling the API again
+const actualValidityTest = asyncCacheTest(
+  (value: string) =>
+    new Promise((resolve) => {
+      const result = fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/${value}`
+      ).then((res) => {
+        if (res.status === 200) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+      return result;
+    })
+);
+
+export const signUpFormSchema = yup.object().shape({
   firstName: yup
     .string()
     .required('Your first name is required')
@@ -25,33 +44,26 @@ const signUpFormSchema = yup.object().shape({
     .string()
     .required('Your last name is required')
     .max(50, 'Your last name is too long'),
-  // If the email validation fails inside the test method, it will throw validationError, which prevents calling the API in every keystroke (deboucing)
+  // If the email validation fails inside the test method, it will throw validationError, which prevents calling the API in every keystroke
   // source from this github issue: https://github.com/jquense/yup/issues/256
   email: yup
     .string()
     .email('Invalid email address')
     .required('Your email is required')
     .test('unique-email', 'This email is already registered', async (value) => {
-      try {
-        await yup
-          .object({
-            email: yup
-              .string()
-              .email('Invalid email address')
-              .required('Your email is required'),
-          })
-          .validate({ email: value });
+      await yup
+        .object({
+          email: yup
+            .string()
+            .email('Invalid email address')
+            .required('Your email is required'),
+        })
+        .validate({ email: value });
 
-        const result = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/${value}`
-        );
+      const result = await actualValidityTest(value);
 
-        return result.status === 200;
-      } catch (error) {
-        return false;
-      }
+      return result as boolean;
     }),
-
   // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
   password: yup
     .string()
@@ -99,12 +111,14 @@ function SignUpForm() {
       });
 
       if (!res.ok) {
+        toast.error('Something went wrong, please try again later.');
         throw {
           status: res.status,
           message: 'Something went wrong',
         };
       }
 
+      // toast.success('You have successfully signed up!');
       const user = await res.json();
       return user;
     } catch (error) {
@@ -112,8 +126,12 @@ function SignUpForm() {
     }
   };
 
-  // Desctructure the register method to register the email input for async validation
-  // so that we can use debounce to delay the API call in every keystroke (onChange)
+  // Desctructure the register method to register the email input field to be debounced in order
+  // to prevent extra api calls when the email is valid but the user is still typing.
+  // Reasoning: if the debounce is implemented directly in the yup schema, it will make a weird behaviour for the error message of the email input
+  // , which will be displayed only the previous validation error message, not the current one.
+  // Also, when other input fields are entered, the async api call will be sent again, which is not necessary.
+  // Becasue the yup schema makes the form validation as a whole asynchoronously, instead of field by field.
   const {
     ref: emailRef,
     onChange: emailOnChange,
@@ -174,8 +192,8 @@ function SignUpForm() {
             autoComplete="email"
             name={emailName}
             ref={emailRef}
-            onChange={debounce(emailOnChange, 500)}
-            onBlur={emailOnBlur}
+            onChange={debounce(emailOnChange, 1000)}
+            onBlur={debounce(emailOnBlur, 1000)}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
           />
         </div>
