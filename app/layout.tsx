@@ -5,6 +5,7 @@ import { Footer } from '@components/Footer';
 import { Navigation } from '@components/Navigation';
 import AuthProvider from '@components/Providers/AuthProvider';
 import '@styles/globals.css';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
@@ -22,6 +23,15 @@ export default function RootLayout({
     <AuthProvider>
       <html lang="en" className="h-full">
         <body className={`${inter.className} h-full`}>
+          <Toaster
+            toastOptions={{
+              style: {
+                color: '#111827',
+                fontSize: '0.8rem',
+                backgroundColor: '#F9FAFB',
+              },
+            }}
+          />
           <Navigation />
           {children}
           <Footer />
