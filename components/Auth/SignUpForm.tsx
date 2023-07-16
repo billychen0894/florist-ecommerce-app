@@ -5,6 +5,7 @@ import { FaceFrownIcon, FaceSmileIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { debounce } from 'lodash';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +13,7 @@ import * as yup from 'yup';
 
 import Modal from '@components/ui/Modal';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
+import { cn } from '@lib/classNames';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -94,7 +96,7 @@ function SignUpForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<SignUpFormData>({
     resolver: yupResolver(signUpFormSchema),
     defaultValues: {
@@ -110,25 +112,38 @@ function SignUpForm() {
   const onSubmit = async (data: SignUpFormData) => {
     try {
       setIsAccountCreated(false);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      const userRegisteredResult = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       // throw error with status code and message in the request response
-      if (!res.ok) {
+      if (!userRegisteredResult.ok) {
         setIsAccountCreated(false);
         setModalOpen(true);
-        throw {
-          status: res.status,
-          message: 'Something went wrong, please try again later',
-        };
+        throw new Error(userRegisteredResult.statusText);
       }
 
-      const user = await res.json();
+      // SignIn the user after successful registration
+      const userSignInResult = await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
+      if (userSignInResult && !userSignInResult.ok) {
+        setIsAccountCreated(false);
+        setModalOpen(true);
+        throw new Error(userSignInResult.error || 'Something went wrong!');
+      }
+
+      const user = await userRegisteredResult.json();
       setIsAccountCreated(true);
       setModalOpen(true);
       return user;
@@ -296,7 +311,13 @@ function SignUpForm() {
         <div>
           <button
             type="submit"
-            className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            className={cn(
+              'flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 cursor-pointer',
+              {
+                'opacity-50 cursor-not-allowed': isSubmitting || !isValid,
+              }
+            )}
+            disabled={isSubmitting || !isValid}
           >
             Create Account
           </button>
