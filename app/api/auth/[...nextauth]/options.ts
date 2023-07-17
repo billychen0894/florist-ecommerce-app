@@ -27,7 +27,7 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     CredentialsProvider({
-      name: 'Credentials',
+      name: 'credentials',
       credentials: {
         email: { label: 'Email adress', type: 'email' },
         password: { label: 'Password', type: 'password' },
@@ -41,9 +41,8 @@ export const options: NextAuthOptions = {
         });
 
         const user = await res.json();
-
         // If no error and we have user data, return it
-        if (user) {
+        if (res.ok && user.success && user.data) {
           return user;
         }
         // Return null if user data could not be retrieved
@@ -63,28 +62,13 @@ export const options: NextAuthOptions = {
     async jwt({ token, user, account, profile }) {
       // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated
       // To persist the data to the token, the callback should return a JSON object with the data
-      if (user) {
-        token.id = user.id;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
-        token.email = user.email;
-        token.role = user.role;
-        token.accessToken = user.accessToken;
-      }
-      return token;
+      return { ...token, ...user };
     },
     async session({ session, token, user }) {
       // This callback is called whenever a session is checked (i.e. on any request to Next.js pages)
       // By default, only a subset of the token is returned for increased security. If you want to make something available you added to the token (like access_token and user.id from above) via the jwt() callback, you have to explicitly forward it here to make it available to the client.
       // jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
-      if (session.user) {
-        session.user.role = token.role;
-        session.user.accessToken = token.accessToken;
-        session.user.id = token.id;
-        session.user.firstName = token.firstName;
-        session.user.lastName = token.lastName;
-        session.user.email = token.email;
-      }
+      session.user = token;
       return session;
     },
   },
