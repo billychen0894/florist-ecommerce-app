@@ -18,7 +18,7 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.json({
       success: false,
       data: null,
-      status: '401',
+      status: 401,
       error: 'ValidationError',
       message: 'Please fill in all fields',
     });
@@ -33,13 +33,17 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.json({
       success: false,
       data: null,
-      status: '401',
+      status: 401,
       message: 'Email is not registered',
     });
   }
 
   // Check if user exists, and password is correct determined by bcrypt compare function as database stores hashed passwords
-  if (user && (await bcrypt.compare(password, user.password))) {
+  if (
+    user &&
+    user.password &&
+    (await bcrypt.compare(password, user.password))
+  ) {
     // Return user object if password is correct
     const { password, ...userWithoutPassword } = user;
 
@@ -50,14 +54,14 @@ export async function POST(req: Request, res: Response) {
       success: true,
       data: userWithoutPassword,
       accessToken,
-      status: '201',
+      status: 201,
       message: 'User logged in successfully',
     });
   } else {
     return NextResponse.json({
       success: false,
       data: null,
-      status: '401',
+      status: 401,
       message: 'Invalid credentials',
     });
   }

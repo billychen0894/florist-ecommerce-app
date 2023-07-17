@@ -5,7 +5,7 @@ interface SignOptions {
 }
 
 const DEFAULT_SIGN_OPTIONS: SignOptions = {
-  expiresIn: '1d',
+  expiresIn: '2d',
 };
 
 export function signJwtAccessToken(
@@ -29,7 +29,7 @@ export function signJwtAccessToken(
 
 export function verifyJwtAccessToken(token: string) {
   try {
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET || process.env.NEXT_PUBLIC_JWT_SECRET;
 
     if (!secret) {
       throw new Error('Missing JWT_SECRET env variable');
