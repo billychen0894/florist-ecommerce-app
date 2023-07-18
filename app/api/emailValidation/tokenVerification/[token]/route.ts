@@ -37,6 +37,7 @@ export async function GET(
         status: 400,
         message: 'Token has expired',
         data: {
+          email,
           emailVerifyToken: token,
           emailVerified: false,
           emailTokenExpired: true,
@@ -57,6 +58,7 @@ export async function GET(
         status: 400,
         message: 'Email is already verified',
         data: {
+          email,
           emailVerifyToken: userWithRegisteredEmail.emailVerifyToken,
           emailVerified: true,
           emailTokenExpired: false,
@@ -72,12 +74,16 @@ export async function GET(
       userWithRegisteredEmail.emailVerifyToken
     );
 
-    if (decodedPayload?.email === email) {
+    if (
+      decodedPayload?.email === email &&
+      userWithRegisteredEmail?.emailVerifyToken === token
+    ) {
       return NextResponse.json(
         {
           status: 200,
           message: 'Email is verified',
           data: {
+            email,
             emailVerifyToken: userWithRegisteredEmail.emailVerifyToken,
             emailVerified: true,
             emailTokenExpired: false,
@@ -93,8 +99,9 @@ export async function GET(
       return NextResponse.json(
         {
           status: 400,
-          message: 'Email is not verified',
+          message: 'Email Verification Token is invalid',
           data: {
+            email,
             emailVerifyToken: userWithRegisteredEmail.emailVerifyToken,
             emailVerified: false,
             emailTokenExpired: false,
@@ -110,6 +117,7 @@ export async function GET(
         status: 400,
         message: 'Email Verification Token is not found',
         data: {
+          email,
           emailVerifyToken: userWithRegisteredEmail?.emailVerifyToken,
           emailVerified: false,
           emailTokenExpired: false,
