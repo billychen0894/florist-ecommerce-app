@@ -183,6 +183,7 @@ function SignUpForm() {
             />
           }
           buttonAction={() => router.push('/')}
+          backdropAction={() => router.push('/')}
         />
       ) : (
         <Modal
