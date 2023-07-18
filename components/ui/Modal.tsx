@@ -13,6 +13,7 @@ interface ModalProps {
   description?: string;
   buttonText: string;
   buttonAction?: () => void;
+  backdropAction?: () => void;
 }
 
 export default function Modal({
@@ -24,6 +25,7 @@ export default function Modal({
   buttonText,
   iconBgColor,
   buttonAction,
+  backdropAction,
 }: ModalProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -32,7 +34,7 @@ export default function Modal({
         className="relative z-10"
         onClose={() => {
           setOpen(false);
-          buttonAction && buttonAction();
+          backdropAction && backdropAction();
         }}
       >
         <Transition.Child

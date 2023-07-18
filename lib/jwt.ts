@@ -12,7 +12,7 @@ export function signJwtAccessToken(
   payload: JwtPayload,
   options: SignOptions = DEFAULT_SIGN_OPTIONS
 ) {
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.JWT_SECRET || process.env.NEXT_PUBLIC_JWT_SECRET;
 
   if (!secret) {
     throw new Error('Missing JWT_SECRET env variable');
