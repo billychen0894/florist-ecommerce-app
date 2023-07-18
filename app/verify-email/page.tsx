@@ -1,12 +1,18 @@
 'use client';
 
-import { verifyJwtAccessToken } from '@lib/jwt';
+import { FaceFrownIcon } from '@heroicons/react/20/solid';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import toast, { useToasterStore } from 'react-hot-toast';
+
+import Modal from '@components/ui/Modal';
+import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
 
 interface emailTokenResponse {
   status: number;
   message: string;
   data: {
+    email: string;
     emailVerifyToken: string;
     emailVerified: Date;
     emailTokenExpired: boolean;
@@ -18,10 +24,17 @@ export default function VerifyEmailPage() {
   const searchParam = useSearchParams();
   const router = useRouter();
   const token = searchParam.get('token');
+  const [isEmailTokenExpired, setIsEmailTokenExpired] =
+    useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [emailVerificationToken, setEmailVerificationToken] = useState<
+    string | null
+  >(null);
+
+  const { toasts } = useToasterStore();
 
   const handleVerifyEmail = async (token: string | null) => {
     try {
-      // check if token exists
       if (!token) throw new Error('Email verification token is missing');
 
       const tokenVerifiedResult = await fetch(
@@ -29,23 +42,21 @@ export default function VerifyEmailPage() {
       );
       const result: emailTokenResponse = await tokenVerifiedResult.json();
       const { data } = result;
-      const { emailVerifyToken, emailVerified, emailTokenExpired } = data;
+      const { email, emailVerifyToken, emailVerified, emailTokenExpired } =
+        data;
 
-      // TODO: if it's expired, send a new email verification link to the user's email
-      if (emailTokenExpired)
+      if (emailVerifyToken) setEmailVerificationToken(emailVerifyToken);
+
+      if (emailTokenExpired) {
+        setIsEmailTokenExpired(true);
+        setModalOpen(true);
         throw new Error('Email verification token has expired');
+      }
 
       if (result?.status === 400)
         throw new Error(`Email verification failed: ${result?.message}`);
 
-      // if successful, update db to set emailVerified_at to current time
       if (result?.status === 200 && emailVerified) {
-        const decodedPayload = verifyJwtAccessToken(emailVerifyToken);
-
-        if (!decodedPayload) throw new Error('Invalid token');
-
-        const email: string = decodedPayload?.email;
-
         const updatedUser = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
           {
@@ -66,7 +77,6 @@ export default function VerifyEmailPage() {
             `Email verification failed: ${updatedUserData?.message}`
           );
 
-        // if successful, redirect to login page
         if (updatedUserData.status === 201) {
           router.push('/');
         }
@@ -76,26 +86,77 @@ export default function VerifyEmailPage() {
     }
   };
 
+  const handleSendNewEmailVerificationLink = async (
+    emailVerificationToken: string | null,
+    setEmailVerificationToken: (token: string) => void,
+    setIsEmailTokenExpired: (isExpired: boolean) => void
+  ) => {
+    // when it's clicked, send a new email verification link to the user's email
+    toast.promise(
+      sendNewEmailVerificationLink({
+        emailVerificationToken,
+        setEmailVerificationToken,
+        setIsEmailTokenExpired,
+      }),
+      {
+        loading: 'Sending new email verification link...',
+        success: 'New email verification link sent!',
+        error: 'Failed to send new email verification link, please try again.',
+      }
+    );
+
+    if (toasts.length > 0) {
+      console.log('toasts', toasts);
+      setIsEmailTokenExpired(false);
+      setModalOpen(false);
+    }
+  };
+
   return (
-    <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
-      <div className="text-center">
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-          Please verify your email
-        </h1>
-        <p className="mt-6 text-base leading-7 text-gray-600">
-          Please click to verify your email address. If you did not receive the
-          email, please check your spam folder.
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <button
-            type="button"
-            onClick={async () => await handleVerifyEmail(token)}
-            className="rounded-md bg-primary-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
-          >
-            Verify Email
-          </button>
+    <>
+      {isEmailTokenExpired && (
+        <Modal
+          open={modalOpen}
+          setOpen={setModalOpen}
+          title="Email verification link has expired"
+          description="Please click the button below to send a new email verification link to your email address."
+          buttonText="Send new email verification link"
+          svgIcon={
+            <FaceFrownIcon
+              className="h-6 w-6 text-red-600"
+              aria-hidden="true"
+            />
+          }
+          iconBgColor="bg-red-100"
+          buttonAction={() => {
+            handleSendNewEmailVerificationLink(
+              emailVerificationToken,
+              setEmailVerificationToken,
+              setIsEmailTokenExpired
+            );
+          }}
+        />
+      )}
+      <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+        <div className="text-center">
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+            Please verify your email
+          </h1>
+          <p className="mt-6 text-base leading-7 text-gray-600">
+            Please click to verify your email address. If you did not receive
+            the email, please check your spam folder.
+          </p>
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <button
+              type="button"
+              onClick={async () => await handleVerifyEmail(token)}
+              className="rounded-md bg-primary-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+            >
+              Verify Email
+            </button>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
