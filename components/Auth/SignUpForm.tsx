@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import Modal from '@components/ui/Modal';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import { cn } from '@lib/classNames';
+import toast from 'react-hot-toast';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -111,6 +112,7 @@ function SignUpForm() {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
+      toast.loading('Creating your account...');
       setIsAccountCreated(false);
       const userRegisteredResult = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
@@ -125,6 +127,7 @@ function SignUpForm() {
 
       // throw error with status code and message in the request response
       if (!userRegisteredResult.ok) {
+        toast.dismiss();
         setIsAccountCreated(false);
         setModalOpen(true);
         throw new Error(userRegisteredResult.statusText);
@@ -138,16 +141,19 @@ function SignUpForm() {
       });
 
       if (userSignInResult && !userSignInResult.ok) {
+        toast.dismiss();
         setIsAccountCreated(false);
         setModalOpen(true);
         throw new Error(userSignInResult.error || 'Something went wrong!');
       }
 
       const user = await userRegisteredResult.json();
+      toast.dismiss();
       setIsAccountCreated(true);
       setModalOpen(true);
       return user;
     } catch (error) {
+      toast.dismiss();
       setIsAccountCreated(false);
       setModalOpen(true);
       console.error(error);

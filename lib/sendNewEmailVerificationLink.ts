@@ -14,7 +14,7 @@ export const sendNewEmailVerificationLink = async ({
   // generate new email verification token
   try {
     if (!emailVerificationToken) {
-      return false;
+      throw new Error('Email verification token is not supplied');
     }
 
     const { email, firstName, lastName } = verifyJwtAccessToken(
@@ -45,7 +45,6 @@ export const sendNewEmailVerificationLink = async ({
     );
 
     const newEmailVerifyTokenData = await newEmailVerifyTokenResult.json();
-    console.log('newEmailVerifyTokenData: ', newEmailVerifyTokenData);
 
     if (newEmailVerifyTokenData?.status === 201) {
       try {
@@ -57,7 +56,7 @@ export const sendNewEmailVerificationLink = async ({
           body: JSON.stringify({
             email: email,
             emailVerificationToken: newEmailVerifyToken,
-            firstName: firstName + 'new',
+            firstName: firstName,
           }),
         });
 
@@ -65,10 +64,11 @@ export const sendNewEmailVerificationLink = async ({
         return true;
       } catch (error) {
         console.error(error);
-        return false;
+        throw new Error('Failed to send email verification link');
       }
     }
   } catch (error) {
     console.error(error);
+    throw new Error('Failed to generate new email verification token');
   }
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { FaceFrownIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, FaceFrownIcon } from '@heroicons/react/20/solid';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import toast, { useToasterStore } from 'react-hot-toast';
@@ -30,8 +30,10 @@ export default function VerifyEmailPage() {
   const [emailVerificationToken, setEmailVerificationToken] = useState<
     string | null
   >(null);
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
+  const [ErrorMessage, setErrorMessage] = useState<string>('');
 
-  const { toasts } = useToasterStore();
+  const { toasts, pausedAt } = useToasterStore();
 
   const handleVerifyEmail = async (token: string | null) => {
     try {
@@ -48,13 +50,19 @@ export default function VerifyEmailPage() {
       if (emailVerifyToken) setEmailVerificationToken(emailVerifyToken);
 
       if (emailTokenExpired) {
-        setIsEmailTokenExpired(true);
+        // setIsEmailTokenExpired(true);
         setModalOpen(true);
+        setIsEmailVerified(false);
+        setErrorMessage('Email verification token has expired');
         throw new Error('Email verification token has expired');
       }
 
-      if (result?.status === 400)
+      if (result?.status === 400) {
+        setModalOpen(true);
+        setIsEmailVerified(false);
+        setErrorMessage(result?.message);
         throw new Error(`Email verification failed: ${result?.message}`);
+      }
 
       if (result?.status === 200 && emailVerified) {
         const updatedUser = await fetch(
@@ -72,16 +80,24 @@ export default function VerifyEmailPage() {
         );
 
         const updatedUserData = await updatedUser.json();
-        if (updatedUserData.status === 401)
+
+        if (updatedUserData.status === 401) {
+          setModalOpen(true);
+          setIsEmailVerified(false);
+          setErrorMessage(updatedUserData?.message);
           throw new Error(
             `Email verification failed: ${updatedUserData?.message}`
           );
+        }
 
         if (updatedUserData.status === 201) {
-          router.push('/');
+          setModalOpen(true);
+          setIsEmailVerified(true);
         }
       }
     } catch (error) {
+      setModalOpen(true);
+      setIsEmailVerified(false);
       console.error(error);
     }
   };
@@ -104,23 +120,34 @@ export default function VerifyEmailPage() {
         error: 'Failed to send new email verification link, please try again.',
       }
     );
-
-    if (toasts.length > 0) {
-      console.log('toasts', toasts);
-      setIsEmailTokenExpired(false);
-      setModalOpen(false);
-    }
   };
 
   return (
     <>
-      {isEmailTokenExpired && (
+      {isEmailVerified ? (
         <Modal
           open={modalOpen}
           setOpen={setModalOpen}
-          title="Email verification link has expired"
+          title="Email verified!"
+          description="Your email has been verified successfully. You can now login to your account."
+          buttonText="Go to homepage"
+          svgIcon={
+            <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
+          }
+          buttonAction={() => router.push('/')}
+          backdropAction={() => router.push('/')}
+        />
+      ) : (
+        <Modal
+          open={modalOpen}
+          setOpen={setModalOpen}
+          title={ErrorMessage || 'Email verification failed'}
           description="Please click the button below to send a new email verification link to your email address."
-          buttonText="Send new email verification link"
+          buttonText={
+            ErrorMessage === 'Email is already verified'
+              ? 'Go to homepage'
+              : 'Send new email verification link'
+          }
           svgIcon={
             <FaceFrownIcon
               className="h-6 w-6 text-red-600"
@@ -128,13 +155,19 @@ export default function VerifyEmailPage() {
             />
           }
           iconBgColor="bg-red-100"
-          buttonAction={() => {
-            handleSendNewEmailVerificationLink(
-              emailVerificationToken,
-              setEmailVerificationToken,
-              setIsEmailTokenExpired
-            );
-          }}
+          buttonAction={
+            ErrorMessage === 'Email is already verified'
+              ? () => {
+                  router.push('/');
+                }
+              : () => {
+                  handleSendNewEmailVerificationLink(
+                    emailVerificationToken,
+                    setEmailVerificationToken,
+                    setIsEmailTokenExpired
+                  );
+                }
+          }
         />
       )}
       <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
