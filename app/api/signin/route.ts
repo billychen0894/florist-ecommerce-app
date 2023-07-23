@@ -52,7 +52,7 @@ export async function POST(req: Request, res: Response) {
 
     return NextResponse.json({
       success: true,
-      data: userWithoutPassword,
+      ...userWithoutPassword,
       accessToken,
       status: 201,
       message: 'User logged in successfully',
@@ -60,7 +60,6 @@ export async function POST(req: Request, res: Response) {
   } else {
     return NextResponse.json({
       success: false,
-      data: null,
       status: 401,
       message: 'Invalid credentials',
     });
