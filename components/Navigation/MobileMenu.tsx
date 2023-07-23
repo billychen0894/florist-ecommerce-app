@@ -55,6 +55,7 @@ export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
                     <Link
                       href={page.href}
                       className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+                      onClick={() => onOpen(false)}
                     >
                       {page.name}
                     </Link>
@@ -63,7 +64,7 @@ export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
               </div>
 
               <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                <AuthenticationButtons isMobile />
+                <AuthenticationButtons isMobile onOpen={onOpen} />
               </div>
             </Dialog.Panel>
           </Transition.Child>

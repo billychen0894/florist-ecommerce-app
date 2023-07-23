@@ -4,9 +4,13 @@ import Link from 'next/link';
 
 interface AuthenticationButtonsProps {
   isMobile: boolean;
+  onOpen: (open: boolean) => void;
 }
 
-function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
+function AuthenticationButtons({
+  isMobile,
+  onOpen,
+}: AuthenticationButtonsProps) {
   const { data: session, status } = useSession();
 
   if (session && status === 'authenticated') {
@@ -28,7 +32,10 @@ function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
         <>
           <div className="flow-root">
             <span
-              onClick={() => signIn()}
+              onClick={() => {
+                onOpen(false);
+                signIn();
+              }}
               className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
             >
               Sign in
@@ -38,6 +45,7 @@ function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
             <Link
               href="/auth/signup"
               className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+              onClick={() => onOpen(false)}
             >
               Create account
             </Link>
