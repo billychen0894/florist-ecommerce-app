@@ -5,13 +5,63 @@ import { Fragment } from 'react';
 
 import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
 import { headerNavigation } from '@const/navigation';
+import { signOut, useSession } from 'next-auth/react';
 
 interface MobileMenuProps {
   isOpen: boolean;
   onOpen: (open: boolean) => void;
+  isMobile?: boolean;
 }
 
-export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
+export default function MobileMenu({
+  isOpen,
+  onOpen,
+  isMobile,
+}: MobileMenuProps) {
+  const { data: session, status } = useSession();
+  const MobileUserAccountMenu = (
+    <>
+      <div className="flow-root">
+        <Link
+          href="/account"
+          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+          onClick={() => onOpen(false)}
+        >
+          Account
+        </Link>
+      </div>
+      <div className="flow-root">
+        <Link
+          href="/orders"
+          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+          onClick={() => onOpen(false)}
+        >
+          Manage Orders
+        </Link>
+      </div>
+      <div className="flow-root">
+        <Link
+          href="/orders"
+          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+          onClick={() => onOpen(false)}
+        >
+          Settings
+        </Link>
+      </div>
+      <div className="flow-root">
+        <span
+          onClick={() => {
+            onOpen && onOpen(false);
+            signOut();
+          }}
+          className="-m-2 block p-2 font-medium text-red-500 hover:text-red-600 cursor-pointer"
+        >
+          Sign Out
+        </span>
+      </div>
+    </>
+  );
+
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-40 lg:hidden" onClose={onOpen}>
@@ -64,7 +114,10 @@ export default function MobileMenu({ isOpen, onOpen }: MobileMenuProps) {
               </div>
 
               <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                <AuthenticationButtons isMobile onOpen={onOpen} />
+                {isMobile && (
+                  <AuthenticationButtons isMobile={isMobile} onOpen={onOpen} />
+                )}
+                {session && status === 'authenticated' && MobileUserAccountMenu}
               </div>
             </Dialog.Panel>
           </Transition.Child>

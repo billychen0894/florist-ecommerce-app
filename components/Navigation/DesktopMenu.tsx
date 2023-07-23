@@ -11,11 +11,17 @@ import { headerNavigation } from '@const/navigation';
 
 interface DesktopMenuProps {
   onOpen: (open: boolean) => void;
+  isOpen: boolean;
+  isMobile?: boolean;
 }
 
-export default function DesktopMenu({ onOpen }: DesktopMenuProps) {
+export default function DesktopMenu({
+  onOpen,
+  isOpen,
+  isMobile,
+}: DesktopMenuProps) {
   return (
-    <header className="relative overflow-hidden">
+    <header className="relative">
       {/* Top navigation */}
       <nav
         aria-label="Top"
@@ -63,7 +69,7 @@ export default function DesktopMenu({ onOpen }: DesktopMenuProps) {
             </div>
 
             <div className="ml-auto flex items-center">
-              <AuthenticationButtons isMobile={false} />
+              {!isMobile && <AuthenticationButtons isMobile={isMobile} />}
 
               {/* Search */}
               <div className="ml-4 flow-root lg:ml-6">
