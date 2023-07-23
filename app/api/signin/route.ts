@@ -1,4 +1,4 @@
-import { signJwtAccessToken } from '@lib/jwt';
+import { signJwtAccessToken, signJwtRefreshToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
 import * as bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
@@ -45,15 +45,17 @@ export async function POST(req: Request, res: Response) {
     (await bcrypt.compare(password, user.password))
   ) {
     // Return user object if password is correct
-    const { password, ...userWithoutPassword } = user;
+    const { password, firstName, lastName, ...userWithoutPassword } = user;
 
     // Create JWT Access Token
     const accessToken = signJwtAccessToken(userWithoutPassword);
+    const refreshToken = signJwtRefreshToken(userWithoutPassword);
 
     return NextResponse.json({
       success: true,
       ...userWithoutPassword,
       accessToken,
+      refreshToken,
       status: 201,
       message: 'User logged in successfully',
     });
