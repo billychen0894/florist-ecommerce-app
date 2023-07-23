@@ -1,10 +1,12 @@
-import { Avatar } from '@components/ui';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
+import { Avatar } from '@components/ui';
+import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
+
 interface AuthenticationButtonsProps {
-  isMobile: boolean;
-  onOpen: (open: boolean) => void;
+  isMobile?: boolean;
+  onOpen?: (open: boolean) => void;
 }
 
 function AuthenticationButtons({
@@ -14,12 +16,19 @@ function AuthenticationButtons({
   const { data: session, status } = useSession();
 
   if (session && status === 'authenticated') {
-    return (
-      <Avatar
-        avatarImageUrl={session?.user.image}
-        avatarImageAlt={session?.user.name}
+    const userAccountDropdownMenu = isMobile ? null : (
+      <UserAcccountDropdown
+        email={session?.user.email as string}
+        avatar={
+          <Avatar
+            avatarImageUrl={session?.user.image}
+            avatarImageAlt={session?.user.name}
+          />
+        }
       />
     );
+
+    return userAccountDropdownMenu;
   }
 
   if (status === 'loading') {
@@ -33,7 +42,7 @@ function AuthenticationButtons({
           <div className="flow-root">
             <span
               onClick={() => {
-                onOpen(false);
+                onOpen && onOpen(false);
                 signIn();
               }}
               className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
@@ -45,7 +54,7 @@ function AuthenticationButtons({
             <Link
               href="/auth/signup"
               className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-              onClick={() => onOpen(false)}
+              onClick={() => onOpen && onOpen(false)}
             >
               Create account
             </Link>
@@ -56,7 +65,7 @@ function AuthenticationButtons({
       {!isMobile && (
         <div
           className={
-            'hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6'
+            'hidden sm:flex sm:flex-1 sm:items-center sm:justify-end sm:space-x-6'
           }
         >
           <span
