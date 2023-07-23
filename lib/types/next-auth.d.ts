@@ -16,6 +16,10 @@ declare module 'next-auth' {
     role: string;
     accessToken: string;
   }
+
+  interface Profile extends DefaultProfile {
+    picture: string;
+  }
 }
 
 declare module 'next-auth/jwt' {
