@@ -4,17 +4,26 @@ interface SignOptions {
   expiresIn?: string;
 }
 
-const DEFAULT_SIGN_OPTIONS: SignOptions = {
-  expiresIn: '2d',
+const DEFAULT_ACCESS_TOKEN_SIGN_OPTIONS: SignOptions = {
+  expiresIn: '1h',
 };
+
+const DEFAULT_REFRESH_TOKEN_SIGN_OPTIONS: SignOptions = {
+  expiresIn: '30d',
+};
+
+const accessTokenSecret =
+  process.env.JWT_ACCESS_TOKEN_SECRET ||
+  process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET;
+const refreshTokenSecret =
+  process.env.JWT_REFRESH_TOKEN_SECRET ||
+  process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET;
 
 export function signJwtAccessToken(
   payload: JwtPayload,
-  options: SignOptions = DEFAULT_SIGN_OPTIONS
+  options: SignOptions = DEFAULT_ACCESS_TOKEN_SIGN_OPTIONS
 ) {
-  const secret = process.env.JWT_SECRET || process.env.NEXT_PUBLIC_JWT_SECRET;
-
-  if (!secret) {
+  if (!accessTokenSecret) {
     throw new Error('Missing JWT_SECRET env variable');
   }
 
@@ -22,25 +31,60 @@ export function signJwtAccessToken(
     throw new Error('Missing payload');
   }
 
-  const token = jwt.sign(payload, secret, options);
+  const accessToken = jwt.sign(payload, accessTokenSecret, options);
 
-  return token;
+  return accessToken;
 }
 
-export function verifyJwtAccessToken(token: string) {
-  try {
-    const secret = process.env.JWT_SECRET || process.env.NEXT_PUBLIC_JWT_SECRET;
+export function signJwtRefreshToken(
+  payload: JwtPayload,
+  options: SignOptions = DEFAULT_REFRESH_TOKEN_SIGN_OPTIONS
+) {
+  if (!refreshTokenSecret) {
+    throw new Error('Missing JWT_SECRET env variable');
+  }
 
-    if (!secret) {
+  if (!payload) {
+    throw new Error('Missing payload');
+  }
+
+  const refreshToken = jwt.sign(payload, refreshTokenSecret, options);
+
+  return refreshToken;
+}
+
+export function verifyJwtAccessToken(accessToken: string) {
+  try {
+    if (!accessTokenSecret) {
       throw new Error('Missing JWT_SECRET env variable');
     }
 
-    if (!token) {
+    if (!accessToken) {
       throw new Error('Missing token');
     }
 
     // Decode the token
-    const payload = jwt.verify(token, secret);
+    const payload = jwt.verify(accessToken, accessTokenSecret);
+
+    return payload as JwtPayload;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export function verifyJwtRefreshToken(refreshToken: string) {
+  try {
+    if (!refreshTokenSecret) {
+      throw new Error('Missing JWT_SECRET env variable');
+    }
+
+    if (!refreshToken) {
+      throw new Error('Missing token');
+    }
+
+    // Decode the token
+    const payload = jwt.verify(refreshToken, refreshTokenSecret);
 
     return payload as JwtPayload;
   } catch (error) {
