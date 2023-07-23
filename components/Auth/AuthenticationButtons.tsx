@@ -1,21 +1,34 @@
-import { Avatar } from '@components/ui';
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
+import { Avatar } from '@components/ui';
+import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
+
 interface AuthenticationButtonsProps {
-  isMobile: boolean;
+  isMobile?: boolean;
+  onOpen?: (open: boolean) => void;
 }
 
-function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
+function AuthenticationButtons({
+  isMobile,
+  onOpen,
+}: AuthenticationButtonsProps) {
   const { data: session, status } = useSession();
 
   if (session && status === 'authenticated') {
-    return (
-      <Avatar
-        avatarImageUrl={session?.user.image}
-        avatarImageAlt={session?.user.name}
+    const userAccountDropdownMenu = isMobile ? null : (
+      <UserAcccountDropdown
+        email={session?.user.email as string}
+        avatar={
+          <Avatar
+            avatarImageUrl={session?.user.image}
+            avatarImageAlt={session?.user.name}
+          />
+        }
       />
     );
+
+    return userAccountDropdownMenu;
   }
 
   if (status === 'loading') {
@@ -28,7 +41,10 @@ function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
         <>
           <div className="flow-root">
             <span
-              onClick={() => signIn()}
+              onClick={() => {
+                onOpen && onOpen(false);
+                signIn();
+              }}
               className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
             >
               Sign in
@@ -38,6 +54,7 @@ function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
             <Link
               href="/auth/signup"
               className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+              onClick={() => onOpen && onOpen(false)}
             >
               Create account
             </Link>
@@ -48,7 +65,7 @@ function AuthenticationButtons({ isMobile }: AuthenticationButtonsProps) {
       {!isMobile && (
         <div
           className={
-            'hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6'
+            'hidden sm:flex sm:flex-1 sm:items-center sm:justify-end sm:space-x-6'
           }
         >
           <span

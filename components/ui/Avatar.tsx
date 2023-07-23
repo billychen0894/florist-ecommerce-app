@@ -1,6 +1,4 @@
-import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 interface AvatarProps {
   avatarImageUrl: string;
@@ -31,10 +29,9 @@ export function Avatar({ avatarImageUrl, avatarImageAlt }: AvatarProps) {
   }
 
   return (
-    <span className="inline-block h-6 w-6 sm:h-7 sm:w-7 overflow-hidden rounded-full bg-gray-100">
-      <Link href="#" onClick={() => signOut()}>
-        {avatarImage}
-      </Link>
-    </span>
+    <div className="group relative">
+      <div className="absolute top-0 left-0 w-full h-full rounded-full group-hover:bg-gray-500/20 transition" />
+      {avatarImage}
+    </div>
   );
 }
