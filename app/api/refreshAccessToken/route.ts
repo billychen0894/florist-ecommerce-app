@@ -1,9 +1,32 @@
-import { signJwtAccessToken, verifyJwtRefreshToken } from '@lib/jwt';
+import {
+  signJwtAccessToken,
+  verifyJwtAccessToken,
+  verifyJwtRefreshToken,
+} from '@lib/jwt';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request, res: Response) {
   const body: { refreshToken: string } = await req.json();
   const { refreshToken } = body;
+
+  const bearerToken = req.headers.get('authorization')?.split(' ')[1];
+
+  if (!bearerToken) {
+    return NextResponse.json({
+      success: false,
+      status: 401,
+      message: 'Unauthorized',
+    });
+  }
+
+  const accessTokenPayload = verifyJwtAccessToken(bearerToken);
+  if (!accessTokenPayload) {
+    return NextResponse.json({
+      success: false,
+      status: 401,
+      message: 'Unauthorized access token',
+    });
+  }
 
   if (!refreshToken) {
     return NextResponse.json({
