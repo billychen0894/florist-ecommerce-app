@@ -21,7 +21,6 @@ export const signUpFormSchema = yup.object().shape({
   // source from this github issue: https://github.com/jquense/yup/issues/256
   email: yup
     .string()
-
     .required('Your email is required')
     .test('unique-email', 'This email is already registered', async (value) => {
       try {
