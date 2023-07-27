@@ -25,8 +25,24 @@ export async function GET(
     );
   }
 
-  // check if token had expired 2 days after it was issued
   const decodedToken = verifyJwtAccessToken(token);
+
+  if (!decodedToken) {
+    return NextResponse.json(
+      {
+        status: 400,
+        message: 'Something went wrong with verifying access token',
+        data: {
+          emailVerifyToken: token,
+          emailVerified: false,
+          emailTokenExpired: true,
+        },
+        error: 'ValidationError',
+      },
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
   const { email, exp } = decodedToken as Payload;
   const expiresAt = new Date(exp! * 1000);
   const isExpired = new Date() > expiresAt;
