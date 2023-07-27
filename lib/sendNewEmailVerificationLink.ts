@@ -3,13 +3,11 @@ import { signJwtAccessToken, verifyJwtAccessToken } from './jwt';
 export interface sendNewEmailVerificationLinkProps {
   emailVerificationToken: string | null;
   setEmailVerificationToken: (token: string) => void;
-  setIsEmailTokenExpired: (isExpired: boolean) => void;
 }
 
 export const sendNewEmailVerificationLink = async ({
   emailVerificationToken,
   setEmailVerificationToken,
-  setIsEmailTokenExpired,
 }: sendNewEmailVerificationLinkProps) => {
   // generate new email verification token
   try {
@@ -60,7 +58,6 @@ export const sendNewEmailVerificationLink = async ({
           }),
         });
 
-        setIsEmailTokenExpired(false);
         return true;
       } catch (error) {
         console.error(error);

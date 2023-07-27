@@ -3,7 +3,7 @@
 import { CheckIcon, FaceFrownIcon } from '@heroicons/react/20/solid';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import toast, { useToasterStore } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import Modal from '@components/ui/Modal';
 import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
@@ -24,16 +24,12 @@ export default function VerifyEmailPage() {
   const searchParam = useSearchParams();
   const router = useRouter();
   const token = searchParam.get('token');
-  const [isEmailTokenExpired, setIsEmailTokenExpired] =
-    useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [emailVerificationToken, setEmailVerificationToken] = useState<
     string | null
   >(null);
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
   const [ErrorMessage, setErrorMessage] = useState<string>('');
-
-  const { toasts, pausedAt } = useToasterStore();
 
   const handleVerifyEmail = async (token: string | null) => {
     try {
@@ -50,7 +46,6 @@ export default function VerifyEmailPage() {
       if (emailVerifyToken) setEmailVerificationToken(emailVerifyToken);
 
       if (emailTokenExpired) {
-        // setIsEmailTokenExpired(true);
         setModalOpen(true);
         setIsEmailVerified(false);
         setErrorMessage('Email verification token has expired');
@@ -104,15 +99,13 @@ export default function VerifyEmailPage() {
 
   const handleSendNewEmailVerificationLink = async (
     emailVerificationToken: string | null,
-    setEmailVerificationToken: (token: string) => void,
-    setIsEmailTokenExpired: (isExpired: boolean) => void
+    setEmailVerificationToken: (token: string) => void
   ) => {
     // when it's clicked, send a new email verification link to the user's email
     toast.promise(
       sendNewEmailVerificationLink({
         emailVerificationToken,
         setEmailVerificationToken,
-        setIsEmailTokenExpired,
       }),
       {
         loading: 'Sending new email verification link...',
@@ -163,8 +156,8 @@ export default function VerifyEmailPage() {
               : () => {
                   handleSendNewEmailVerificationLink(
                     emailVerificationToken,
-                    setEmailVerificationToken,
-                    setIsEmailTokenExpired
+                    setEmailVerificationToken
+                    // setIsEmailTokenExpired
                   );
                 }
           }

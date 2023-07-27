@@ -94,11 +94,16 @@ export async function POST(req: Request, res: Response) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Generate emailVerificationToken and will be saved in db
-  const emailVerificationToken = signJwtAccessToken({
-    email,
-    firstName,
-    lastName,
-  });
+  const emailVerificationToken = signJwtAccessToken(
+    {
+      email,
+      firstName,
+      lastName,
+    },
+    {
+      expiresIn: '1d',
+    }
+  );
 
   // create user in database
   const user = await prisma.user.create({

@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 
 interface SignOptions {
   expiresIn?: string;
@@ -31,7 +31,7 @@ export function signJwtAccessToken(
     throw new Error('Missing payload');
   }
 
-  const accessToken = jwt.sign(payload, accessTokenSecret, options);
+  const accessToken = jwt.sign(payload, accessTokenSecret!, options);
 
   return accessToken;
 }
@@ -48,7 +48,7 @@ export function signJwtRefreshToken(
     throw new Error('Missing payload');
   }
 
-  const refreshToken = jwt.sign(payload, refreshTokenSecret, options);
+  const refreshToken = jwt.sign(payload, refreshTokenSecret!, options);
 
   return refreshToken;
 }
@@ -64,11 +64,30 @@ export function verifyJwtAccessToken(accessToken: string) {
     }
 
     // Decode the token
-    const payload = jwt.verify(accessToken, accessTokenSecret);
+    const payload = jwt.verify(accessToken, accessTokenSecret!) as JwtPayload;
 
     return payload as JwtPayload;
   } catch (error) {
-    console.error(error);
+    if (error instanceof TokenExpiredError) {
+      try {
+        const decodedPayloadWithoutSignature = jwt.decode(accessToken);
+        const payload = decodedPayloadWithoutSignature as JwtPayload;
+        const { createdAt, exp, iat, ...restPayload } = payload;
+        const newAccessToken = signJwtAccessToken(restPayload);
+
+        if (newAccessToken) {
+          const newPayload = jwt.verify(
+            newAccessToken,
+            accessTokenSecret!
+          ) as JwtPayload;
+          return newPayload;
+        }
+      } catch (refreshError) {
+        console.error('Error refreshing token:', refreshError);
+        return null;
+      }
+    }
+    console.error('Error verifying token:', error);
     return null;
   }
 }
@@ -84,9 +103,9 @@ export function verifyJwtRefreshToken(refreshToken: string) {
     }
 
     // Decode the token
-    const payload = jwt.verify(refreshToken, refreshTokenSecret);
+    const payload = jwt.verify(refreshToken, refreshTokenSecret!) as JwtPayload;
 
-    return payload as JwtPayload;
+    return payload;
   } catch (error) {
     console.error(error);
     return null;
