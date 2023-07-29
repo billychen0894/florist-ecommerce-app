@@ -1,11 +1,21 @@
+import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 
+import { options } from '@app/api/auth/[...nextauth]/options';
 import OAuthProviderButton from '@components/Auth/OAuthProviderButton';
 import SignInForm from '@components/Auth/SignInForm';
-import Link from 'next/link';
 
-export default function SignIn() {
+export default async function SignIn() {
+  const session = await getServerSession(options);
+
+  // If the user is logged in, redirect to the homepage
+  if (session?.user) {
+    redirect('/');
+  }
+
   return (
     <>
       <div className="relative flex h-screen min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
