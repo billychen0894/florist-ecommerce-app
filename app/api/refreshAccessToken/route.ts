@@ -6,38 +6,66 @@ export async function POST(req: Request, res: Response) {
   const { refreshToken } = body;
 
   if (!refreshToken) {
-    return NextResponse.json({
-      success: false,
-      status: 401,
-      message: 'Refresh Token is not supplied',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Refresh Token is not supplied',
+      },
+      {
+        status: 401,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
 
   // verify refresh token
   const payload = verifyJwtRefreshToken(refreshToken);
 
   if (!payload) {
-    return NextResponse.json({
-      success: false,
-      status: 401,
-      message: 'Refresh token is invalid',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Refresh token is invalid',
+      },
+      {
+        status: 401,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
 
   if (payload.exp && Date.now() > payload.exp * 1000) {
-    return NextResponse.json({
-      success: false,
-      status: 401,
-      message: 'Refresh Token has expired',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Refresh Token has expired',
+      },
+      {
+        status: 401,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
   const { exp, iat, ...restPayload } = payload;
   const newAccessToken = signJwtAccessToken(restPayload);
 
-  return NextResponse.json({
-    success: true,
-    status: 200,
-    accessToken: newAccessToken,
-    message: 'Access Token is refreshed successfully',
-  });
+  return NextResponse.json(
+    {
+      success: true,
+      accessToken: newAccessToken,
+      message: 'Access Token is refreshed successfully',
+    },
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 }
