@@ -1,8 +1,9 @@
 import { TrashIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
-
-import { Product } from '@const/products';
 import Link from 'next/link';
+
+import Button from '@components/ui/Button';
+import { Product } from '@const/products';
 
 interface OrderSummaryProps {
   products: Product[];
@@ -46,13 +47,13 @@ export default function OrderSummary({ products }: OrderSummaryProps) {
                   </div>
 
                   <div className="ml-4 flow-root flex-shrink-0">
-                    <button
+                    <Button
                       type="button"
-                      className="-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500"
+                      className="-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500 hover:bg-transparent shadow-none"
                     >
                       <span className="sr-only">Remove</span>
                       <TrashIcon className="h-5 w-5" aria-hidden="true" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
@@ -108,12 +109,12 @@ export default function OrderSummary({ products }: OrderSummaryProps) {
         </dl>
 
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-          <button
+          <Button
             type="submit"
-            className="w-full rounded-md border border-transparent bg-primary-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-50"
+            className="w-full border border-transparent px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-gray-50"
           >
             Confirm order
-          </button>
+          </Button>
         </div>
       </div>
     </div>

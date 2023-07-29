@@ -2,6 +2,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { cn } from '@lib/classNames';
 import { signOut } from 'next-auth/react';
 import { Fragment } from 'react';
+import Button from './Button';
 
 interface UserAcccountDropdownProps {
   email: string;
@@ -80,16 +81,16 @@ export default function UserAcccountDropdown({
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (
-                <button
+                <Button
                   type="button"
                   className={cn(
                     active ? 'bg-gray-100 text-red-500' : 'text-red-600',
-                    'block w-full px-4 py-2 text-left text-sm'
+                    'block w-full px-4 py-2 text-left bg-transparent hover:bg-transparent shadow-none font-normal'
                   )}
                   onClick={() => signOut()}
                 >
                   Sign out
-                </button>
+                </Button>
               )}
             </Menu.Item>
           </div>

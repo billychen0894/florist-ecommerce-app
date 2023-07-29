@@ -6,6 +6,7 @@ import {
   ProductInfo,
   ProductsRecommendation,
 } from '@components/Product';
+import Button from '@components/ui/Button';
 import { Product, products } from '@const/products';
 
 const product: Product = products[0];
@@ -26,23 +27,23 @@ export default function Product() {
 
               <form className="mt-6">
                 <div className="mt-10 flex">
-                  <button
+                  <Button
                     type="submit"
-                    className="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-primary-500 px-8 py-3 text-base font-medium text-white hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+                    className="flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                   >
                     Add to cart
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     type="button"
-                    className="ml-4 flex items-center justify-center rounded-md px-3 py-3 text-secondary-400 hover:bg-gray-100 hover:text-secondary-500"
+                    className="ml-4 flex items-center justify-center px-3 py-3 text-secondary-400 bg-transparent shadow-none hover:bg-gray-100 hover:text-secondary-500"
                   >
                     <HeartIcon
                       className="h-6 w-6 flex-shrink-0"
                       aria-hidden="true"
                     />
                     <span className="sr-only">Add to favorites</span>
-                  </button>
+                  </Button>
                 </div>
               </form>
               <ProductDetails product={product} />

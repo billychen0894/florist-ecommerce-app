@@ -1,12 +1,14 @@
 'use client';
 
-import { Input, Label } from '@components/ui';
 import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+
+import { Input, Label } from '@components/ui';
+import Button from '@components/ui/Button';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -130,12 +132,12 @@ function SignInForm() {
       </div>
 
       <div>
-        <button
+        <Button
           type="submit"
-          className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+          className="flex w-full justify-center px-3 py-1.5 leading-6"
         >
           Sign in
-        </button>
+        </Button>
       </div>
     </form>
   );
