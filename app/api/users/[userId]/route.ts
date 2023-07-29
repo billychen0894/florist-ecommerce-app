@@ -15,6 +15,16 @@ export async function PUT(req: Request, res: Response) {
     body;
   const userId = req.url.slice(req.url.lastIndexOf('/') + 1);
 
+  const bearerToken = req.headers.get('authorization')?.split(' ')[1];
+
+  if (!bearerToken) {
+    return NextResponse.json({
+      success: false,
+      status: 401,
+      message: 'Unauthorized',
+    });
+  }
+
   if (!userId) {
     return NextResponse.json({
       success: false,
