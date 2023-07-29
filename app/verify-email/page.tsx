@@ -61,7 +61,7 @@ export default function VerifyEmailPage() {
 
       if (result?.status === 200 && emailVerified) {
         const updatedUser = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/email`,
           {
             method: 'PUT',
             headers: {
@@ -70,6 +70,7 @@ export default function VerifyEmailPage() {
             body: JSON.stringify({
               email: email,
               emailVerified: new Date(),
+              emailVerifyToken: token,
             }),
           }
         );
