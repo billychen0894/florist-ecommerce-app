@@ -52,16 +52,6 @@ export const options: NextAuthOptions = {
   },
   // NextAuth callback functions
   callbacks: {
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   if (account?.provider === 'google') {
-    //     user.image = profile?.image;
-    //   }
-    //   if (credentials) {
-    //     console.log('credentials', credentials);
-    //     return true;
-    //   }
-    //   return true;
-    // },
     async jwt({ token, user, account, profile }) {
       // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated
       // To persist the data to the token, the callback should return a JSON object with the data
@@ -131,7 +121,7 @@ export const options: NextAuthOptions = {
       // jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
       session.user.id = token?.id;
       session.user.accessToken = token.access_token ?? token.accessToken;
-      session.user.refreshToken = token.refresh_token;
+      session.user.refreshToken = token.refresh_token ?? token.refreshToken;
       session.user.expiresAt = token.expires_at ?? token.exp;
       session.user.role = token.role ?? 'user';
       return { ...session };
