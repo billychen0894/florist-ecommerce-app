@@ -1,6 +1,5 @@
 'use client';
 
-import { Input, Label } from '@components/ui';
 import { FaceFrownIcon, FaceSmileIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,12 +8,14 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
+import { Input, Label } from '@components/ui';
+import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import { cn } from '@lib/classNames';
-import toast from 'react-hot-toast';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -316,10 +317,10 @@ function SignUpForm() {
         </div>
 
         <div>
-          <button
+          <Button
             type="submit"
             className={cn(
-              'flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 cursor-pointer',
+              'flex w-full justify-centerpx-3 py-1.5 leading-6 cursor-pointer',
               {
                 'opacity-50 cursor-not-allowed': isSubmitting || !isValid,
               }
@@ -327,7 +328,7 @@ function SignUpForm() {
             disabled={isSubmitting || !isValid}
           >
             Create Account
-          </button>
+          </Button>
         </div>
       </form>
     </>

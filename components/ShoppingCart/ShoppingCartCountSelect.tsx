@@ -1,3 +1,4 @@
+import Button from '@components/ui/Button';
 import { Product } from '@const/products';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 
@@ -30,13 +31,13 @@ export function ShoppingCartCountSelect({
       </select>
 
       <div className="absolute right-0 top-0">
-        <button
+        <Button
           type="button"
-          className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
+          className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500 bg-transparent hover:bg-transparent shadow-none"
         >
           <span className="sr-only">Remove</span>
           <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
     </div>
   );

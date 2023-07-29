@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
+import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
 
 interface DesktopMenuProps {
@@ -30,14 +31,14 @@ export default function DesktopMenu({
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center">
             {/* Hamburger Menu Icon */}
-            <button
+            <Button
               type="button"
-              className="rounded-md bg-white p-2 text-gray-400 lg:hidden"
+              className=" bg-white hover:bg-transparent shadow-none p-2 text-gray-400 lg:hidden"
               onClick={() => onOpen(true)}
             >
               <span className="sr-only">Open menu</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </button>
+            </Button>
 
             {/* Logo */}
             <div className="ml-4 flex lg:ml-0">

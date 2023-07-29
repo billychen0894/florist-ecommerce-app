@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 
 import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
+import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -89,14 +90,14 @@ export default function MobileMenu({
           >
             <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
               <div className="flex px-4 pb-2 pt-5">
-                <button
+                <Button
                   type="button"
-                  className="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+                  className="-m-2 inline-flex items-center justify-center p-2 text-gray-400 bg-transparent hover:bg-transparent shadow-none"
                   onClick={() => onOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
                   <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                </Button>
               </div>
               {/* Links */}
               <div className="space-y-6 px-4 py-6">

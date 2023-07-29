@@ -1,8 +1,10 @@
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
-import { cn } from '@lib/classNames';
 import { Dispatch, Fragment, SetStateAction } from 'react';
+
+import { cn } from '@lib/classNames';
+import Button from './Button';
 
 interface ModalProps {
   open: boolean;
@@ -83,16 +85,16 @@ export default function Modal({
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-6">
-                  <button
+                  <Button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                    className="inline-flex w-full justify-center px-3 py-2"
                     onClick={() => {
                       setOpen(false);
                       buttonAction && buttonAction();
                     }}
                   >
                     {buttonText}
-                  </button>
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

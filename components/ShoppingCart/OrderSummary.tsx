@@ -1,4 +1,5 @@
 import { HoverCard } from '@components/ui';
+import Button from '@components/ui/Button';
 import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
 
 interface OrderSummaryProps {
@@ -57,12 +58,12 @@ export function OrderSummary({
       </dl>
 
       <div className="mt-6">
-        <button
+        <Button
           type="submit"
-          className="w-full rounded-md border border-transparent bg-primary-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+          className="w-full border border-transparent px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50"
         >
           Checkout
-        </button>
+        </Button>
       </div>
     </section>
   );

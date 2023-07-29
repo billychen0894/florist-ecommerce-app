@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
 import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
 
@@ -158,7 +159,6 @@ export default function VerifyEmailPage() {
                   handleSendNewEmailVerificationLink(
                     emailVerificationToken,
                     setEmailVerificationToken
-                    // setIsEmailTokenExpired
                   );
                 }
           }
@@ -174,13 +174,12 @@ export default function VerifyEmailPage() {
             the email, please check your spam folder.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <button
+            <Button
               type="button"
               onClick={async () => await handleVerifyEmail(token)}
-              className="rounded-md bg-primary-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             >
               Verify Email
-            </button>
+            </Button>
           </div>
         </div>
       </main>

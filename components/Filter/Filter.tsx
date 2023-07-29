@@ -1,9 +1,11 @@
 'use client';
 
-import { ProductCategory, productCategories } from '@const/products';
 import { Popover, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment, useState } from 'react';
+
+import Button from '@components/ui/Button';
+import { ProductCategory, productCategories } from '@const/products';
 import { MobileFilterDialog } from './MobileFilterDialog';
 
 export interface Filter {
@@ -31,13 +33,13 @@ export function Filter() {
         filters={filters}
       />
       <>
-        <button
+        <Button
           type="button"
-          className="inline-block text-sm font-medium text-gray-700 hover:text-gray-900 sm:hidden"
+          className="inline-block font-medium text-gray-700 hover:text-gray-900 bg-transparent hover:bg-transparent shadow-none sm:hidden"
           onClick={() => setMobileFiltersOpen(true)}
         >
           <span className="text-sm font-medium text-gray-700">Filters</span>
-        </button>
+        </Button>
 
         {/* Desktop Filter */}
         <Popover.Group className="hidden sm:flex sm:items-baseline sm:space-x-8">
