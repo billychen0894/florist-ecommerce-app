@@ -320,7 +320,7 @@ function SignUpForm() {
           <Button
             type="submit"
             className={cn(
-              'flex w-full justify-centerpx-3 py-1.5 leading-6 cursor-pointer',
+              'flex w-full justify-center px-3 py-1.5 leading-6 cursor-pointer',
               {
                 'opacity-50 cursor-not-allowed': isSubmitting || !isValid,
               }
