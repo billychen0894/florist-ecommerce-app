@@ -1,27 +1,20 @@
 'use client';
 
+import axios from '@lib/axios';
 import { useSession } from 'next-auth/react';
 
 export default function useRefreshToken() {
   const { data: session } = useSession();
 
   const refreshToken = async () => {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/auth/refresh-token`,
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/refreshAccessToken`,
       {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          refreshToken: session?.user.refreshToken,
-        }),
+        refreshToken: session?.user.refreshToken,
       }
     );
 
-    const data = await response.json();
-
-    if (session) session.user.accessToken = data.accessToken;
+    if (session) session.user.accessToken = response?.data.accessToken;
   };
 
   return refreshToken;
