@@ -19,17 +19,22 @@ export const sendNewEmailVerificationLink = async ({
       emailVerificationToken
     ) as { email: string; firstName: string; lastName: string };
 
-    const newEmailVerifyToken = signJwtAccessToken({
-      email,
-      firstName,
-      lastName,
-    });
+    const newEmailVerifyToken = signJwtAccessToken(
+      {
+        email,
+        firstName,
+        lastName,
+      },
+      {
+        expiresIn: '1d',
+      }
+    );
 
     setEmailVerificationToken(newEmailVerifyToken);
 
     // save new email verification token to db
     const newEmailVerifyTokenResult = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/email`,
       {
         method: 'PUT',
         headers: {
