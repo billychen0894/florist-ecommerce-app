@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { axiosWithAuth } from '@lib/axios';
 import useRefreshToken from './useRefreshToken';
 
-export default function useAxiosAuth() {
+export default function useAxiosWithAuth() {
   const { data: session } = useSession();
   const refreshToken = useRefreshToken();
 
