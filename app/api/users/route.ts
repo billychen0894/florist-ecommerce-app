@@ -6,7 +6,6 @@ import type { SignUpFormData } from '@components/Auth/SignUpForm';
 import { transporter } from '@lib/emailTransporter';
 import { signJwtAccessToken } from '@lib/jwt';
 
-// TODO: Check Why the endpoint always returns 200
 // POST: Create new user
 export async function POST(req: Request, res: Response) {
   const body: SignUpFormData = await req.json();
@@ -20,13 +19,17 @@ export async function POST(req: Request, res: Response) {
     firstName === '' ||
     lastName === ''
   ) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Please fill in all fields',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: 'ValidationError',
+        message: 'Please fill in all fields',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check if email exists in db
@@ -35,59 +38,79 @@ export async function POST(req: Request, res: Response) {
   });
 
   if (existedEmail) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Email already exists',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: 'ValidationError',
+        message: 'Email already exists',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check email is valid
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Please enter a valid email',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: 'ValidationError',
+        message: 'Please enter a valid email',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   if (firstName.length > 50 || lastName.length > 50) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'First and last name must be less than 50 characters',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: 'ValidationError',
+        message: 'First and last name must be less than 50 characters',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check password is valid
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
   if (!passwordRegex.test(password)) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message:
-        'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: 'ValidationError',
+        message:
+          'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check passwords match
   if (password !== confirmPassword) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Passwords do not match',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        data: null,
+        error: 'ValidationError',
+        message: 'Passwords do not match',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // hash password with bcrypt before storing in database
@@ -142,10 +165,14 @@ export async function POST(req: Request, res: Response) {
   // return user object if password is correct but do not expose password
   const { password: userPassword, ...userWithoutPassword } = user;
 
-  return NextResponse.json({
-    success: true,
-    data: { ...userWithoutPassword },
-    status: 201,
-    message: 'User created successfully',
-  });
+  return NextResponse.json(
+    {
+      success: true,
+      data: { ...userWithoutPassword },
+      message: 'User created successfully',
+    },
+    {
+      status: 201,
+    }
+  );
 }
