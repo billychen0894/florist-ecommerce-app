@@ -17,9 +17,6 @@ export async function GET(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -36,9 +33,6 @@ export async function GET(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -51,9 +45,6 @@ export async function GET(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -66,9 +57,6 @@ export async function GET(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -83,9 +71,6 @@ export async function GET(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -105,9 +90,6 @@ export async function GET(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -122,9 +104,6 @@ export async function GET(req: Request, res: Response) {
     },
     {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     }
   );
 }
@@ -151,9 +130,6 @@ export async function PUT(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -170,9 +146,6 @@ export async function PUT(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -185,9 +158,6 @@ export async function PUT(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -200,9 +170,6 @@ export async function PUT(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -217,9 +184,6 @@ export async function PUT(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -239,9 +203,6 @@ export async function PUT(req: Request, res: Response) {
       },
       {
         status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
       }
     );
   }
@@ -273,9 +234,6 @@ export async function PUT(req: Request, res: Response) {
     },
     {
       status: 201,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     }
   );
 }
