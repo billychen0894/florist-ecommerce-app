@@ -15,13 +15,16 @@ export async function POST(req: Request, res: Response) {
 
   // Check if email and password are supplied
   if (!email || !password) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Please fill in all fields',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'ValidationError',
+        message: 'Please fill in all fields',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check if email exists in db
@@ -30,12 +33,15 @@ export async function POST(req: Request, res: Response) {
   });
 
   if (!user) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      message: 'Email is not registered',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Email is not registered',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check if user exists, and password is correct determined by bcrypt compare function as database stores hashed passwords
@@ -51,19 +57,27 @@ export async function POST(req: Request, res: Response) {
     const accessToken = signJwtAccessToken(userWithoutPassword);
     const refreshToken = signJwtRefreshToken(userWithoutPassword);
 
-    return NextResponse.json({
-      success: true,
-      ...userWithoutPassword,
-      accessToken,
-      refreshToken,
-      status: 201,
-      message: 'User logged in successfully',
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        ...userWithoutPassword,
+        accessToken,
+        refreshToken,
+        message: 'User logged in successfully',
+      },
+      {
+        status: 200,
+      }
+    );
   } else {
-    return NextResponse.json({
-      success: false,
-      status: 401,
-      message: 'Invalid credentials',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid credentials',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 }
