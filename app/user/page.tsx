@@ -3,6 +3,8 @@
 import Button from '@components/ui/Button';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import { users } from '@lib/api/users';
+import { User } from '@lib/types/api';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -21,26 +23,18 @@ export default function User() {
       name: '',
     },
   });
-  const [userInfo, setUserInfo] = useState();
+  const [userInfo, setUserInfo] = useState<User>();
   const { data: session } = useSession();
   const axiosWithAuth = useAxiosWithAuth();
 
   const getUser = async () => {
-    const response = await axiosWithAuth.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session?.user?.id}`
-    );
-    setUserInfo(response.data);
+    const response = users.getUser(session?.user?.id, axiosWithAuth);
+    const data = await response;
+    setUserInfo(data.data);
   };
 
   const onSubmit = (data: FormData) => {
-    const { name } = data;
-    console.log('name', name);
-    axiosWithAuth.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session?.user?.id}`,
-      {
-        name,
-      }
-    );
+    users.updateUser(data, session?.user?.id, axiosWithAuth);
   };
 
   return (
