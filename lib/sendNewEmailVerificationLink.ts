@@ -1,3 +1,4 @@
+import { emails } from './api/email';
 import { signJwtAccessToken, verifyJwtAccessToken } from './jwt';
 
 export interface sendNewEmailVerificationLinkProps {
@@ -32,35 +33,19 @@ export const sendNewEmailVerificationLink = async ({
 
     setEmailVerificationToken(newEmailVerifyToken);
 
-    // save new email verification token to db
-    const newEmailVerifyTokenResult = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/email`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          emailVerifyToken: newEmailVerifyToken,
-        }),
-      }
-    );
+    const newEmailVerifyTokenResult = await emails.updateVerifyingEmail({
+      email: email,
+      emailVerifyToken: newEmailVerifyToken,
+    });
 
-    const newEmailVerifyTokenData = await newEmailVerifyTokenResult.json();
+    const newEmailVerifyTokenData = newEmailVerifyTokenResult.data;
 
-    if (newEmailVerifyTokenData?.status === 201) {
+    if (newEmailVerifyTokenData?.status === 200) {
       try {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sendEmail`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: email,
-            emailVerificationToken: newEmailVerifyToken,
-            firstName: firstName,
-          }),
+        await emails.sendEmail({
+          email: email,
+          emailVerificationToken: newEmailVerifyToken,
+          firstName: firstName,
         });
 
         return true;
