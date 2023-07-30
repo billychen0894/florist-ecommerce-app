@@ -1,4 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { auth } from '@lib/api/auth';
 import { prisma } from '@lib/prisma';
 import type { NextAuthOptions, TokenSet } from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
@@ -8,8 +9,6 @@ import GoogleProvider from 'next-auth/providers/google';
 interface Tokens extends TokenSet {
   expires_in: number;
 }
-
-const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
 export const options: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
@@ -26,26 +25,17 @@ export const options: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // Fetch user data from POST /api/signin with credentials supplied in parameters
-        const res = await fetch(`${baseUrl}/api/signin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(credentials),
-        });
-
-        const user = await res.json();
-        // If no error and we have user data, return it
-        if (res.ok && user.success) {
-          return user;
+        const data = await auth.signIn(credentials);
+        if (data.status === 200 && data.data.success) {
+          return data.data as any;
         }
-        // Return null if user data could not be retrieved
+
         return null;
       },
     }),
   ],
   pages: {
     signIn: '/auth/signin',
-    signOut: '/auth/signout',
   },
   session: {
     strategy: 'jwt',
