@@ -233,7 +233,7 @@ export async function PUT(req: Request, res: Response) {
       message: 'User updated successfully',
     },
     {
-      status: 201,
+      status: 200,
     }
   );
 }
