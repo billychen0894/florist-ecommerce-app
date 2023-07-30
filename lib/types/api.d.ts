@@ -6,6 +6,24 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
+export interface SignInApiResponse {
+  success?: boolean;
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  emailVerified?: Date | null;
+  emailVerifyToken?: string | null;
+  image?: string | null;
+  role?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  status?: number;
+  error?: string;
+  message?: string;
+  accessToken?: string;
+  refreshToken?: string;
+}
+
 export interface UpdatedUserData {
   name?: string;
   emailVerified?: boolean;
