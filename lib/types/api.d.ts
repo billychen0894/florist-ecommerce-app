@@ -3,7 +3,7 @@ export interface ApiResponse<T> {
   data: T | null;
   status?: number;
   error?: string;
-  message?: string;
+  message: string;
 }
 
 export interface SignInApiResponse {
