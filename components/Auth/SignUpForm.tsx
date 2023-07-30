@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
+import { users } from '@lib/api/users';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import { cn } from '@lib/classNames';
 
@@ -115,23 +116,17 @@ function SignUpForm() {
     try {
       toast.loading('Creating your account...');
       setIsAccountCreated(false);
-      const userRegisteredResult = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        }
-      );
+
+      const userRegisteredResult = await users.createUser(data);
 
       // throw error with status code and message in the request response
-      if (!userRegisteredResult.ok) {
+      if (userRegisteredResult.success === false) {
         toast.dismiss();
         setIsAccountCreated(false);
         setModalOpen(true);
-        throw new Error(userRegisteredResult.statusText);
+        throw new Error(
+          userRegisteredResult.message || 'Something went wrong!'
+        );
       }
 
       // SignIn the user after successful registration
@@ -148,11 +143,10 @@ function SignUpForm() {
         throw new Error(userSignInResult.error || 'Something went wrong!');
       }
 
-      const user = await userRegisteredResult.json();
       toast.dismiss();
       setIsAccountCreated(true);
       setModalOpen(true);
-      return user;
+      return userRegisteredResult;
     } catch (error) {
       toast.dismiss();
       setIsAccountCreated(false);

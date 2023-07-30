@@ -1,9 +1,19 @@
+import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
+import { options } from '@app/api/auth/[...nextauth]/options';
 import SignUpForm from '@components/Auth/SignUpForm';
 
-export default function SignUp() {
+export default async function SignUp() {
+  const session = await getServerSession(options);
+
+  // If the user is logged in, redirect to the homepage
+  if (session?.user) {
+    redirect('/');
+  }
+
   return (
     <>
       <div className="relative flex h-[1000px] min-h-full flex-1 flex-col py-6 sm:py-6 sm:px-6">
