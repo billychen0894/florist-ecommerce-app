@@ -12,23 +12,29 @@ export async function POST(req: Request, res: Response) {
   const { firstName, email, emailVerificationToken } = body;
   try {
     if (!email) {
-      return NextResponse.json({
-        success: false,
-        data: null,
-        status: 401,
-        error: 'ValidationError',
-        message: 'Email is not supplied',
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ValidationError',
+          message: 'Email is not supplied',
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
     if (!emailVerificationToken) {
-      return NextResponse.json({
-        success: false,
-        data: null,
-        status: 401,
-        error: 'ValidationError',
-        message: 'Email verification token is not supplied',
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ValidationError',
+          message: 'Email verification token is not supplied',
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
     await transporter.sendMail({
@@ -48,12 +54,15 @@ export async function POST(req: Request, res: Response) {
     `,
     });
 
-    return NextResponse.json({
-      success: true,
-      data: null,
-      status: 201,
-      message: 'Email Verification Link is sent successfully',
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Email Verification Link is sent successfully',
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.log(error);
   }
