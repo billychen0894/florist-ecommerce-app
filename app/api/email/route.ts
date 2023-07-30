@@ -1,56 +1,29 @@
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
+import { JwtPayload } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
+interface EmailPayload {
+  email: string;
+  emailVerified?: Date;
+  emailVerifyToken: string | null;
+}
+
 export async function PUT(req: Request, res: Response) {
-  const body: {
-    email?: string;
-    emailVerified?: Date;
-    emailVerifyToken?: string;
-  } = await req.json();
+  const body: EmailPayload = await req.json();
   const { email, emailVerified, emailVerifyToken } = body;
 
-  if (!emailVerifyToken) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Email verify token is required',
-    });
-  }
-
-  const emailTokenPayload = verifyJwtAccessToken(emailVerifyToken);
-
-  if (!emailTokenPayload) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Invalid email verify token',
-    });
-  }
-  const { email: emailFromPayload } = emailTokenPayload;
-
   if (!email) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Email is required',
-    });
-  }
-
-  if (emailFromPayload !== email) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'Email does not match email in token',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'ValidationError',
+        message: 'Email is required',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
   // Check if email exists in db
@@ -59,20 +32,77 @@ export async function PUT(req: Request, res: Response) {
   });
 
   if (!existingUser) {
-    return NextResponse.json({
-      success: false,
-      data: null,
-      status: 401,
-      error: 'ValidationError',
-      message: 'User not found',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'ValidationError',
+        message: 'User not found',
+      },
+      {
+        status: 401,
+      }
+    );
   }
 
-  const updatedUserData = {
-    email: existingUser.email,
-    emailVerified: emailVerified || existingUser.emailVerified,
-    emailVerifyToken: null,
-  };
+  let updatedUserData: EmailPayload;
+
+  if (emailVerified) {
+    updatedUserData = {
+      email: existingUser.email as string,
+      emailVerified: emailVerified,
+      emailVerifyToken: null,
+    };
+  } else {
+    if (!emailVerifyToken) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ValidationError',
+          message: 'Email verify token is required',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const emailTokenPayload = verifyJwtAccessToken(
+      emailVerifyToken
+    ) as JwtPayload;
+
+    if (!emailTokenPayload) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ValidationError',
+          message: 'Invalid email verify token',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+    const { email: emailFromPayload } = emailTokenPayload;
+
+    if (emailFromPayload !== email) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ValidationError',
+          message: 'Email does not match email in token',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    updatedUserData = {
+      email: existingUser.email as string,
+      emailVerified: existingUser.emailVerified as Date,
+      emailVerifyToken: emailVerifyToken,
+    };
+  }
 
   // update user in database
   const user = await prisma.user.update({
@@ -84,10 +114,14 @@ export async function PUT(req: Request, res: Response) {
 
   const { password: userPassword, ...userWithoutPassword } = user;
 
-  return NextResponse.json({
-    success: true,
-    data: { ...userWithoutPassword },
-    status: 201,
-    message: 'User updated successfully',
-  });
+  return NextResponse.json(
+    {
+      success: true,
+      data: { ...userWithoutPassword },
+      message: 'User updated successfully',
+    },
+    {
+      status: 200,
+    }
+  );
 }
