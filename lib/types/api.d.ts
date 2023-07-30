@@ -45,3 +45,15 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface sendEmailData {
+  email: string;
+  emailVerificationToken: string;
+  firstName: string;
+}
+
+export interface VerifyingEmailData {
+  email: string;
+  emailVerified?: Date;
+  emailVerifyToken: string | null;
+}
