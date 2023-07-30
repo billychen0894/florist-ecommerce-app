@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
+import { emails } from '@lib/api/email';
 import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
 
 interface emailTokenResponse {
@@ -61,22 +62,13 @@ export default function VerifyEmailPage() {
       }
 
       if (result?.status === 200 && emailVerified) {
-        const updatedUser = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/email`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: email,
-              emailVerified: new Date(),
-              emailVerifyToken: token,
-            }),
-          }
-        );
+        const response = await emails.updateVerifyingEmail({
+          email: email,
+          emailVerified: new Date(),
+          emailVerifyToken: token,
+        });
 
-        const updatedUserData = await updatedUser.json();
+        const updatedUserData = response.data;
 
         if (updatedUserData.status === 401) {
           setModalOpen(true);
@@ -87,7 +79,7 @@ export default function VerifyEmailPage() {
           );
         }
 
-        if (updatedUserData.status === 201) {
+        if (updatedUserData.status === 200) {
           setModalOpen(true);
           setIsEmailVerified(true);
         }
