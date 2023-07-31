@@ -10,18 +10,6 @@ import Modal from '@components/ui/Modal';
 import { emails } from '@lib/api/email';
 import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
 
-interface emailTokenResponse {
-  status: number;
-  message: string;
-  data: {
-    email: string;
-    emailVerifyToken: string;
-    emailVerified: Date;
-    emailTokenExpired: boolean;
-  };
-  error: string | null;
-}
-
 export default function VerifyEmailPage() {
   const searchParam = useSearchParams();
   const router = useRouter();
@@ -37,13 +25,12 @@ export default function VerifyEmailPage() {
     try {
       if (!token) throw new Error('Email verification token is missing');
 
-      const tokenVerifiedResult = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/tokenVerification/${token}`
-      );
-      const result: emailTokenResponse = await tokenVerifiedResult.json();
-      const { data } = result;
-      const { email, emailVerifyToken, emailVerified, emailTokenExpired } =
-        data;
+      const tokenVerifiedResult = await emails.verifyEmailToken(token);
+      const data = tokenVerifiedResult.data;
+      const emailVerifyToken = data?.data?.emailVerifyToken as string;
+      const emailTokenExpired = data?.data?.emailTokenExpired as boolean;
+      const emailVerified = data?.data?.emailVerified as boolean;
+      const email = data?.data?.email as string;
 
       if (emailVerifyToken) setEmailVerificationToken(emailVerifyToken);
 
@@ -54,32 +41,45 @@ export default function VerifyEmailPage() {
         throw new Error('Email verification token has expired');
       }
 
-      if (result?.status === 400) {
+      if (tokenVerifiedResult?.status === 409 && emailVerified) {
         setModalOpen(true);
-        setIsEmailVerified(false);
-        setErrorMessage(result?.message);
-        throw new Error(`Email verification failed: ${result?.message}`);
+        setIsEmailVerified(true);
+        setErrorMessage('Email is already verified');
+        throw new Error('Email is already verified');
       }
 
-      if (result?.status === 200 && emailVerified) {
+      if (
+        tokenVerifiedResult?.status === 422 ||
+        tokenVerifiedResult?.status === 401 ||
+        tokenVerifiedResult?.status === 404
+      ) {
+        setModalOpen(true);
+        setIsEmailVerified(false);
+        setErrorMessage(data?.message);
+        throw new Error(`Email verification failed: ${data?.message}`);
+      }
+
+      if (tokenVerifiedResult?.status === 200 && emailVerified) {
         const response = await emails.updateVerifyingEmail({
           email: email,
           emailVerified: new Date(),
-          emailVerifyToken: token,
+          emailVerifyToken: emailVerifyToken,
         });
 
-        const updatedUserData = response.data;
-
-        if (updatedUserData.status === 401) {
+        if (
+          response.status === 401 ||
+          response.status === 404 ||
+          response.status === 422
+        ) {
           setModalOpen(true);
           setIsEmailVerified(false);
-          setErrorMessage(updatedUserData?.message);
+          setErrorMessage(response?.data.message);
           throw new Error(
-            `Email verification failed: ${updatedUserData?.message}`
+            `Email verification failed: ${response?.data.message}`
           );
         }
 
-        if (updatedUserData.status === 200) {
+        if (response.status === 200) {
           setModalOpen(true);
           setIsEmailVerified(true);
         }
