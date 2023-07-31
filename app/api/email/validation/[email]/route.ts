@@ -11,22 +11,20 @@ export async function GET(
   if (!email) {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Please enter an email',
         error: 'ValidationError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 422 }
     );
   }
 
   if (!emailRegex.test(email)) {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Please enter a valid email',
         error: 'ValidationError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 422 }
     );
   }
 
@@ -37,20 +35,18 @@ export async function GET(
   if (userWithRegisteredEmail) {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Email already exists',
-        error: 'ValidationError',
+        error: 'ConflictError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 409 }
     );
   }
 
   return NextResponse.json(
     {
-      status: 200,
       message: 'Email is valid',
       error: null,
     },
-    { status: 200, headers: { 'Content-Type': 'application/json' } }
+    { status: 200 }
   );
 }

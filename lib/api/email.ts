@@ -3,6 +3,7 @@ import {
   ApiResponse,
   User,
   VerifyingEmailData,
+  VerifyingEmailTokenData,
   sendEmailData,
 } from '@lib/types/api';
 import { AxiosResponse } from 'axios';
@@ -10,7 +11,7 @@ import { AxiosResponse } from 'axios';
 async function sendEmail(
   data: sendEmailData
 ): Promise<AxiosResponse<ApiResponse<null>>> {
-  const response = (await axios.post('/api/sendEmail', {
+  const response = (await axios.post('/api/email/sendEmail', {
     ...data,
   })) as AxiosResponse<ApiResponse<null>>;
 
@@ -27,7 +28,29 @@ async function updateVerifyingEmail(
   return response;
 }
 
+async function validateEmail(
+  email: string
+): Promise<AxiosResponse<ApiResponse<null>>> {
+  const response = (await axios.get(
+    `/api/email/validation/${email}`
+  )) as AxiosResponse<ApiResponse<null>>;
+
+  return response;
+}
+
+async function verifyEmailToken(
+  emailToken: string
+): Promise<AxiosResponse<ApiResponse<VerifyingEmailTokenData>>> {
+  const response = (await axios.get(
+    `/api/email/tokenVerification/${emailToken}`
+  )) as AxiosResponse<ApiResponse<VerifyingEmailTokenData>>;
+
+  return response;
+}
+
 export const emails = {
   sendEmail,
   updateVerifyingEmail,
+  validateEmail,
+  verifyEmailToken,
 };

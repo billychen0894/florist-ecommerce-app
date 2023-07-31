@@ -1,7 +1,7 @@
 import axios from '@lib/axios';
 import { AxiosResponse } from 'axios';
 
-import { SignInApiResponse } from '@lib/types/api';
+import { RefreshAccessTokenResponse, SignInApiResponse } from '@lib/types/api';
 
 async function signIn(
   credentials: Record<'password' | 'email', string> | undefined
@@ -13,6 +13,17 @@ async function signIn(
   return response;
 }
 
+async function refreshAccessToken(
+  refreshToken: string
+): Promise<AxiosResponse<RefreshAccessTokenResponse>> {
+  const response = (await axios.post('/api/refreshAccessToken', {
+    refreshToken,
+  })) as AxiosResponse<RefreshAccessTokenResponse>;
+
+  return response;
+}
+
 export const auth = {
   signIn,
+  refreshAccessToken,
 };

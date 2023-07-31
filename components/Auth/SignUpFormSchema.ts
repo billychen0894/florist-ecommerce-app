@@ -1,3 +1,4 @@
+import { emails } from '@lib/api/email';
 import * as yup from 'yup';
 
 // Override default email regex
@@ -33,9 +34,7 @@ export const signUpFormSchema = yup.object().shape({
           })
           .validate({ email: value });
 
-        const result = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/${value}`
-        );
+        const result = await emails.validateEmail(value);
 
         return result.status === 200;
       } catch (error) {

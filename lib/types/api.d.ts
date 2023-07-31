@@ -3,7 +3,7 @@ export interface ApiResponse<T> {
   data: T | null;
   status?: number;
   error?: string;
-  message?: string;
+  message: string;
 }
 
 export interface SignInApiResponse {
@@ -56,4 +56,15 @@ export interface VerifyingEmailData {
   email: string;
   emailVerified?: Date;
   emailVerifyToken: string | null;
+}
+
+export interface VerifyingEmailTokenData {
+  email: string;
+  emailVerifyToken: string;
+  emailVerified: boolean;
+  emailTokenExpired: boolean;
+}
+
+export interface RefreshAccessTokenResponse extends ApiResponse<null> {
+  accessToken: string;
 }

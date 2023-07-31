@@ -10,12 +10,10 @@ export async function POST(req: Request, res: Response) {
       {
         success: false,
         message: 'Refresh Token is not supplied',
+        error: 'UnauthorizedError',
       },
       {
-        status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        status: 400,
       }
     );
   }
@@ -28,12 +26,10 @@ export async function POST(req: Request, res: Response) {
       {
         success: false,
         message: 'Refresh token is invalid',
+        error: 'UnauthorizedError',
       },
       {
-        status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        status: 400,
       }
     );
   }
@@ -43,12 +39,10 @@ export async function POST(req: Request, res: Response) {
       {
         success: false,
         message: 'Refresh Token has expired',
+        error: 'UnauthorizedError',
       },
       {
-        status: 401,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        status: 400,
       }
     );
   }
@@ -63,9 +57,6 @@ export async function POST(req: Request, res: Response) {
     },
     {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     }
   );
 }
