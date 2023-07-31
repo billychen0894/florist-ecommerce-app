@@ -27,7 +27,18 @@ async function updateVerifyingEmail(
   return response;
 }
 
+async function validateEmail(
+  email: string
+): Promise<AxiosResponse<ApiResponse<null>>> {
+  const response = (await axios.get(
+    `/api/emailValidation/${email}`
+  )) as AxiosResponse<ApiResponse<null>>;
+
+  return response;
+}
+
 export const emails = {
   sendEmail,
   updateVerifyingEmail,
+  validateEmail,
 };
