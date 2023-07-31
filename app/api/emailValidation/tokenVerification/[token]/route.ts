@@ -77,7 +77,7 @@ export async function GET(
         },
         error: null,
       },
-      { status: 204 }
+      { status: 409 }
     );
   }
 
