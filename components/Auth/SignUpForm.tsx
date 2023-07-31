@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
+import { emails } from '@lib/api/email';
 import { users } from '@lib/api/users';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import { cn } from '@lib/classNames';
@@ -30,15 +31,19 @@ yup.addMethod(yup.string, 'email', function validateEmail(message) {
 const actualValidityTest = asyncCacheTest(
   (value: string) =>
     new Promise((resolve) => {
-      const result = fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/emailValidation/${value}`
-      ).then((res) => {
-        if (res.status === 200) {
-          resolve(true);
-        } else {
+      const result = emails
+        .validateEmail(value)
+        .then((res) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch((error) => {
+          console.error('Error while validating email:', error);
           resolve(false);
-        }
-      });
+        });
       return result;
     })
 );
