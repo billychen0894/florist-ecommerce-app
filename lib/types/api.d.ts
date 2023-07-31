@@ -64,3 +64,7 @@ export interface VerifyingEmailTokenData {
   emailVerified: boolean;
   emailTokenExpired: boolean;
 }
+
+export interface RefreshAccessTokenResponse extends ApiResponse<null> {
+  accessToken: string;
+}
