@@ -17,11 +17,10 @@ export async function GET(
   if (!token) {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Token is required',
         error: 'ValidationError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 422 }
     );
   }
 
@@ -30,16 +29,15 @@ export async function GET(
   if (!decodedToken) {
     return NextResponse.json(
       {
-        status: 400,
-        message: 'Something went wrong with verifying access token',
+        message: 'Invalid access token',
         data: {
           emailVerifyToken: token,
           emailVerified: false,
           emailTokenExpired: true,
         },
-        error: 'ValidationError',
+        error: 'UnauthorizedError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 401 }
     );
   }
 
@@ -50,7 +48,6 @@ export async function GET(
   if (isExpired) {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Token has expired',
         data: {
           email,
@@ -58,9 +55,9 @@ export async function GET(
           emailVerified: false,
           emailTokenExpired: true,
         },
-        error: 'ValidationError',
+        error: 'UnauthorizedError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 401 }
     );
   }
 
@@ -71,7 +68,6 @@ export async function GET(
   if (userWithRegisteredEmail?.emailVerified) {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Email is already verified',
         data: {
           email,
@@ -79,16 +75,16 @@ export async function GET(
           emailVerified: true,
           emailTokenExpired: false,
         },
-        error: 'ValidationError',
+        error: null,
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 204 }
     );
   }
 
   if (userWithRegisteredEmail?.emailVerifyToken) {
     const decodedPayload = verifyJwtAccessToken(
       userWithRegisteredEmail.emailVerifyToken
-    );
+    ) as JwtPayload;
 
     if (
       decodedPayload?.email === email &&
@@ -96,8 +92,7 @@ export async function GET(
     ) {
       return NextResponse.json(
         {
-          status: 200,
-          message: 'Email is verified',
+          message: 'Email is successfully verified',
           data: {
             email,
             emailVerifyToken: userWithRegisteredEmail.emailVerifyToken,
@@ -108,13 +103,11 @@ export async function GET(
         },
         {
           status: 200,
-          headers: { 'Content-Type': 'application/json' },
         }
       );
     } else {
       return NextResponse.json(
         {
-          status: 400,
           message: 'Email Verification Token is invalid',
           data: {
             email,
@@ -122,15 +115,14 @@ export async function GET(
             emailVerified: false,
             emailTokenExpired: false,
           },
-          error: 'ValidationError',
+          error: 'UnauthorizedError',
         },
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 401 }
       );
     }
   } else {
     return NextResponse.json(
       {
-        status: 400,
         message: 'Email Verification Token is not found',
         data: {
           email,
@@ -138,9 +130,9 @@ export async function GET(
           emailVerified: false,
           emailTokenExpired: false,
         },
-        error: 'ValidationError',
+        error: 'NotFoundError',
       },
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 404 }
     );
   }
 }
