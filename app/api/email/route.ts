@@ -21,7 +21,7 @@ export async function PUT(req: Request, res: Response) {
         message: 'Email is required',
       },
       {
-        status: 401,
+        status: 422,
       }
     );
   }
@@ -35,11 +35,11 @@ export async function PUT(req: Request, res: Response) {
     return NextResponse.json(
       {
         success: false,
-        error: 'ValidationError',
+        error: 'NotFoundError',
         message: 'User not found',
       },
       {
-        status: 401,
+        status: 404,
       }
     );
   }
@@ -61,7 +61,7 @@ export async function PUT(req: Request, res: Response) {
           message: 'Email verify token is required',
         },
         {
-          status: 401,
+          status: 422,
         }
       );
     }
@@ -74,7 +74,7 @@ export async function PUT(req: Request, res: Response) {
       return NextResponse.json(
         {
           success: false,
-          error: 'ValidationError',
+          error: 'UnauthorizedError',
           message: 'Invalid email verify token',
         },
         {
@@ -92,7 +92,7 @@ export async function PUT(req: Request, res: Response) {
           message: 'Email does not match email in token',
         },
         {
-          status: 401,
+          status: 422,
         }
       );
     }
