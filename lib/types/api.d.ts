@@ -57,3 +57,10 @@ export interface VerifyingEmailData {
   emailVerified?: Date;
   emailVerifyToken: string | null;
 }
+
+export interface VerifyingEmailTokenData {
+  email: string;
+  emailVerifyToken: string;
+  emailVerified: boolean;
+  emailTokenExpired: boolean;
+}
