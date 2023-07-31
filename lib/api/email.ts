@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios';
 async function sendEmail(
   data: sendEmailData
 ): Promise<AxiosResponse<ApiResponse<null>>> {
-  const response = (await axios.post('/api/sendEmail', {
+  const response = (await axios.post('/api/email/sendEmail', {
     ...data,
   })) as AxiosResponse<ApiResponse<null>>;
 
@@ -32,7 +32,7 @@ async function validateEmail(
   email: string
 ): Promise<AxiosResponse<ApiResponse<null>>> {
   const response = (await axios.get(
-    `/api/emailValidation/${email}`
+    `/api/email/validation/${email}`
   )) as AxiosResponse<ApiResponse<null>>;
 
   return response;
@@ -42,7 +42,7 @@ async function verifyEmailToken(
   emailToken: string
 ): Promise<AxiosResponse<ApiResponse<VerifyingEmailTokenData>>> {
   const response = (await axios.get(
-    `/api/emailValidation/tokenVerification/${emailToken}`
+    `/api/email/tokenVerification/${emailToken}`
   )) as AxiosResponse<ApiResponse<VerifyingEmailTokenData>>;
 
   return response;
