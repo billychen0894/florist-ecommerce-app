@@ -70,6 +70,7 @@ model Product {
   updatedAt   DateTime    @updatedAt
   categories  Category[]
   orderItems  OrderItem[]
+  inStock     Boolean     @default(true)
 }
 
 model Image {
@@ -100,6 +101,7 @@ model Order {
   userId     String
   user       User        @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
+  status      String
 }
 
 model OrderItem {
@@ -111,4 +113,14 @@ model OrderItem {
   orderId   String
   product   Product  @relation(fields: [productId], references: [id])
   order     Order    @relation(fields: [orderId], references: [id])
+}
+
+model DiscountCoupon {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String
+  discount    Float
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
