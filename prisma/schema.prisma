@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(cuid())
+  id               String    @id @default(uuid())
   name             String?
   firstName        String?
   lastName         String?
@@ -26,7 +26,7 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String  @id @default(uuid())
   userId            String
   type              String
   provider          String
@@ -45,7 +45,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -61,19 +61,31 @@ model VerificationToken {
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String      @id @default(uuid())
   name        String
   description String
   price       Float
-  imageUrl    String
+  images      Image[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   categories  Category[]
   orderItems  OrderItem[]
+  inStock     Boolean     @default(true)
+}
+
+model Image {
+  id        String    @id @default(uuid())
+  url       String
+  name      String
+  alt       String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  productId String
+  product   Product   @relation(fields: [productId], references: [id])
 }
 
 model Category {
-  id        String    @id @default(cuid())
+  id        String    @id @default(uuid())
   name      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -81,17 +93,19 @@ model Category {
 }
 
 model Order {
-  id         String      @id @default(cuid())
+  id         String      @id @default(uuid())
+  orderNumber String     @unique
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   total      Float
   userId     String
   user       User        @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
+  status      String
 }
 
 model OrderItem {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -99,4 +113,14 @@ model OrderItem {
   orderId   String
   product   Product  @relation(fields: [productId], references: [id])
   order     Order    @relation(fields: [orderId], references: [id])
+}
+
+model DiscountCoupon {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String
+  discount    Float
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
