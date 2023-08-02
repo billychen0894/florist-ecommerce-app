@@ -17,12 +17,19 @@ model User {
   emailVerifyToken String?
   image            String?
   password         String?
-  role             String    @default("user")
+  role             Role   @default(user)
   accounts         Account[]
   sessions         Session[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   orders           Order[]
+
+  @@map("users")
+}
+
+enum Role {
+  user
+  admin
 }
 
 model Account {
@@ -42,6 +49,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
 model Session {
@@ -71,6 +79,20 @@ model Product {
   categories  Category[]
   orderItems  OrderItem[]
   inStock     Boolean     @default(true)
+  leadTime    String
+  shippingDetails String
+  details     ProductDetail[]
+  @@map("products")
+}
+
+model ProductDetail {
+  id        String    @id @default(uuid())
+  name      String
+  items     String[]
+  productId String
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@map("product_details")
 }
 
 model Image {
@@ -82,6 +104,8 @@ model Image {
   updatedAt DateTime  @updatedAt
   productId String
   product   Product   @relation(fields: [productId], references: [id])
+
+  @@map("images")
 }
 
 model Category {
@@ -90,6 +114,8 @@ model Category {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
+
+  @@map("categories")
 }
 
 model Order {
@@ -101,7 +127,16 @@ model Order {
   userId     String
   user       User        @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
-  status      String
+  status      OrderStatus @default(CREATED)
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  CREATED
+  PROCESSING
+  COMPLETED
+  CANCELLED
 }
 
 model OrderItem {
@@ -113,6 +148,8 @@ model OrderItem {
   orderId   String
   product   Product  @relation(fields: [productId], references: [id])
   order     Order    @relation(fields: [orderId], references: [id])
+
+  @@map("order_items")
 }
 
 model DiscountCoupon {
@@ -123,4 +160,6 @@ model DiscountCoupon {
   expiresAt   DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@map("discount_coupons")
 }
