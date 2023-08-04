@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 
-const productData: Prisma.ProductCreateInput[] = [
+export const productData: Prisma.ProductCreateInput[] = [
   {
     name: 'Signature Seasonal Bouquet',
     description:
@@ -37,7 +37,7 @@ const productData: Prisma.ProductCreateInput[] = [
         },
       ],
     },
-    details: {
+    productDetails: {
       create: [
         {
           name: 'Our Bouquet',
@@ -106,7 +106,7 @@ const productData: Prisma.ProductCreateInput[] = [
         },
       ],
     },
-    details: {
+    productDetails: {
       create: [
         {
           name: 'Our Bouquet',
@@ -175,7 +175,7 @@ const productData: Prisma.ProductCreateInput[] = [
         },
       ],
     },
-    details: {
+    productDetails: {
       create: [
         {
           name: 'Our Bouquet',
@@ -244,7 +244,7 @@ const productData: Prisma.ProductCreateInput[] = [
         },
       ],
     },
-    details: {
+    productDetails: {
       create: [
         {
           name: 'Our Bouquet',
@@ -279,6 +279,7 @@ const productData: Prisma.ProductCreateInput[] = [
   },
 ];
 
+export const createdProducts: Prisma.ProductCreateInput[] = [];
 export async function seedProducts(prisma: PrismaClient): Promise<void> {
   try {
     console.log('Seeding products...');
@@ -286,11 +287,11 @@ export async function seedProducts(prisma: PrismaClient): Promise<void> {
     // Seed each product 5 times from productData array
     for (let i = 0; i < 5; i++) {
       for (const product of productData) {
-        await prisma.product.create({
+        const createdProduct = await prisma.product.create({
           data: product,
         });
-
-        console.log(`Seeded product ${product.id}`);
+        createdProducts.push(createdProduct);
+        console.log(`Seeded product ${createdProduct.id}`);
       }
     }
   } catch (error) {
