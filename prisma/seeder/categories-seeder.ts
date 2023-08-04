@@ -14,6 +14,7 @@ const categoryData: Prisma.CategoryCreateInput[] = [
     name: 'Flowers',
   },
 ];
+export const createdCategories: Prisma.CategoryCreateInput[] = [];
 
 export async function seedCategories(prisma: PrismaClient): Promise<void> {
   try {
@@ -24,6 +25,7 @@ export async function seedCategories(prisma: PrismaClient): Promise<void> {
       const createdCategory = await prisma.category.create({
         data: category,
       });
+      createdCategories.push(createdCategory);
       console.log(`Created category with id: ${createdCategory.id}`);
     }
   } catch (error) {

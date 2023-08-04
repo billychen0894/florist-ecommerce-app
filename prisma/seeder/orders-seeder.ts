@@ -11,14 +11,15 @@ const orderData: Prisma.OrderCreateInput[] = [
   {
     orderNumber: '',
     orderStatus: 'CREATED',
-    paymentMethod: 'CREDIT_CARD',
     contactEmail: 'test1@test.com',
+    paymentMethod: 'CREDIT_CARD',
     contactPhone: '1234567890',
     total: 1100,
     shippingMethod: {
       create: {
         name: 'Delivery',
         price: 10,
+        turnAround: '5-7 business days',
       },
     },
     user: {
@@ -46,6 +47,16 @@ const orderData: Prisma.OrderCreateInput[] = [
         country: 'Canada',
       },
     },
+    shippingAddress: {
+      create: {
+        addressType: 'SHIPPING',
+        addressLine1: 'test1',
+        city: 'Vancouver',
+        stateOrProvince: 'BC',
+        postalCode: 'V6N3E6',
+        country: 'Canada',
+      },
+    },
   },
 ];
 
@@ -59,6 +70,7 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
         data: {
           ...orderData[0],
           orderNumber: generateUniqueOrderNumber(),
+          contactEmail: `test${Math.floor(Math.random() * 3) + 1}@test.com`,
           user: {
             connect: {
               id: createdUsers[Math.floor(Math.random() * createdUsers.length)]

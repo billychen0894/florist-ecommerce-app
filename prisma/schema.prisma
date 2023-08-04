@@ -8,22 +8,21 @@ datasource db {
 }
 
 model User {
-  id               String       @id @default(uuid())
+  id               String    @id @default(uuid())
   name             String?
   firstName        String?
   lastName         String?
-  email            String?      @unique
+  email            String?   @unique
   emailVerified    DateTime?
   emailVerifyToken String?
   image            String?
   password         String?
-  role             Role         @default(user)
+  role             Role      @default(user)
   accounts         Account[]
   sessions         Session[]
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   orders           Order[]
-  creditCard       CREDIT_CARD?
 
   @@map("users")
 }
@@ -65,31 +64,40 @@ model VerificationToken {
 }
 
 model Product {
-  id              String          @id @default(uuid())
+  id              String        @id @default(uuid())
   name            String
   description     String
   price           Float
   images          Image[]
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
   categories      Category[]
   orderItems      OrderItem[]
-  inStock         Boolean         @default(true)
+  inStock         Boolean       @default(true)
   leadTime        String
   shippingDetails String
-  productDetails  ProductDetail[]
+  productDetail   ProductDetail @relation(fields: [productDetailId], references: [id])
+  productDetailId String
 
   @@map("products")
 }
 
 model ProductDetail {
-  id        String   @id @default(uuid())
-  name      String
-  items     String[]
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  id                 String              @id @default(uuid())
+  productDetailItems ProductDetailItem[]
+  product            Product[]
 
   @@map("product_details")
+}
+
+model ProductDetailItem {
+  id                    String        @id @default(uuid())
+  productDetailItemName String?
+  items                 String[]
+  productDetail         ProductDetail @relation(fields: [productDetailId], references: [id])
+  productDetailId       String
+
+  @@map("product_detail_items")
 }
 
 model Image {
@@ -107,7 +115,7 @@ model Image {
 
 model Category {
   id        String    @id @default(uuid())
-  name      String
+  name      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   products  Product[]
@@ -156,20 +164,6 @@ model Address {
   ordersBillingAddress  Order[]     @relation("billingAddress")
 
   @@map("addresses")
-}
-
-model CREDIT_CARD {
-  id        String   @id @default(uuid())
-  name      String
-  number    String
-  expiry    String
-  cvc       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@map("credit_cards")
 }
 
 model ShippingMethod {
@@ -224,7 +218,6 @@ enum PaymentMethod {
 
 enum OrderStatus {
   CREATED
-  PENDING
   PROCESSING
   COMPLETED
   CANCELLED

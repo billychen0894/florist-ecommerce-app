@@ -80,6 +80,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
         firstName: 'admin1',
         lastName: 'admin1',
         email: 'admin1@admin.com',
+        role: 'admin',
         password: await bcrypt.hash('AdminAdmin1', 10),
       },
     });
