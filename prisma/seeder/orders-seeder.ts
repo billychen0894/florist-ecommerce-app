@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { createdProducts } from './products-seeder';
 import { createdUsers } from './users-seeder';
 
 // orderNumber should be unique string
@@ -8,7 +9,7 @@ function generateUniqueOrderNumber(): string {
 
 const orderData: Prisma.OrderCreateInput[] = [
   {
-    orderNumber: generateUniqueOrderNumber(),
+    orderNumber: '',
     orderStatus: 'CREATED',
     paymentMethod: 'CREDIT_CARD',
     contactEmail: 'test1@test.com',
@@ -22,15 +23,15 @@ const orderData: Prisma.OrderCreateInput[] = [
     },
     user: {
       connect: {
-        id: createdUsers[Math.floor(Math.random() * createdUsers.length)].id,
+        id: '',
       },
     },
     orderItems: {
       create: {
-        quantity: 1,
+        quantity: Math.floor(Math.random() * 10) + 1,
         product: {
           connect: {
-            id: '1',
+            id: '',
           },
         },
       },
@@ -53,9 +54,38 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
     // Seed Orders
     console.log('Seeding orders...');
 
-    for (const order of orderData) {
+    for (let i = 0; i < 10; i++) {
       const createdOrder = await prisma.order.create({
-        data: order,
+        data: {
+          ...orderData[0],
+          orderNumber: generateUniqueOrderNumber(),
+          user: {
+            connect: {
+              id: createdUsers[Math.floor(Math.random() * createdUsers.length)]
+                .id,
+            },
+          },
+          orderItems: {
+            create: {
+              quantity: Math.floor(Math.random() * 10) + 1,
+              product: {
+                connect: {
+                  id: createdProducts[
+                    Math.floor(Math.random() * createdProducts.length)
+                  ].id as string,
+                },
+              },
+            },
+          },
+          discountCoupon: {
+            create: {
+              code: generateUniqueOrderNumber(),
+              description: 'Test coupon',
+              discount: 0.9,
+              expiresAt: new Date('2024-12-31'),
+            },
+          },
+        },
       });
       console.log(`Created order with id: ${createdOrder.id}`);
     }

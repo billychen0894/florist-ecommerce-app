@@ -28,11 +28,6 @@ model User {
   @@map("users")
 }
 
-enum Role {
-  user
-  admin
-}
-
 model Account {
   id                String  @id @default(uuid())
   userId            String
@@ -82,7 +77,7 @@ model Product {
   inStock         Boolean         @default(true)
   leadTime        String
   shippingDetails String
-  details         ProductDetail[]
+  productDetails  ProductDetail[]
 
   @@map("products")
 }
@@ -133,7 +128,7 @@ model Order {
   shippingMethod    ShippingMethod  @relation(fields: [shippingMethodId], references: [id])
   shippingMethodId  String          @unique
   shippingAddress   Address?        @relation("shippingAddress", fields: [shippingAddressId], references: [id])
-  shippingAddressId String
+  shippingAddressId String?
   billingAddress    Address         @relation("billingAddress", fields: [billingAddressId], references: [id])
   billingAddressId  String
   contactPhone      String
@@ -177,24 +172,6 @@ model CREDIT_CARD {
   @@map("credit_cards")
 }
 
-enum AddressType {
-  SHIPPING
-  BILLING
-}
-
-enum PaymentMethod {
-  CREDIT_CARD
-  PAYPAL
-}
-
-enum OrderStatus {
-  CREATED
-  PENDING
-  PROCESSING
-  COMPLETED
-  CANCELLED
-}
-
 model ShippingMethod {
   id                       String   @id @default(uuid())
   name                     String
@@ -233,4 +210,27 @@ model DiscountCoupon {
   orders      Order[]
 
   @@map("discount_coupons")
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  PAYPAL
+}
+
+enum OrderStatus {
+  CREATED
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+enum Role {
+  user
+  admin
 }

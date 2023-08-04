@@ -1,6 +1,31 @@
-import { signJwtAccessToken } from '@lib/jwt';
 import { Prisma, PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
+
+const DEFAULT_ACCESS_TOKEN_SIGN_OPTIONS: SignOptions = {
+  expiresIn: '1h',
+};
+
+const accessTokenSecret =
+  process.env.JWT_ACCESS_TOKEN_SECRET ||
+  process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET;
+
+export function signJwtAccessToken(
+  payload: JwtPayload,
+  options: SignOptions = DEFAULT_ACCESS_TOKEN_SIGN_OPTIONS
+) {
+  if (!accessTokenSecret) {
+    throw new Error('Missing JWT_SECRET env variable');
+  }
+
+  if (!payload) {
+    throw new Error('Missing payload');
+  }
+
+  const accessToken = jwt.sign(payload, accessTokenSecret!, options);
+
+  return accessToken;
+}
 
 const userData: Prisma.UserCreateInput[] = [
   {
