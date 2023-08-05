@@ -23,6 +23,7 @@ model User {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   orders           Order[]
+  whishlist        Product[]
 
   @@map("users")
 }
@@ -78,6 +79,7 @@ model Product {
   shippingDetails String
   productDetail   ProductDetail @relation(fields: [productDetailId], references: [id])
   productDetailId String
+  whishlist       User[]
 
   @@map("products")
 }
