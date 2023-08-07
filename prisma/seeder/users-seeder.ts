@@ -29,18 +29,15 @@ export function signJwtAccessToken(
 
 const userData: Prisma.UserCreateInput[] = [
   {
-    firstName: 'test1',
-    lastName: 'test1',
+    name: 'test1 test1',
     email: 'test1@test.com',
   },
   {
-    firstName: 'test2',
-    lastName: 'test2',
+    name: 'test2 test2',
     email: 'test2@test.com',
   },
   {
-    firstName: 'test3',
-    lastName: 'test3',
+    name: 'test3 test2',
     email: 'test3@test.com',
   },
 ];
@@ -60,8 +57,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
           emailVerifyToken: signJwtAccessToken(
             {
               email: userData[i - 1].email,
-              firstName: userData[i - 1].firstName,
-              lastName: userData[i - 1].lastName,
+              name: userData[i - 1].name,
             },
             {
               expiresIn: '1d',
@@ -77,8 +73,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
     // Seed one admin user
     const adminUser = await prisma.user.create({
       data: {
-        firstName: 'admin1',
-        lastName: 'admin1',
+        name: 'admin1 admin1',
         email: 'admin1@admin.com',
         role: 'admin',
         password: await bcrypt.hash('AdminAdmin1', 10),
