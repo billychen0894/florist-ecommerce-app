@@ -43,10 +43,21 @@ async function getUser(
   return response;
 }
 
+async function deleteUser(
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<AxiosResponse<User>> {
+  const response = (await axiosWithAuth.delete(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`
+  )) as AxiosResponse<User>;
+
+  return response;
+}
+
 export const users = {
   createUser,
   getUser,
   updateUser,
-  // deleteUser,
+  deleteUser,
   // getAllUsers,
 };
