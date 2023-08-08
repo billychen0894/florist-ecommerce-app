@@ -68,3 +68,16 @@ export interface VerifyingEmailTokenData {
 export interface RefreshAccessTokenResponse extends ApiResponse<null> {
   accessToken: string;
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  createdAt: Date;
+  updatedAt: Date;
+  inStock: boolean;
+  leadTime: string;
+  shippingDetails: string;
+  productDetailId: string;
+}
