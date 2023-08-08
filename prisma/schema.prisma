@@ -10,8 +10,6 @@ datasource db {
 model User {
   id               String    @id @default(uuid())
   name             String?
-  firstName        String?
-  lastName         String?
   email            String?   @unique
   emailVerified    DateTime?
   emailVerifyToken String?
@@ -23,6 +21,7 @@ model User {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   orders           Order[]
+  wishlist         Product[]
 
   @@map("users")
 }
@@ -78,6 +77,7 @@ model Product {
   shippingDetails String
   productDetail   ProductDetail @relation(fields: [productDetailId], references: [id])
   productDetailId String
+  wishlist        User[]
 
   @@map("products")
 }
@@ -108,7 +108,7 @@ model Image {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }

@@ -1,5 +1,11 @@
 import { SignUpFormData } from '@components/Auth/SignUpForm';
-import { ApiResponse, UpdatedUserData, User } from '@lib/types/api';
+import {
+  ApiResponse,
+  Product,
+  UpdatedUserData,
+  User,
+  WishList,
+} from '@lib/types/api';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 async function createUser(
@@ -43,10 +49,61 @@ async function getUser(
   return response;
 }
 
+async function deleteUser(
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<AxiosResponse<User>> {
+  const response = (await axiosWithAuth.delete(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`
+  )) as AxiosResponse<User>;
+
+  return response;
+}
+
+async function addToUserWishlist(
+  productId: string,
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<AxiosResponse<ApiResponse<Product>>> {
+  const response = (await axiosWithAuth.post(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist`,
+    {
+      productId,
+    }
+  )) as AxiosResponse<ApiResponse<Product>>;
+
+  return response;
+}
+
+async function getUserWishlist(
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<AxiosResponse<ApiResponse<WishList>>> {
+  const response = (await axiosWithAuth.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist`
+  )) as AxiosResponse<ApiResponse<WishList>>;
+
+  return response;
+}
+
+async function deleteProductFromWishlist(
+  productId: string,
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<AxiosResponse<ApiResponse<null>>> {
+  const response = (await axiosWithAuth.delete(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist/${productId}`
+  )) as AxiosResponse<ApiResponse<null>>;
+
+  return response;
+}
+
 export const users = {
   createUser,
   getUser,
   updateUser,
-  // deleteUser,
-  // getAllUsers,
+  deleteUser,
+  addToUserWishlist,
+  getUserWishlist,
+  deleteProductFromWishlist,
 };
