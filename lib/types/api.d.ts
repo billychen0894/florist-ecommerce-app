@@ -81,3 +81,7 @@ export interface Product {
   shippingDetails: string;
   productDetailId: string;
 }
+
+export interface WishList {
+  wishList: Product[] | [];
+}
