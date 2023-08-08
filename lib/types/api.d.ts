@@ -85,3 +85,10 @@ export interface Product {
 export interface WishList {
   wishList: Product[] | [];
 }
+
+export type Filter = 'Bouquets' | 'Flowers' | 'Plants' | 'Gifts';
+export type Sort =
+  | 'Popular'
+  | 'Newest'
+  | 'Price-low-to-high'
+  | 'Price-high-to-low';
