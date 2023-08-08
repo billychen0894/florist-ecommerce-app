@@ -10,6 +10,15 @@ async function getAllProducts() {
   return response;
 }
 
+async function getProductById(productId: string) {
+  const response = (await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/products/${productId}`
+  )) as AxiosResponse<ApiResponse<Product>>;
+
+  return response;
+}
+
 export const products = {
   getAllProducts,
+  getProductById,
 };
