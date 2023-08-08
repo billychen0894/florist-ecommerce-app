@@ -60,9 +60,8 @@ async function addToWishlist(
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<ApiResponse<Product>>> {
   const response = (await axiosWithAuth.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/wishlist`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist`,
     {
-      userId,
       productId,
     }
   )) as AxiosResponse<ApiResponse<Product>>;

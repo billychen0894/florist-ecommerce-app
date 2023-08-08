@@ -3,14 +3,16 @@ import { prisma } from '@lib/prisma';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
+// Add product to wishlist for user
 export async function POST(req: Request, res: Response) {
   const body: {
-    userId: string;
     productId: string;
   } = await req.json();
-
+  const userIdStart = req.url.lastIndexOf('/users/') + '/users/'.length;
+  const userIdEnd = req.url.indexOf('/wishlist');
+  const userId = req.url.slice(userIdStart, userIdEnd);
   const bearerToken = req.headers.get('authorization')?.split(' ')[1];
-  const { userId, productId } = body;
+  const { productId } = body;
 
   if (!bearerToken) {
     return NextResponse.json(
