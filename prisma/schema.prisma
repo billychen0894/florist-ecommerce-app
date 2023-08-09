@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -25,6 +25,17 @@ model User {
   wishlist         Product[]
 
   @@map("users")
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+
+  @@map("guests")
 }
 
 model Account {
@@ -129,15 +140,17 @@ model Order {
   orderNumber       String          @unique
   contactEmail      String
   total             Float
-  userId            String
-  user              User            @relation(fields: [userId], references: [id])
+  userId            String?
+  user              User?           @relation(fields: [userId], references: [id])
+  guestId           String?
+  guest             Guest?          @relation(fields: [guestId], references: [id])
   orderItems        OrderItem[]
   orderStatus       OrderStatus     @default(CREATED)
   paymentMethod     PaymentMethod   @default(CREDIT_CARD)
   shippingMethod    ShippingMethod  @relation(fields: [shippingMethodId], references: [id])
-  shippingMethodId  String          @unique
-  shippingAddress   Address?        @relation("shippingAddress", fields: [shippingAddressId], references: [id])
-  shippingAddressId String?
+  shippingMethodId  String
+  shippingAddress   Address         @relation("shippingAddress", fields: [shippingAddressId], references: [id])
+  shippingAddressId String
   billingAddress    Address         @relation("billingAddress", fields: [billingAddressId], references: [id])
   billingAddressId  String
   contactPhone      String
