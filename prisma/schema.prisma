@@ -171,7 +171,7 @@ model Address {
   city                  String
   stateOrProvince       String
   country               String
-  postalCode            String
+  postalCode            String      @unique
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
   ordersShippingAddress Order[]     @relation("shippingAddress")
@@ -182,7 +182,7 @@ model Address {
 
 model ShippingMethod {
   id                       String   @id @default(uuid())
-  name                     String
+  name                     String   @unique
   price                    Float
   turnAround               String?
   location                 String?
