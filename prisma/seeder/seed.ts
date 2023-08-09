@@ -3,6 +3,7 @@ import { seedCategories } from './categories-seeder';
 import { seedOrders } from './orders-seeder';
 import { seedProductDetails } from './productDetails-seeder';
 import { seedProducts } from './products-seeder';
+import { seedShippingMethods } from './shippingMethods-seeder';
 import { seedUsers } from './users-seeder';
 
 const prisma = new PrismaClient();
@@ -14,6 +15,7 @@ async function main() {
     await seedUsers(prisma);
     await seedCategories(prisma);
     await seedProductDetails(prisma);
+    await seedShippingMethods(prisma);
     await seedProducts(prisma);
     await seedOrders(prisma);
 

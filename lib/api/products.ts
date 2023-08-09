@@ -3,16 +3,16 @@ import { ApiResponse, Filter, Product, Sort } from '@lib/types/api';
 import { AxiosResponse } from 'axios';
 
 async function getAllProducts() {
-  const response = (await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/products`
-  )) as AxiosResponse<ApiResponse<Product[]>>;
+  const response = (await axios.get(`/api/products`)) as AxiosResponse<
+    ApiResponse<Product[]>
+  >;
 
   return response;
 }
 
 async function getProductById(productId: string) {
   const response = (await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/products/${productId}`
+    `/api/products/${productId}`
   )) as AxiosResponse<ApiResponse<Product>>;
 
   return response;
@@ -20,7 +20,7 @@ async function getProductById(productId: string) {
 
 async function searchProductsByKeyword(keyword: string) {
   const response = (await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/products/search?keyword=${keyword}`
+    `/api/products/search?keyword=${keyword}`
   )) as AxiosResponse<ApiResponse<Product[]>>;
 
   return response;
@@ -35,7 +35,7 @@ async function filterAndSortProducts(sort: Sort, filters: Filter[]) {
   }
 
   const response = (await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/products/filter-and-sort?${sortQuery}&${filterQuery}`
+    `/api/products/filter-and-sort?${sortQuery}&${filterQuery}`
   )) as AxiosResponse<ApiResponse<Product[]>>;
 
   return response;

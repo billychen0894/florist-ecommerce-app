@@ -3,26 +3,18 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, res: Response) {
   try {
-    const products = await prisma.product.findMany();
-
-    if (!products) {
-      return NextResponse.json(
-        {
-          success: true,
-          data: [],
-          message: 'No products found',
-        },
-        {
-          status: 200,
-        }
-      );
-    }
+    const categories = await prisma.category.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
 
     return NextResponse.json(
       {
         success: true,
-        data: products,
-        message: 'Products found',
+        data: categories,
+        message: 'Categories fetched successfully',
       },
       {
         status: 200,

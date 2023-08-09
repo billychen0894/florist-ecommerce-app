@@ -92,3 +92,8 @@ export type Sort =
   | 'Newest'
   | 'Price-low-to-high'
   | 'Price-high-to-low';
+
+export interface Categories {
+  id: string;
+  name: string;
+}

@@ -1,10 +1,24 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { createdProducts } from './products-seeder';
+import { createdShippingMethods } from './shippingMethods-seeder';
 import { createdUsers } from './users-seeder';
 
 // orderNumber should be unique string
 function generateUniqueOrderNumber(): string {
   return Math.random().toString(36).slice(2, 10);
+}
+
+// Generate random Canadian postal code
+function generateRandomPostalCode(): string {
+  const postalCode = [
+    Math.floor(Math.random() * 10),
+    String.fromCharCode(Math.floor(Math.random() * 26) + 65),
+    Math.floor(Math.random() * 10),
+    String.fromCharCode(Math.floor(Math.random() * 26) + 65),
+    Math.floor(Math.random() * 10),
+    String.fromCharCode(Math.floor(Math.random() * 26) + 65),
+  ];
+  return postalCode.join('');
 }
 
 const orderData: Prisma.OrderCreateInput[] = [
@@ -16,10 +30,8 @@ const orderData: Prisma.OrderCreateInput[] = [
     contactPhone: '1234567890',
     total: 1100,
     shippingMethod: {
-      create: {
-        name: 'Delivery',
-        price: 10,
-        turnAround: '5-7 business days',
+      connect: {
+        id: '',
       },
     },
     user: {
@@ -43,7 +55,7 @@ const orderData: Prisma.OrderCreateInput[] = [
         addressLine1: 'test1',
         city: 'Vancouver',
         stateOrProvince: 'BC',
-        postalCode: 'V6N3E6',
+        postalCode: generateRandomPostalCode(),
         country: 'Canada',
       },
     },
@@ -53,7 +65,7 @@ const orderData: Prisma.OrderCreateInput[] = [
         addressLine1: 'test1',
         city: 'Vancouver',
         stateOrProvince: 'BC',
-        postalCode: 'V6N3E6',
+        postalCode: generateRandomPostalCode(),
         country: 'Canada',
       },
     },
@@ -77,6 +89,13 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
                 .id,
             },
           },
+          shippingMethod: {
+            connect: {
+              id: createdShippingMethods[
+                Math.floor(Math.random() * createdShippingMethods.length)
+              ].id as string,
+            },
+          },
           orderItems: {
             create: {
               quantity: Math.floor(Math.random() * 10) + 1,
@@ -95,6 +114,26 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
               description: 'Test coupon',
               discount: 0.9,
               expiresAt: new Date('2024-12-31'),
+            },
+          },
+          billingAddress: {
+            create: {
+              addressType: 'BILLING',
+              addressLine1: 'test1',
+              city: 'Vancouver',
+              stateOrProvince: 'BC',
+              postalCode: generateRandomPostalCode(),
+              country: 'Canada',
+            },
+          },
+          shippingAddress: {
+            create: {
+              addressType: 'SHIPPING',
+              addressLine1: 'test1',
+              city: 'Vancouver',
+              stateOrProvince: 'BC',
+              postalCode: generateRandomPostalCode(),
+              country: 'Canada',
             },
           },
         },

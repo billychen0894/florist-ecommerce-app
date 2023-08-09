@@ -28,12 +28,9 @@ async function updateUser(
   userId: string,
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<User>> {
-  const response = (await axiosWithAuth.put(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`,
-    {
-      ...userData,
-    }
-  )) as AxiosResponse<User>;
+  const response = (await axiosWithAuth.put(`/api/users/${userId}`, {
+    ...userData,
+  })) as AxiosResponse<User>;
 
   return response;
 }
@@ -43,7 +40,7 @@ async function getUser(
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<User>> {
   const response = (await axiosWithAuth.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`
+    `/api/users/${userId}`
   )) as AxiosResponse<User>;
 
   return response;
@@ -54,7 +51,7 @@ async function deleteUser(
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<User>> {
   const response = (await axiosWithAuth.delete(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`
+    `/api/users/${userId}`
   )) as AxiosResponse<User>;
 
   return response;
@@ -65,12 +62,9 @@ async function addToUserWishlist(
   userId: string,
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<ApiResponse<Product>>> {
-  const response = (await axiosWithAuth.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist`,
-    {
-      productId,
-    }
-  )) as AxiosResponse<ApiResponse<Product>>;
+  const response = (await axiosWithAuth.post(`/api/users/${userId}/wishlist`, {
+    productId,
+  })) as AxiosResponse<ApiResponse<Product>>;
 
   return response;
 }
@@ -80,7 +74,7 @@ async function getUserWishlist(
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<ApiResponse<WishList>>> {
   const response = (await axiosWithAuth.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist`
+    `/api/users/${userId}/wishlist`
   )) as AxiosResponse<ApiResponse<WishList>>;
 
   return response;
@@ -92,7 +86,7 @@ async function deleteProductFromWishlist(
   axiosWithAuth: AxiosInstance
 ): Promise<AxiosResponse<ApiResponse<null>>> {
   const response = (await axiosWithAuth.delete(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/wishlist/${productId}`
+    `/api/users/${userId}/wishlist/${productId}`
   )) as AxiosResponse<ApiResponse<null>>;
 
   return response;

@@ -8,9 +8,10 @@ interface emailPayload {
 }
 
 export async function POST(req: Request, res: Response) {
-  const body: emailPayload = await req.json();
-  const { firstName, email, emailVerificationToken } = body;
   try {
+    const body: emailPayload = await req.json();
+    const { firstName, email, emailVerificationToken } = body;
+
     if (!email) {
       return NextResponse.json(
         {
@@ -64,6 +65,15 @@ export async function POST(req: Request, res: Response) {
       }
     );
   } catch (error) {
-    console.log(error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'ServerError',
+        message: 'Something went wrong. Please try again later.',
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }
