@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { createdProducts } from './products-seeder';
+import { createdShippingMethods } from './shippingMethods-seeder';
 import { createdUsers } from './users-seeder';
 
 // orderNumber should be unique string
@@ -16,10 +17,8 @@ const orderData: Prisma.OrderCreateInput[] = [
     contactPhone: '1234567890',
     total: 1100,
     shippingMethod: {
-      create: {
-        name: 'Delivery',
-        price: 10,
-        turnAround: '5-7 business days',
+      connect: {
+        id: '',
       },
     },
     user: {
@@ -75,6 +74,13 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
             connect: {
               id: createdUsers[Math.floor(Math.random() * createdUsers.length)]
                 .id,
+            },
+          },
+          shippingMethod: {
+            connect: {
+              id: createdShippingMethods[
+                Math.floor(Math.random() * createdShippingMethods.length)
+              ].id as string,
             },
           },
           orderItems: {
