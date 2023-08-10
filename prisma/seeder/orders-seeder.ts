@@ -9,11 +9,6 @@ export function generateUniqueNumber(prefix: string) {
   return `${prefix}${uniqueId}`;
 }
 
-// orderNumber should be unique string
-function generateUniqueOrderNumber(): string {
-  return Math.random().toString(36).slice(2, 10);
-}
-
 // Generate random Canadian postal code
 function generateRandomPostalCode(): string {
   const postalCode = [
