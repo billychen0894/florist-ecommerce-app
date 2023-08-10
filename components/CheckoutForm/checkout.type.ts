@@ -10,7 +10,7 @@ export interface CheckoutFormValues {
   shippingPostalCode: string;
   shippingCountry: string;
   shippingPhone: string;
-  deliveryMethod: 'delivery' | 'pickup';
+  deliveryMethod: 'Delivery' | 'Pick up';
   billingSameAsShipping?: boolean;
   billingCompany?: string;
   billingAddressLine1?: string;

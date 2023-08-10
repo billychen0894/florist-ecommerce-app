@@ -7,7 +7,7 @@ const shippingMethodsData: Prisma.ShippingMethodCreateInput[] = [
     turnAround: '5-7 business days',
   },
   {
-    name: 'Pickup',
+    name: 'Pick up',
     price: 0,
     location: '123 Main St, Vancouver, BC',
     location_operation_hours: 'Mon-Fri 9am-5pm',

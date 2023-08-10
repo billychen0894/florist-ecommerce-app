@@ -63,7 +63,7 @@ export const defaultformProps: yup.ObjectSchema<CheckoutFormValues> =
       ),
     deliveryMethod: yup
       .string()
-      .oneOf(['delivery', 'pickup'])
+      .oneOf(['Delivery', 'Pick up'])
       .required('Please select a delivery method'),
     billingSameAsShipping: yup.boolean().defined('Please select an option'),
     paymentMethod: yup

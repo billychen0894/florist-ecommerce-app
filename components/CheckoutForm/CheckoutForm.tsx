@@ -28,7 +28,7 @@ export function CheckoutForm() {
       shippingPostalCode: '',
       shippingCountry: '',
       shippingPhone: '',
-      deliveryMethod: 'delivery',
+      deliveryMethod: 'Delivery',
       billingSameAsShipping: true,
       paymentMethod: 'creditCard',
       billingCompany: '',

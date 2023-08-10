@@ -1,3 +1,8 @@
+import {
+  orderFormDataSchema,
+  orderSummarySchema,
+} from '@app/api/orders/ordersPayloadValidation';
+
 export interface ApiResponse<T> {
   success?: boolean;
   data: T | null;
@@ -72,14 +77,14 @@ export interface RefreshAccessTokenResponse extends ApiResponse<null> {
 export interface Product {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  createdAt: Date;
-  updatedAt: Date;
-  inStock: boolean;
-  leadTime: string;
-  shippingDetails: string;
-  productDetailId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  inStock?: boolean;
+  leadTime?: string;
+  shippingDetails?: string;
+  productDetailId?: string;
 }
 
 export interface WishList {
@@ -96,4 +101,58 @@ export type Sort =
 export interface Categories {
   id: string;
   name: string;
+}
+
+export interface OrderPayload {
+  formData: yup.InferType<typeof orderFormDataSchema>;
+  orderData: yup.InferType<typeof orderSummarySchema>;
+}
+
+export interface Address {
+  id: string;
+  addressType: string;
+  addressLine1: string;
+  addressLine2?: string;
+  company?: string;
+  city: string;
+  stateOrProvince: string;
+  country: string;
+  postalCode: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShippingMethod {
+  name: string;
+}
+
+export interface DiscountCoupon {
+  id: string;
+  code: string;
+  description: string;
+  discount: number;
+  status: string;
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrderItem {
+  id: string;
+  quantity: number;
+  product: Product;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  total: number;
+  orderStatus: string;
+  paymentMethod: string;
+  shippingMethod: ShippingMethod;
+  shippingAddress: Address;
+  billingAddress: Address;
+  discountCoupon: DiscountCoupon;
+  createdAt: string;
+  orderItems: OrderItem[];
 }
