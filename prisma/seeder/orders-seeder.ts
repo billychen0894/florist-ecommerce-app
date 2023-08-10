@@ -1,7 +1,13 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 import { createdProducts } from './products-seeder';
 import { createdShippingMethods } from './shippingMethods-seeder';
 import { createdUsers } from './users-seeder';
+
+export function generateUniqueNumber(prefix: string) {
+  const uniqueId = uuidv4().split('-')[0].toUpperCase();
+  return `${prefix}${uniqueId}`;
+}
 
 // orderNumber should be unique string
 function generateUniqueOrderNumber(): string {
@@ -81,7 +87,7 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
       const createdOrder = await prisma.order.create({
         data: {
           ...orderData[0],
-          orderNumber: generateUniqueOrderNumber(),
+          orderNumber: generateUniqueNumber('BL'),
           contactEmail: `test${Math.floor(Math.random() * 3) + 1}@test.com`,
           user: {
             connect: {
@@ -110,7 +116,7 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
           },
           discountCoupon: {
             create: {
-              code: generateUniqueOrderNumber(),
+              code: generateUniqueNumber('CP'),
               description: 'Test coupon',
               discount: 0.9,
               expiresAt: new Date('2024-12-31'),
