@@ -1,3 +1,8 @@
+import {
+  orderFormDataSchema,
+  orderSummarySchema,
+} from '@app/api/orders/ordersPayloadValidation';
+
 export interface ApiResponse<T> {
   success?: boolean;
   data: T | null;
@@ -96,4 +101,9 @@ export type Sort =
 export interface Categories {
   id: string;
   name: string;
+}
+
+export interface OrderPayload {
+  formData: yup.InferType<typeof orderFormDataSchema>;
+  orderData: yup.InferType<typeof orderSummarySchema>;
 }
