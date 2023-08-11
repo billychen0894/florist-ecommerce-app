@@ -108,9 +108,7 @@ export interface OrderPayload {
   orderData: yup.InferType<typeof orderSummarySchema>;
 }
 
-export interface Address {
-  id: string;
-  addressType: string;
+export interface commonAddressFields {
   addressLine1: string;
   addressLine2?: string;
   company?: string;
@@ -118,12 +116,22 @@ export interface Address {
   stateOrProvince: string;
   country: string;
   postalCode: string;
+}
+
+export interface FullAddressInfo extends commonAddressFields {
+  id: string;
+  addressType: string;
   createdAt: string;
   updatedAt: string;
 }
 
+export type Address = commonAddressFields | FullAddressInfo;
+
 export interface ShippingMethod {
   name: string;
+  turnAround: string;
+  location: string;
+  location_operation_hours: string;
 }
 
 export interface DiscountCoupon {
@@ -143,7 +151,7 @@ export interface OrderItem {
   product: Product;
 }
 
-export interface Order {
+export interface commonOrderFields {
   id: string;
   orderNumber: string;
   total: number;
@@ -152,7 +160,17 @@ export interface Order {
   shippingMethod: ShippingMethod;
   shippingAddress: Address;
   billingAddress: Address;
-  discountCoupon: DiscountCoupon;
   createdAt: string;
   orderItems: OrderItem[];
 }
+
+export interface OrdersFromUser extends commonOrderFields {
+  discountCoupon: DiscountCoupon;
+}
+
+export interface SearchOrders extends commonOrderFields {
+  contactEmail: string;
+  contactPhone: string;
+}
+
+export type Order = OrdersFromUser | SearchOrders;

@@ -28,7 +28,18 @@ async function getUserOrders(
   return response;
 }
 
+async function searchOrders(
+  orderNumber: string
+): Promise<AxiosResponse<ApiResponse<Order[]>>> {
+  const response = (await axios.get(
+    `/api/orders/search/${orderNumber}`
+  )) as AxiosResponse<ApiResponse<Order[]>>;
+
+  return response;
+}
+
 export const orders = {
   createOrder,
   getUserOrders,
+  searchOrders,
 };

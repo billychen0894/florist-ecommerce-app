@@ -120,6 +120,9 @@ export async function GET(req: Request, res: Response) {
         shippingMethod: {
           select: {
             name: true,
+            turnAround: true,
+            location: true,
+            location_operation_hours: true,
           },
         },
         shippingAddress: true,
