@@ -29,6 +29,10 @@ export const orderSummarySchema = yup.object().shape({
         .required('DiscountCouponDescription is required'),
       discount: yup.number().required('DiscountCouponDiscount is required'),
       expiresAt: yup.date().required('DiscountCouponExpiresAt is required'),
+      numberOfRedemptions: yup
+        .number()
+        .required('NumberOfRedemptions is required')
+        .min(1, 'NumberOfRedemptions must be greater than 0'),
     })
     .notRequired(),
   orderItems: yup
