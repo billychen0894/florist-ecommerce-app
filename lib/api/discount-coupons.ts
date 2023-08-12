@@ -21,7 +21,18 @@ async function createCoupons(
   return response;
 }
 
+async function updateCoupon(
+  couponData: DiscountCoupon,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<DiscountCoupon>> {
+  const response = (await axiosWithAuth.put(`/discount-coupons`, {
+    ...couponData,
+  })) as ApiResponse<DiscountCoupon>;
+  return response;
+}
+
 export const discountCoupons = {
   getCouponByCouponNumber,
   createCoupons,
+  updateCoupon,
 };
