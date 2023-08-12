@@ -121,8 +121,8 @@ export interface commonAddressFields {
 export interface FullAddressInfo extends commonAddressFields {
   id: string;
   addressType: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type Address = commonAddressFields | FullAddressInfo;
@@ -138,15 +138,15 @@ export interface DiscountCouponCommonFields {
   code: string;
   description: string;
   discount: number;
-  expiresAt: string;
+  expiresAt: Date;
   numberOfRedemptions: number;
 }
 
 export interface DiscountCouponFullInfo extends DiscountCouponCommonFields {
   id: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export type DiscountCoupon =
   | DiscountCouponCommonFields
@@ -167,7 +167,7 @@ export interface commonOrderFields {
   shippingMethod: ShippingMethod;
   shippingAddress: Address;
   billingAddress: Address;
-  createdAt: string;
+  createdAt: Date;
   orderItems: OrderItem[];
 }
 
