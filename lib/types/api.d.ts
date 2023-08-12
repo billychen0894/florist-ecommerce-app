@@ -134,16 +134,23 @@ export interface ShippingMethod {
   location_operation_hours: string;
 }
 
-export interface DiscountCoupon {
-  id: string;
+export interface DiscountCouponCommonFields {
   code: string;
   description: string;
   discount: number;
-  status: string;
   expiresAt: string;
+  numberOfRedemptions: number;
+}
+
+export interface DiscountCouponFullInfo extends DiscountCouponCommonFields {
+  id: string;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }
+export type DiscountCoupon =
+  | DiscountCouponCommonFields
+  | DiscountCouponFullInfo;
 
 export interface OrderItem {
   id: string;
