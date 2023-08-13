@@ -79,6 +79,7 @@ export interface Category {
 }
 
 export interface ProductDetailItem {
+  id?: string;
   productDetailItemName: string;
   items: string[];
 }
@@ -88,6 +89,7 @@ export interface ProductDetail {
 }
 
 export interface Image {
+  id?: string;
   url: string;
   name: string;
   alt: string;
