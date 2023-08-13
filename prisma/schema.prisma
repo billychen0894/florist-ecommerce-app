@@ -103,7 +103,7 @@ model ProductDetail {
 
 model ProductDetailItem {
   id                    String        @id @default(uuid())
-  productDetailItemName String?
+  productDetailItemName String
   items                 String[]
   productDetail         ProductDetail @relation(fields: [productDetailId], references: [id])
   productDetailId       String
