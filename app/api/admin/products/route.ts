@@ -118,18 +118,6 @@ export async function POST(req: Request, res: Response) {
       },
     });
 
-    if (!product) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Something went wrong during product creation.',
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
     return NextResponse.json(
       {
         success: true,
