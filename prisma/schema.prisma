@@ -86,9 +86,8 @@ model Product {
   orderItems      OrderItem[]
   inStock         Boolean       @default(true)
   leadTime        String
-  shippingDetails String
   productDetail   ProductDetail @relation(fields: [productDetailId], references: [id])
-  productDetailId String
+  productDetailId String        @unique
   wishlist        User[]
 
   @@map("products")
@@ -97,7 +96,7 @@ model Product {
 model ProductDetail {
   id                 String              @id @default(uuid())
   productDetailItems ProductDetailItem[]
-  product            Product[]
+  product            Product?
 
   @@map("product_details")
 }
