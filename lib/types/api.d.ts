@@ -74,18 +74,47 @@ export interface RefreshAccessTokenResponse extends ApiResponse<null> {
   accessToken: string;
 }
 
-export interface Product {
-  id: string;
+export interface Category {
   name: string;
-  description?: string;
+}
+
+export interface ProductDetailItem {
+  productDetailItemName: string;
+  items: string[];
+}
+
+export interface ProductDetail {
+  productDetailItems: ProductDetailItem[];
+}
+
+export interface Image {
+  url: string;
+  name: string;
+  alt: string;
+}
+
+export interface ProductCommonFields {
+  name: string;
+  description: string;
   price: number;
+  inStock: boolean;
+  leadTime: string;
+}
+
+export interface ProductFullInfo extends ProductCommonFields {
+  id: string;
   createdAt?: Date;
   updatedAt?: Date;
-  inStock?: boolean;
-  leadTime?: string;
-  shippingDetails?: string;
   productDetailId?: string;
 }
+
+export interface ProductPayload extends ProductCommonFields {
+  images: Image[];
+  categories: Category[];
+  productDetail: ProductDetail;
+}
+
+export type Product = ProductFullInfo | ProductPayload;
 
 export interface WishList {
   wishList: Product[] | [];
