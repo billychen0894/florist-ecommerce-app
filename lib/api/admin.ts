@@ -30,8 +30,19 @@ async function updateProductById(
   return response;
 }
 
+async function deleteProductById(
+  productId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/products/${productId}`
+  )) as ApiResponse<null>;
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
   updateProductById,
+  deleteProductById,
 };

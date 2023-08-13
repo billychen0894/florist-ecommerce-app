@@ -167,3 +167,109 @@ export async function PUT(req: Request, res: Response) {
     );
   }
 }
+
+export async function DELETE(req: Request, res: Response) {
+  try {
+    const productId = req.url.slice(req.url.lastIndexOf('/') + 1);
+
+    const bearerToken = req.headers.get('authorization')?.split(' ')[1];
+
+    if (!bearerToken) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const validTokenPayload = verifyJwtAccessToken(bearerToken) as
+      | JwtPayload
+      | Error;
+
+    if (validTokenPayload instanceof TokenExpiredError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized: Token Expired',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (validTokenPayload instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (validTokenPayload?.role !== 'admin') {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: ${validTokenPayload?.role} role does not have access to this resource.`,
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    // check if product exists
+    const product = await prisma.product.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (!product) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Product does not exist.',
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Product deleted successfully.',
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error,
+        message: 'Something went wrong while deleting the product.',
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
