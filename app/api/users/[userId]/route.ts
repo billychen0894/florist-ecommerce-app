@@ -1,3 +1,4 @@
+import { exclude } from '@lib/exclude';
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
 import * as bcrypt from 'bcrypt';
@@ -51,30 +52,6 @@ export async function GET(req: Request, res: Response) {
       );
     }
 
-    if (validTokenPayload?.role !== 'user') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
-    if (validTokenPayload?.id !== userId) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
     if (!userId) {
       return NextResponse.json(
         {
@@ -85,6 +62,36 @@ export async function GET(req: Request, res: Response) {
         },
         {
           status: 400,
+        }
+      );
+    }
+
+    if (
+      validTokenPayload?.role === 'user' &&
+      validTokenPayload?.id !== userId
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: you are not allowed to access this user's data`,
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (
+      validTokenPayload?.role !== 'user' &&
+      validTokenPayload?.role !== 'admin'
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: ${validTokenPayload?.role} is not allowed`,
+        },
+        {
+          status: 401,
         }
       );
     }
@@ -108,12 +115,12 @@ export async function GET(req: Request, res: Response) {
       );
     }
 
-    const { password: userPassword, ...userWithoutPassword } = user;
+    const userWithoutPassword = exclude(user, ['password']);
 
     return NextResponse.json(
       {
         success: true,
-        data: { ...userWithoutPassword },
+        data: userWithoutPassword,
         message: 'User found',
       },
       {
@@ -197,30 +204,6 @@ export async function PUT(req: Request, res: Response) {
       );
     }
 
-    if (validTokenPayload?.role !== 'user') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
-    if (validTokenPayload?.id !== userId) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
     if (!userId) {
       return NextResponse.json(
         {
@@ -231,6 +214,36 @@ export async function PUT(req: Request, res: Response) {
         },
         {
           status: 400,
+        }
+      );
+    }
+
+    if (
+      validTokenPayload?.role === 'user' &&
+      validTokenPayload?.id !== userId
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: you are not allowed to update this user's data`,
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (
+      validTokenPayload?.role !== 'user' &&
+      validTokenPayload?.role !== 'admin'
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: ${validTokenPayload?.role} is not allowed`,
+        },
+        {
+          status: 401,
         }
       );
     }
@@ -307,12 +320,12 @@ export async function PUT(req: Request, res: Response) {
       },
     });
 
-    const { password: userPassword, ...userWithoutPassword } = user;
+    const userWithoutPassword = exclude(user, ['password']);
 
     return NextResponse.json(
       {
         success: true,
-        data: { ...userWithoutPassword },
+        data: userWithoutPassword,
         message: 'User updated successfully',
       },
       {
@@ -380,30 +393,6 @@ export async function DELETE(req: Request, res: Response) {
       );
     }
 
-    if (validTokenPayload?.role !== 'user') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
-    if (validTokenPayload?.id !== userId) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
     if (!userId) {
       return NextResponse.json(
         {
@@ -414,6 +403,36 @@ export async function DELETE(req: Request, res: Response) {
         },
         {
           status: 400,
+        }
+      );
+    }
+
+    if (
+      validTokenPayload?.role === 'user' &&
+      validTokenPayload?.id !== userId
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: you are not allowed to delete this user's data`,
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (
+      validTokenPayload?.role !== 'user' &&
+      validTokenPayload?.role !== 'admin'
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Unauthorized: ${validTokenPayload?.role} is not allowed`,
+        },
+        {
+          status: 401,
         }
       );
     }

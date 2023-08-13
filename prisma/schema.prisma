@@ -86,9 +86,7 @@ model Product {
   orderItems      OrderItem[]
   inStock         Boolean       @default(true)
   leadTime        String
-  shippingDetails String
-  productDetail   ProductDetail @relation(fields: [productDetailId], references: [id])
-  productDetailId String
+  productDetail   ProductDetail?
   wishlist        User[]
 
   @@map("products")
@@ -97,17 +95,22 @@ model Product {
 model ProductDetail {
   id                 String              @id @default(uuid())
   productDetailItems ProductDetailItem[]
-  product            Product[]
+  productId          String             @unique
+  product            Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
   @@map("product_details")
 }
 
 model ProductDetailItem {
   id                    String        @id @default(uuid())
-  productDetailItemName String?
+  productDetailItemName String
   items                 String[]
-  productDetail         ProductDetail @relation(fields: [productDetailId], references: [id])
+  productDetail         ProductDetail @relation(fields: [productDetailId], references: [id], onDelete: Cascade)
   productDetailId       String
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
 
   @@map("product_detail_items")
 }
@@ -141,21 +144,21 @@ model Order {
   contactEmail      String
   total             Float
   userId            String?
-  user              User?           @relation(fields: [userId], references: [id])
+  user              User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   guestId           String?
-  guest             Guest?          @relation(fields: [guestId], references: [id])
+  guest             Guest?          @relation(fields: [guestId], references: [id], onDelete: Cascade)
   orderItems        OrderItem[]
   orderStatus       OrderStatus     @default(CREATED)
   paymentMethod     PaymentMethod   @default(CREDIT_CARD)
-  shippingMethod    ShippingMethod  @relation(fields: [shippingMethodId], references: [id])
+  shippingMethod    ShippingMethod  @relation(fields: [shippingMethodId], references: [id], onDelete: Cascade)
   shippingMethodId  String
-  shippingAddress   Address         @relation("shippingAddress", fields: [shippingAddressId], references: [id])
+  shippingAddress   Address         @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
   shippingAddressId String
-  billingAddress    Address         @relation("billingAddress", fields: [billingAddressId], references: [id])
+  billingAddress    Address         @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
   billingAddressId  String
   contactPhone      String
   discountCouponId  String?
-  discountCoupon    DiscountCoupon? @relation(fields: [discountCouponId], references: [id])
+  discountCoupon    DiscountCoupon? @relation(fields: [discountCouponId], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
@@ -201,8 +204,8 @@ model OrderItem {
   updatedAt DateTime @updatedAt
   productId String
   orderId   String
-  product   Product  @relation(fields: [productId], references: [id])
-  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
 }
