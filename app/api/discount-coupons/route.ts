@@ -1,5 +1,5 @@
 import { prisma } from '@lib/prisma';
-import { CouponStatus } from '@prisma/client';
+import { CouponStatus, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 import { DiscountCouponFullInfo } from '@lib/types/api';
@@ -119,7 +119,7 @@ export async function PUT(req: Request, res: Response) {
       );
     }
 
-    const updatedCoupon = await prisma.discountCoupon.update({
+    await prisma.discountCoupon.update({
       where: {
         code: code,
       },
@@ -135,19 +135,6 @@ export async function PUT(req: Request, res: Response) {
       },
     });
 
-    if (!updatedCoupon) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'InternalServerError',
-          message: 'Error while updating discount coupon',
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
     return NextResponse.json(
       {
         success: true,
@@ -158,6 +145,18 @@ export async function PUT(req: Request, res: Response) {
       }
     );
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: error && error.meta && error.meta.cause,
+          message: 'Something went wrong while updating discount coupons.',
+        },
+        {
+          status: 500,
+        }
+      );
+    }
     console.error(error);
     return NextResponse.json(
       {
