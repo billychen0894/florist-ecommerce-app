@@ -100,7 +100,7 @@ export async function DELETE(req: Request, res: Response) {
           message: 'Something went wrong while deleting orders.',
         },
         {
-          status: 404,
+          status: 500,
         }
       );
     }
@@ -245,7 +245,7 @@ export async function PUT(req: Request, res: Response) {
           message: 'Something went wrong while deleting orders.',
         },
         {
-          status: 404,
+          status: 500,
         }
       );
     }

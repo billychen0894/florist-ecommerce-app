@@ -231,7 +231,7 @@ export async function DELETE(req: Request, res: Response) {
           message: 'Something went wrong while deleting the category.',
         },
         {
-          status: 404,
+          status: 500,
         }
       );
     }
