@@ -1,10 +1,8 @@
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
-import { Prisma } from '@prisma/client';
+import { DiscountCoupon, Prisma } from '@prisma/client';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
-
-import { DiscountCoupon } from '@lib/types/api';
 
 export async function POST(req: Request, res: Response) {
   try {
