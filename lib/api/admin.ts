@@ -1,4 +1,4 @@
-import { ApiResponse, User } from '@lib/types/api';
+import { ApiResponse, Order, User } from '@lib/types/api';
 import { AxiosInstance } from 'axios';
 
 async function getAllUsers(
@@ -75,6 +75,16 @@ async function deleteCategoryById(
   return response;
 }
 
+async function getOrders(
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<Order[]>> {
+  const response = (await axiosWithAuth.get(
+    '/api/admin/orders'
+  )) as ApiResponse<Order[]>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -83,4 +93,5 @@ export const admin = {
   createCategory,
   updateCategoryById,
   deleteCategoryById,
+  getOrders,
 };
