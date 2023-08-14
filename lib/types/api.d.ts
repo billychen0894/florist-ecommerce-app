@@ -2,6 +2,7 @@ import {
   orderFormDataSchema,
   orderSummarySchema,
 } from '@app/api/orders/ordersPayloadValidation';
+import { OrderStatus } from '@prisma/client';
 
 export interface ApiResponse<T> {
   success?: boolean;
@@ -193,7 +194,7 @@ export interface commonOrderFields {
   id: string;
   orderNumber: string;
   total: number;
-  orderStatus: string;
+  orderStatus: OrderStatus;
   paymentMethod: string;
   shippingMethod: ShippingMethod;
   shippingAddress: Address;
