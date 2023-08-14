@@ -117,6 +117,15 @@ async function createCoupons(
   return response;
 }
 
+async function getCoupons(
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<DiscountCoupon[]>> {
+  const response = (await axiosWithAuth.get(
+    '/api/admin/discount-coupons'
+  )) as ApiResponse<DiscountCoupon[]>;
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -129,4 +138,5 @@ export const admin = {
   deleteOrderById,
   updateOrderById,
   createCoupons,
+  getCoupons,
 };

@@ -184,3 +184,99 @@ export async function POST(req: Request, res: Response) {
     );
   }
 }
+
+export async function GET(req: Request, res: Response) {
+  try {
+    const bearerToken = req.headers.get('authorization')?.split(' ')[1];
+
+    if (!bearerToken) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const validTokenPayload = verifyJwtAccessToken(bearerToken) as
+      | JwtPayload
+      | Error;
+
+    if (validTokenPayload instanceof TokenExpiredError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized: Token Expired',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (validTokenPayload instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    if (validTokenPayload?.role !== 'admin') {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized',
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const coupons = await prisma.discountCoupon.findMany();
+
+    if (coupons.length === 0) {
+      return NextResponse.json(
+        {
+          success: true,
+          data: [],
+          message: 'No discount coupons found',
+        },
+        {
+          status: 200,
+        }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: coupons,
+        message: 'Discount coupons fetched successfully',
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error,
+        message: 'Something went wrong',
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
