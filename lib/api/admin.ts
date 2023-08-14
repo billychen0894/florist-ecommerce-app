@@ -85,6 +85,17 @@ async function getOrders(
   return response;
 }
 
+async function deleteOrderById(
+  orderId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/orders/${orderId}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -94,4 +105,5 @@ export const admin = {
   updateCategoryById,
   deleteCategoryById,
   getOrders,
+  deleteOrderById,
 };
