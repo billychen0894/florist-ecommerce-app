@@ -40,9 +40,20 @@ async function deleteProductById(
   return response;
 }
 
+async function createCategory(
+  name: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.post('/api/admin/categories', {
+    name,
+  })) as ApiResponse<null>;
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
   updateProductById,
   deleteProductById,
+  createCategory,
 };
