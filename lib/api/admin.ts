@@ -64,6 +64,17 @@ async function updateCategoryById(
   return response;
 }
 
+async function deleteCategoryById(
+  categoryId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/categories/${categoryId}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -71,4 +82,5 @@ export const admin = {
   deleteProductById,
   createCategory,
   updateCategoryById,
+  deleteCategoryById,
 };
