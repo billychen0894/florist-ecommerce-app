@@ -50,10 +50,25 @@ async function createCategory(
   return response;
 }
 
+async function updateCategoryById(
+  data: { categoryId: string; name: string },
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.put(
+    `/api/admin/categories/${data.categoryId}`,
+    {
+      name: data.name,
+    }
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
   updateProductById,
   deleteProductById,
   createCategory,
+  updateCategoryById,
 };
