@@ -18,19 +18,6 @@ export async function GET(req: Request, res: Response) {
       );
     }
 
-    if (couponCode.length !== 10) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'ValidationError',
-          message: 'Coupon code must be 10 characters long',
-        },
-        {
-          status: 422,
-        }
-      );
-    }
-
     const coupon = await prisma.discountCoupon.findUnique({
       where: {
         code: couponCode,
