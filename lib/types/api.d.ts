@@ -211,4 +211,10 @@ export interface SearchOrders extends commonOrderFields {
   contactPhone: string;
 }
 
-export type Order = OrdersFromUser | SearchOrders;
+export interface OrderFullInfo extends commonOrderFields {
+  discountCoupon: DiscountCoupon;
+  contactEmail: string;
+  contactPhone: string;
+}
+
+export type Order = OrdersFromUser | SearchOrders | OrderFullInfo;
