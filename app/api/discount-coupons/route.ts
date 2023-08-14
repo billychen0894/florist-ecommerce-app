@@ -16,12 +16,12 @@ export async function PUT(req: Request, res: Response) {
       status,
     } = body;
 
-    if (code && code.length !== 10) {
+    if (code && code.length === 0) {
       return NextResponse.json(
         {
           success: false,
           error: 'ValidationError',
-          message: 'Coupon code must be 10 characters long',
+          message: 'Coupon code is required',
         },
         {
           status: 422,
