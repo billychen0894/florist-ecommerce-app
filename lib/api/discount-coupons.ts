@@ -6,7 +6,7 @@ async function getCouponByCouponNumber(
   couponNumber: string
 ): Promise<ApiResponse<DiscountCoupon>> {
   const response = (await axios.get(
-    `/discount-coupons/${couponNumber}`
+    `/api/discount-coupons/${couponNumber}`
   )) as ApiResponse<DiscountCoupon>;
   return response;
 }
@@ -15,7 +15,7 @@ async function updateCoupon(
   couponData: DiscountCoupon,
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<DiscountCoupon>> {
-  const response = (await axiosWithAuth.put(`/discount-coupons`, {
+  const response = (await axiosWithAuth.put(`/api/discount-coupons`, {
     ...couponData,
   })) as ApiResponse<DiscountCoupon>;
   return response;
