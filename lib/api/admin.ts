@@ -1,4 +1,4 @@
-import { ApiResponse, Order, User } from '@lib/types/api';
+import { ApiResponse, DiscountCoupon, Order, User } from '@lib/types/api';
 import { AxiosInstance } from 'axios';
 
 async function getAllUsers(
@@ -107,6 +107,16 @@ async function updateOrderById(
   return response;
 }
 
+async function createCoupons(
+  couponsData: DiscountCoupon[],
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<DiscountCoupon[]>> {
+  const response = (await axiosWithAuth.post(`/api/admin/discount-coupons`, {
+    coupons: couponsData,
+  })) as ApiResponse<DiscountCoupon[]>;
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -118,4 +128,5 @@ export const admin = {
   getOrders,
   deleteOrderById,
   updateOrderById,
+  createCoupons,
 };
