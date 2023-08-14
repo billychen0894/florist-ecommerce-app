@@ -1,4 +1,4 @@
-import { ApiResponse, User } from '@lib/types/api';
+import { ApiResponse, Order, User } from '@lib/types/api';
 import { AxiosInstance } from 'axios';
 
 async function getAllUsers(
@@ -40,9 +40,70 @@ async function deleteProductById(
   return response;
 }
 
+async function createCategory(
+  name: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.post('/api/admin/categories', {
+    name,
+  })) as ApiResponse<null>;
+  return response;
+}
+
+async function updateCategoryById(
+  data: { categoryId: string; name: string },
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.put(
+    `/api/admin/categories/${data.categoryId}`,
+    {
+      name: data.name,
+    }
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
+async function deleteCategoryById(
+  categoryId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/categories/${categoryId}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
+async function getOrders(
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<Order[]>> {
+  const response = (await axiosWithAuth.get(
+    '/api/admin/orders'
+  )) as ApiResponse<Order[]>;
+
+  return response;
+}
+
+async function deleteOrderById(
+  orderId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/orders/${orderId}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
   updateProductById,
   deleteProductById,
+  createCategory,
+  updateCategoryById,
+  deleteCategoryById,
+  getOrders,
+  deleteOrderById,
 };
