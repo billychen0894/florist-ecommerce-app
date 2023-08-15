@@ -1,9 +1,9 @@
-import { Category, Image as ImageType, Product } from '@prisma/client';
+import { ProductItem } from '@lib/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductItemProps {
-  product: Product & { images: ImageType[] } & { categories: Category[] };
+  product: ProductItem;
   showCategory?: boolean;
 }
 

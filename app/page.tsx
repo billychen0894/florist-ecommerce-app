@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
 import { products } from '@lib/api/products';
-import { Category, Image, Product } from '@prisma/client';
-
-type ProductItem = Product & { images: Image[] } & { categories: Category[] };
+import { ProductItem } from '@lib/types/types';
 
 export default async function Home() {
   const response = await products.getAllProducts();
