@@ -1,8 +1,10 @@
-import { Product } from '@const/products';
+import { Category, Image, Product } from '@prisma/client';
 import { ProductItem } from './ProductItem';
 
+type ProductItem = Product & { images: Image[] } & { categories: Category[] };
+
 interface ProductListProps {
-  productsList: Product[];
+  productsList: ProductItem[];
   showCategory?: boolean;
 }
 
