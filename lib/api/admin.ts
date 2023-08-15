@@ -1,4 +1,4 @@
-import { ApiResponse, Order, User } from '@lib/types/api';
+import { ApiResponse, DiscountCoupon, Order, User } from '@lib/types/api';
 import { AxiosInstance } from 'axios';
 
 async function getAllUsers(
@@ -96,6 +96,47 @@ async function deleteOrderById(
   return response;
 }
 
+async function updateOrderById(
+  orderId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.put(
+    `/api/admin/orders/${orderId}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
+async function createCoupons(
+  couponsData: DiscountCoupon[],
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<DiscountCoupon[]>> {
+  const response = (await axiosWithAuth.post(`/api/admin/discount-coupons`, {
+    coupons: couponsData,
+  })) as ApiResponse<DiscountCoupon[]>;
+  return response;
+}
+
+async function getCoupons(
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<DiscountCoupon[]>> {
+  const response = (await axiosWithAuth.get(
+    '/api/admin/discount-coupons'
+  )) as ApiResponse<DiscountCoupon[]>;
+  return response;
+}
+
+async function deleteCouponByCouponNumber(
+  couponNumber: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/discount-coupons/${couponNumber}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -106,4 +147,8 @@ export const admin = {
   deleteCategoryById,
   getOrders,
   deleteOrderById,
+  updateOrderById,
+  createCoupons,
+  getCoupons,
+  deleteCouponByCouponNumber,
 };

@@ -2,6 +2,7 @@ import {
   orderFormDataSchema,
   orderSummarySchema,
 } from '@app/api/orders/ordersPayloadValidation';
+import { OrderStatus } from '@prisma/client';
 
 export interface ApiResponse<T> {
   success?: boolean;
@@ -166,16 +167,16 @@ export interface ShippingMethod {
 }
 
 export interface DiscountCouponCommonFields {
-  code: string;
   description: string;
   discount: number;
   expiresAt: Date;
   numberOfRedemptions: number;
+  status: string;
 }
 
 export interface DiscountCouponFullInfo extends DiscountCouponCommonFields {
   id: string;
-  status: string;
+  code: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -193,7 +194,7 @@ export interface commonOrderFields {
   id: string;
   orderNumber: string;
   total: number;
-  orderStatus: string;
+  orderStatus: OrderStatus;
   paymentMethod: string;
   shippingMethod: ShippingMethod;
   shippingAddress: Address;
