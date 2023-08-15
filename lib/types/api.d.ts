@@ -167,16 +167,16 @@ export interface ShippingMethod {
 }
 
 export interface DiscountCouponCommonFields {
-  code: string;
   description: string;
   discount: number;
   expiresAt: Date;
   numberOfRedemptions: number;
+  status: string;
 }
 
 export interface DiscountCouponFullInfo extends DiscountCouponCommonFields {
   id: string;
-  status: string;
+  code: string;
   createdAt: Date;
   updatedAt: Date;
 }
