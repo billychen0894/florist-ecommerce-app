@@ -2,9 +2,15 @@ import Link from 'next/link';
 
 import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
-import { products } from '@const/products';
+import { products } from '@lib/api/products';
+import { Category, Image, Product } from '@prisma/client';
 
-export default function Home() {
+type ProductItem = Product & { images: Image[] } & { categories: Category[] };
+
+export default async function Home() {
+  const response = await products.getAllProducts();
+  const allProducts = await response.data.data;
+  const top9PopularProducts = allProducts ? allProducts.slice(0, 9) : [];
   return (
     <div className="bg-white">
       <Hero />
@@ -30,7 +36,9 @@ export default function Home() {
             </div>
             {/* Product Grid List */}
             <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
-              <ProductList productsList={products} />
+              <ProductList
+                productsList={top9PopularProducts as ProductItem[]}
+              />
             </div>
 
             <div className="mt-6 sm:hidden">

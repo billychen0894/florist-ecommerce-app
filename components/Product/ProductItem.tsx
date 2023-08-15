@@ -1,10 +1,9 @@
+import { Category, Image as ImageType, Product } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Product } from '@const/products';
-
 interface ProductItemProps {
-  product: Product;
+  product: Product & { images: ImageType[] } & { categories: Category[] };
   showCategory?: boolean;
 }
 
@@ -16,8 +15,8 @@ export function ProductItem({
     <div key={product.id} className="group relative">
       <div className="aspect-h-4 aspect-w-3 overflow-hidden rounded-lg bg-gray-100">
         <Image
-          src={product.images[0].imageUrl}
-          alt={product.name}
+          src={product.images[0].url}
+          alt={product.images[0].alt}
           className="object-cover object-center"
           width={200}
           height={400}
@@ -34,17 +33,20 @@ export function ProductItem({
       </div>
       <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-black">
         <h3>
-          {/* TODO: Implement Product Link Page */}
-          <Link href="#">
+          <Link href={`/products/${product.id}`}>
             <span aria-hidden="true" className="absolute inset-0" />
             {product.name}
           </Link>
         </h3>
         <p className="text-secondary-500">${product.price}</p>
       </div>
-      {showCategory && (
-        <p className="mt-1 text-sm text-shades-500">{product.category}</p>
-      )}
+      {showCategory &&
+        product.categories &&
+        product.categories.map((category) => (
+          <p key={category.id} className="mt-1 text-sm text-shades-500">
+            {category.name}
+          </p>
+        ))}
     </div>
   );
 }
