@@ -37,7 +37,7 @@ export default async function Home() {
             {/* Product Grid List */}
             <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
               <ProductList
-                productsList={top9PopularProducts as ProductItem[]}
+                productsList={(top9PopularProducts as ProductItem[]) || []}
               />
             </div>
 

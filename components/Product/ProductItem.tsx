@@ -12,7 +12,7 @@ export function ProductItem({
   showCategory = false,
 }: ProductItemProps) {
   return (
-    <div key={product.id} className="group relative">
+    <div className="group relative">
       <div className="aspect-h-4 aspect-w-3 overflow-hidden rounded-lg bg-gray-100">
         <Image
           src={product.images[0].url}
