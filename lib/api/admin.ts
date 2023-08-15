@@ -126,6 +126,17 @@ async function getCoupons(
   return response;
 }
 
+async function deleteCouponByCouponNumber(
+  couponNumber: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/discount-coupons/${couponNumber}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 export const admin = {
   getAllUsers,
   createProduct,
@@ -139,4 +150,5 @@ export const admin = {
   updateOrderById,
   createCoupons,
   getCoupons,
+  deleteCouponByCouponNumber,
 };
