@@ -5,16 +5,23 @@ import { cache } from 'react';
 
 export const revalidate = 3600;
 
-const getAllProducts = cache(async (orderBy: 'asc' | 'desc', limit: number) => {
-  const response = (await axios.get(`/api/products`, {
-    params: {
-      orderBy,
-      limit,
-    },
-  })) as AxiosResponse<ApiResponse<Product[]>>;
+const getAllProducts = cache(
+  async (
+    sort: 'asc' | 'desc' = 'asc',
+    limit: number = 12,
+    sortByOrderItems: 'asc' | 'desc' = 'asc'
+  ) => {
+    const response = (await axios.get(`/api/products`, {
+      params: {
+        sort,
+        limit,
+        sortByOrderItems,
+      },
+    })) as AxiosResponse<ApiResponse<Product[]>>;
 
-  return response;
-});
+    return response;
+  }
+);
 
 const getProductById = cache(async (productId: string) => {
   const response = (await axios.get(
