@@ -7,13 +7,13 @@ export const revalidate = 3600;
 
 const getAllProducts = cache(
   async (
-    sort: 'asc' | 'desc' = 'asc',
-    limit: number = 12,
+    page?: number,
+    limit?: number,
     sortByOrderItems: 'asc' | 'desc' = 'asc'
   ) => {
     const response = (await axios.get(`/api/products`, {
       params: {
-        sort,
+        page,
         limit,
         sortByOrderItems,
       },

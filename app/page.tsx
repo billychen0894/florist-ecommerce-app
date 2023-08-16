@@ -6,7 +6,7 @@ import { products } from '@lib/api/products';
 import { ProductItem } from '@lib/types/types';
 
 export default async function Home() {
-  const response = await products.getAllProducts('asc', 9, 'desc');
+  const response = await products.getAllProducts(1, 9, 'desc');
   const allProducts = await response.data.data;
   const top9PopularProducts = allProducts ? allProducts : [];
   return (
