@@ -6,9 +6,9 @@ import { products } from '@lib/api/products';
 import { ProductItem } from '@lib/types/types';
 
 export default async function Home() {
-  const response = await products.getAllProducts();
+  const response = await products.getAllProducts('desc', 9);
   const allProducts = await response.data.data;
-  const top9PopularProducts = allProducts ? allProducts.slice(0, 9) : [];
+  const top9PopularProducts = allProducts ? allProducts : [];
   return (
     <div className="bg-white">
       <Hero />
