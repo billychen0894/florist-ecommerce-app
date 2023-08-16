@@ -4,7 +4,9 @@ import { NextResponse } from 'next/server';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const orderBy = searchParams.get('orderBy') === 'desc' ? 'desc' : 'asc';
+    const sortById = searchParams.get('sort') === 'desc' ? 'desc' : 'asc';
+    const sortByOrderItemsCount =
+      searchParams.get('sortByOrderItems') === 'desc' ? 'desc' : 'asc';
     const limit = Number(searchParams.get('limit')) || 12;
 
     const products = await prisma.product.findMany({
@@ -14,11 +16,10 @@ export async function GET(req: Request) {
         orderItems: true,
       },
       take: limit,
-      orderBy: {
-        orderItems: {
-          _count: orderBy,
-        },
-      },
+      orderBy: [
+        { id: sortById },
+        { orderItems: { _count: sortByOrderItemsCount } },
+      ],
     });
 
     if (products.length === 0) {
