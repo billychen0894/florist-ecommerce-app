@@ -4,12 +4,23 @@ import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
 import { Pagination } from '@components/Pagination';
 import { ProductList } from '@components/Product';
-import { products } from '@const/products';
+import { products } from '@lib/api/products';
+import { ProductItem } from '@lib/types/types';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
 
-export default function Products() {
+export default async function Products({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const page =
+    typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
+  const limit =
+    typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 12;
+  const response = await products.getAllProducts(page, limit, 'asc');
+  const allProducts = (await response.data.data) as ProductItem[];
   return (
     <div className="bg-white">
       <div>
@@ -50,9 +61,9 @@ export default function Products() {
           </section>
           {/* Products */}
           <section className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            <ProductList productsList={products} showCategory />
+            <ProductList productsList={allProducts} showCategory />
           </section>
-          <Pagination pageCount={12} productsList={products} />
+          <Pagination pageCount={12} searchParams={searchParams} />
         </main>
       </div>
     </div>

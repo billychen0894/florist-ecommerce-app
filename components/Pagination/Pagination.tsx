@@ -1,23 +1,26 @@
-'use client';
-// temporary solution: pagination is not implemented yet
-
-import { Product } from '@const/products';
+import { products } from '@lib/api/products';
 import { generatePagination } from '@lib/generatePagination';
-import { useSearchParams } from 'next/navigation';
 import { PaginationLink } from './PaginationLink';
 
 interface PaginationProps {
   pageCount: number;
-  productsList: Product[];
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export function Pagination({ productsList, pageCount }: PaginationProps) {
-  const searchParams = useSearchParams();
-  const pageSearchParams = searchParams.get('page');
-  const currentPage = pageSearchParams ? parseInt(pageSearchParams) : 1;
-  const totalPages = Math.ceil(productsList.length / pageCount);
-  const pagination = generatePagination(currentPage, totalPages);
+export async function Pagination({ searchParams, pageCount }: PaginationProps) {
+  const currentPage =
+    typeof searchParams.page === 'string' ? searchParams.page : '1';
 
+  const productsListResponse = await products.getAllProducts(
+    undefined,
+    undefined,
+    'asc'
+  );
+  const productsList = productsListResponse?.data?.data
+    ? productsListResponse.data.data
+    : [];
+  const totalPages = Math.ceil(productsList.length / pageCount);
+  const pagination = generatePagination(parseInt(currentPage), totalPages);
   return (
     <nav
       aria-label="Pagination"
@@ -26,11 +29,11 @@ export function Pagination({ productsList, pageCount }: PaginationProps) {
       <div className="min-w-0 flex-1">
         <PaginationLink
           href={
-            pageSearchParams === '1'
+            currentPage === '1'
               ? ''
-              : `/products?page=${String(Number(pageSearchParams) - 1)}`
+              : `/products?page=${String(Number(currentPage) - 1)}`
           }
-          disabled={pageSearchParams === '1'}
+          disabled={currentPage === '1'}
         >
           Previous
         </PaginationLink>
@@ -48,7 +51,7 @@ export function Pagination({ productsList, pageCount }: PaginationProps) {
             <PaginationLink
               key={idx}
               href={`/products?page=${page}`}
-              current={page === pageSearchParams}
+              current={page === currentPage}
             >
               {page}
             </PaginationLink>
@@ -58,11 +61,11 @@ export function Pagination({ productsList, pageCount }: PaginationProps) {
       <div className="flex min-w-0 flex-1 justify-end">
         <PaginationLink
           href={
-            pageSearchParams === pagination[pagination.length - 1]
+            currentPage === pagination[pagination.length - 1]
               ? ''
-              : `/products?page=${String(Number(pageSearchParams) + 1)}`
+              : `/products?page=${String(Number(currentPage) + 1)}`
           }
-          disabled={pageSearchParams === pagination[pagination.length - 1]}
+          disabled={currentPage === pagination[pagination.length - 1]}
         >
           Next
         </PaginationLink>
