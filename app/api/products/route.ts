@@ -1,22 +1,27 @@
 import { prisma } from '@lib/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const orderBy = searchParams.get('orderBy') === 'desc' ? 'desc' : 'asc';
+    const limit = Number(searchParams.get('limit')) || 12;
+
     const products = await prisma.product.findMany({
       include: {
         images: true,
         categories: true,
         orderItems: true,
       },
+      take: limit,
       orderBy: {
         orderItems: {
-          _count: 'desc',
+          _count: orderBy,
         },
       },
     });
 
-    if (!products) {
+    if (products.length === 0) {
       return NextResponse.json(
         {
           success: true,
@@ -40,6 +45,7 @@ export async function GET(req: Request, res: Response) {
       }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         success: false,
