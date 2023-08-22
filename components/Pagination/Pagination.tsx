@@ -30,7 +30,7 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
         <PaginationLink
           href={
             currentPage === '1'
-              ? ''
+              ? '#'
               : `/products?page=${String(Number(currentPage) - 1)}`
           }
           disabled={currentPage === '1'}
@@ -62,7 +62,7 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
         <PaginationLink
           href={
             currentPage === pagination[pagination.length - 1]
-              ? ''
+              ? '#'
               : `/products?page=${String(Number(currentPage) + 1)}`
           }
           disabled={currentPage === pagination[pagination.length - 1]}
