@@ -2,17 +2,28 @@
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 
 import { productSortOptions } from '@const/products';
 import { cn } from '@lib/classNames';
+import { usePathname, useRouter } from 'next/navigation';
 
-export function Sort() {
+export function Sort({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const currentPage =
+    typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
+  const router = useRouter();
+  const pathname = usePathname();
+  const [sortLabel, setSortLabel] = useState<string>('');
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
           Sort
+          {sortLabel && <span className="text-gray-500">: {sortLabel}</span>}
           <ChevronDownIcon
             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
             aria-hidden="true"
@@ -34,15 +45,21 @@ export function Sort() {
             {productSortOptions.map((option) => (
               <Menu.Item key={option.name}>
                 {({ active }) => (
-                  <a
-                    href={option.href}
+                  <button
+                    type="button"
                     className={cn(
                       active ? 'bg-gray-100' : '',
-                      'block px-4 py-2 text-sm font-medium text-gray-900'
+                      'block px-4 py-2 text-sm font-medium text-gray-900 w-full text-left'
                     )}
+                    onClick={() => {
+                      setSortLabel(option.name);
+                      router.push(
+                        `${pathname}?page=${currentPage}&sort=${option.href}`
+                      );
+                    }}
                   >
                     {option.name}
-                  </a>
+                  </button>
                 )}
               </Menu.Item>
             ))}
