@@ -3,14 +3,12 @@ import Link from 'next/link';
 import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
 import { products } from '@lib/api/products';
-import { Category, Image, Product } from '@prisma/client';
-
-type ProductItem = Product & { images: Image[] } & { categories: Category[] };
+import { ProductItem } from '@lib/types/types';
 
 export default async function Home() {
-  const response = await products.getAllProducts();
+  const response = await products.getAllProducts(1, 9, 'popular');
   const allProducts = await response.data.data;
-  const top9PopularProducts = allProducts ? allProducts.slice(0, 9) : [];
+  const top9PopularProducts = allProducts ? allProducts : [];
   return (
     <div className="bg-white">
       <Hero />

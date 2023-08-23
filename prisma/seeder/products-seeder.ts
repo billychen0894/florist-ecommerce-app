@@ -269,8 +269,8 @@ export async function seedProducts(prisma: PrismaClient): Promise<void> {
   try {
     console.log('Seeding products...');
 
-    // Seed each product 5 times from productData array
-    for (let i = 0; i < 5; i++) {
+    // Seed each product 20 times from productData array
+    for (let i = 0; i < 20; i++) {
       for (const product of productData) {
         const createdProduct = await prisma.product.create({
           data: {

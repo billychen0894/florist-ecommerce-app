@@ -1,10 +1,8 @@
-import { Category, Image, Product } from '@prisma/client';
+import { ProductItem as TProductItem } from '@lib/types/types';
 import { ProductItem } from './ProductItem';
 
-type ProductItem = Product & { images: Image[] } & { categories: Category[] };
-
 interface ProductListProps {
-  productsList: ProductItem[];
+  productsList: TProductItem[];
   showCategory?: boolean;
 }
 
