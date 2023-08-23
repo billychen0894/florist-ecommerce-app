@@ -10,11 +10,12 @@ interface PaginationProps {
 export async function Pagination({ searchParams, pageCount }: PaginationProps) {
   const currentPage =
     typeof searchParams.page === 'string' ? searchParams.page : '1';
+  const sort = typeof searchParams.sort === 'string' ? searchParams.sort : '';
 
   const productsListResponse = await products.getAllProducts(
     undefined,
     undefined,
-    'asc'
+    'popular'
   );
   const productsList = productsListResponse?.data?.data
     ? productsListResponse.data.data
@@ -31,7 +32,9 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
           href={
             currentPage === '1'
               ? '#'
-              : `/products?page=${String(Number(currentPage) - 1)}`
+              : `/products?page=${String(Number(currentPage) - 1)}${
+                  sort ? '&sort=' + sort : ''
+                }`
           }
           disabled={currentPage === '1'}
         >
@@ -50,7 +53,7 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
           ) : (
             <PaginationLink
               key={idx}
-              href={`/products?page=${page}`}
+              href={`/products?page=${page}${sort ? '&sort=' + sort : ''}`}
               current={page === currentPage}
             >
               {page}
@@ -63,7 +66,9 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
           href={
             currentPage === pagination[pagination.length - 1]
               ? '#'
-              : `/products?page=${String(Number(currentPage) + 1)}`
+              : `/products?page=${String(Number(currentPage) + 1)}${
+                  sort ? '&sort=' + sort : ''
+                }`
           }
           disabled={currentPage === pagination[pagination.length - 1]}
         >
