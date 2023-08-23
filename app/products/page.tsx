@@ -5,8 +5,8 @@ import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
 import { ProductList } from '@components/Product';
 
+import { fetchCategories } from '@actions/fetch-categories';
 import { Pagination } from '@components/Pagination';
-import { categories } from '@lib/api/categories';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
@@ -26,10 +26,7 @@ export default async function Products({
 
   const productsResult = await fetchProducts(page, limit, sort);
 
-  const categoriesResult = await categories.getAllCategories();
-  const allCategories = categoriesResult.data.data
-    ? categoriesResult.data.data
-    : [];
+  const categoriesResult = await fetchCategories();
   return (
     <div className="bg-white">
       <div>
@@ -65,7 +62,7 @@ export default async function Products({
             <div className="flex items-center justify-between">
               {/* TODO: Sort & Filter Implementation for products */}
               <Sort searchParams={searchParams} />
-              <Filter categories={allCategories} />
+              <Filter categories={categoriesResult} />
             </div>
           </section>
           {/* Products */}
