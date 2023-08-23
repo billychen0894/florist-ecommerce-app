@@ -632,8 +632,8 @@ export const productCategories: ProductCategory[] = [
 ];
 
 export const productSortOptions: ProductSortOption[] = [
-  { name: 'Most Popular', href: '#' },
-  { name: 'Newest', href: '#' },
-  { name: 'Price: Low to High', href: '#' },
-  { name: 'Price: High to Low', href: '#' },
+  { name: 'Most Popular', href: 'popular' },
+  { name: 'Newest', href: 'newest' },
+  { name: 'Price: Low to High', href: 'price-low-to-high' },
+  { name: 'Price: High to Low', href: 'price-high-to-low' },
 ];
