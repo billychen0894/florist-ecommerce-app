@@ -1,11 +1,12 @@
 import Image from 'next/image';
 
+import { fetchProducts } from '@actions/fetch-products';
 import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
-import { Pagination } from '@components/Pagination';
 import { ProductList } from '@components/Product';
-import { products } from '@lib/api/products';
-import { ProductItem } from '@lib/types/types';
+
+import { Pagination } from '@components/Pagination';
+import { categories } from '@lib/api/categories';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
@@ -19,8 +20,16 @@ export default async function Products({
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
   const limit =
     typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 12;
-  const response = await products.getAllProducts(page, limit, 'asc');
-  const allProducts = (await response.data.data) as ProductItem[];
+
+  const sort =
+    typeof searchParams.sort === 'string' ? searchParams.sort : 'popular';
+
+  const productsResult = await fetchProducts(page, limit, sort);
+
+  const categoriesResult = await categories.getAllCategories();
+  const allCategories = categoriesResult.data.data
+    ? categoriesResult.data.data
+    : [];
   return (
     <div className="bg-white">
       <div>
@@ -55,13 +64,13 @@ export default async function Products({
             </h2>
             <div className="flex items-center justify-between">
               {/* TODO: Sort & Filter Implementation for products */}
-              <Sort />
-              <Filter />
+              <Sort searchParams={searchParams} />
+              <Filter categories={allCategories} />
             </div>
           </section>
           {/* Products */}
           <section className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            <ProductList productsList={allProducts} showCategory />
+            <ProductList productsList={productsResult} showCategory />
           </section>
           <Pagination pageCount={12} searchParams={searchParams} />
         </main>
