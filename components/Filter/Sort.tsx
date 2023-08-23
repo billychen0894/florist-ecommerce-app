@@ -6,15 +6,11 @@ import { Fragment, useState } from 'react';
 
 import { productSortOptions } from '@const/products';
 import { cn } from '@lib/classNames';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export function Sort({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const currentPage =
-    typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
+export function Sort() {
+  const searchParams = useSearchParams();
+  const currentPage = searchParams.get('page') ?? '1';
   const router = useRouter();
   const pathname = usePathname();
   const [sortLabel, setSortLabel] = useState<string>('');

@@ -20,13 +20,12 @@ export default async function Products({
     typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
   const limit =
     typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 12;
-
   const sort =
     typeof searchParams.sort === 'string' ? searchParams.sort : 'popular';
 
   const productsResult = await fetchProducts(page, limit, sort);
-
   const categoriesResult = await fetchCategories();
+
   return (
     <div className="bg-white">
       <div>
