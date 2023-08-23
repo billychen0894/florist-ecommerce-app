@@ -9,13 +9,13 @@ const getAllProducts = cache(
   async (
     page?: number,
     limit?: number,
-    sortByOrderItems: 'asc' | 'desc' = 'asc'
+    sort?: 'popular' | 'newest' | 'price-high-to-low' | 'price-low-to-high'
   ) => {
     const response = (await axios.get(`/api/products`, {
       params: {
         page,
         limit,
-        sortByOrderItems,
+        sort,
       },
     })) as AxiosResponse<ApiResponse<Product[]>>;
 
