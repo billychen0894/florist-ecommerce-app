@@ -4,8 +4,7 @@ import { NextResponse } from 'next/server';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const sortByOrderItemsCount =
-      searchParams.get('sortByOrderItems') === 'desc' ? 'desc' : 'asc';
+    const sort = searchParams.get('sort');
     const limit: number | undefined =
       searchParams.get('limit') === null
         ? undefined
@@ -13,6 +12,9 @@ export async function GET(req: Request) {
     const page =
       searchParams.get('page') === null ? 1 : Number(searchParams.get('page'));
     const skip = limit === undefined ? 0 : (page - 1) * limit;
+    const popular = sort === 'popular' ? 'desc' : 'asc';
+    const newest = sort === 'newest' ? 'desc' : 'asc';
+    const price = sort === 'price-high-to-low' ? 'desc' : 'asc';
 
     const products = await prisma.product.findMany({
       include: {
@@ -21,11 +23,15 @@ export async function GET(req: Request) {
         orderItems: true,
       },
       skip: skip,
-      orderBy: {
-        orderItems: {
-          _count: sortByOrderItemsCount,
+      orderBy: [
+        { price: price },
+        {
+          orderItems: {
+            _count: popular,
+          },
         },
-      },
+        { createdAt: newest },
+      ],
       take: limit,
     });
 
