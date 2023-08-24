@@ -2,7 +2,7 @@
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Fragment, useState } from 'react';
+import { Fragment, useCallback } from 'react';
 
 import { productSortOptions } from '@const/products';
 import { cn } from '@lib/classNames';
@@ -10,16 +10,36 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function Sort() {
   const searchParams = useSearchParams();
-  const currentPage = searchParams.get('page') ?? '1';
+  const sortParams = searchParams.get('sort');
   const router = useRouter();
   const pathname = usePathname();
-  const [sortLabel, setSortLabel] = useState<string>('');
+
+  const getCurrSortLabel = useCallback((sortParams: string | null) => {
+    let sortLabel: {
+      name: string;
+      href: string;
+    } = {
+      name: '',
+      href: '',
+    };
+    if (sortParams) {
+      [sortLabel] = productSortOptions.filter((option) => {
+        return option.href === sortParams;
+      });
+    }
+    return sortLabel.name;
+  }, []);
+
+  const currSortLabel = getCurrSortLabel(sortParams);
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
           Sort
-          {sortLabel && <span className="text-gray-500">: {sortLabel}</span>}
+          {sortParams && (
+            <span className="text-gray-500">: {currSortLabel}</span>
+          )}
           <ChevronDownIcon
             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
             aria-hidden="true"
@@ -48,10 +68,17 @@ export function Sort() {
                       'block px-4 py-2 text-sm font-medium text-gray-900 w-full text-left'
                     )}
                     onClick={() => {
-                      setSortLabel(option.name);
-                      router.push(
-                        `${pathname}?page=${currentPage}&sort=${option.href}`
+                      const searchParams = new URLSearchParams(
+                        window.location.search
                       );
+                      const sortParam = searchParams.get('sort');
+                      if (sortParam) {
+                        searchParams.delete('sort', sortParam);
+                        searchParams.append('sort', option.href);
+                      } else {
+                        searchParams.append('sort', option.href);
+                      }
+                      router.push(`${pathname}?${searchParams.toString()}`);
                     }}
                   >
                     {option.name}
