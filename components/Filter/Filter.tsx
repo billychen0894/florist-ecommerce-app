@@ -5,25 +5,29 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment, useState } from 'react';
 
 import Button from '@components/ui/Button';
-import { ProductCategory, productCategories } from '@const/products';
+import { Categories } from '@lib/types/api';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MobileFilterDialog } from './MobileFilterDialog';
 
 export interface Filter {
   id: string;
   name: string;
-  options: ProductCategory[];
+  options: Categories[];
 }
 
-const filters: Filter[] = [
-  {
-    id: 'category',
-    name: 'Category',
-    options: productCategories,
-  },
-];
-
-export function Filter() {
+export function Filter({ categories }: { categories: Categories[] }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState<boolean>(false);
+  const filters: Filter[] = [
+    {
+      id: 'category',
+      name: 'Category',
+      options: categories,
+    },
+  ];
+  const searchParams = useSearchParams();
+  const categoryFilters = searchParams.getAll('category');
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <>
@@ -53,12 +57,9 @@ export function Filter() {
               <div>
                 <Popover.Button className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                   <span>{section.name}</span>
-                  {sectionIdx === 0 ? (
-                    // TODO: Implement filter checked states
-                    <span className="ml-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
-                      1
-                    </span>
-                  ) : null}
+                  <span className="hidden sm:flex ml-1.5 rounded bg-gray-200 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-700">
+                    {categoryFilters.length}
+                  </span>
                   <ChevronDownIcon
                     className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
@@ -83,10 +84,23 @@ export function Filter() {
                           id={`filter-${section.id}-${optionIdx}`}
                           name={`${section.id}[]`}
                           defaultValue={option.name}
-                          // TODO: Implement filter checked states
-                          defaultChecked={false}
+                          defaultChecked={categoryFilters.includes(option.name)}
                           type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          onClick={(e) => {
+                            const checkbox = e.currentTarget;
+                            const optionName = checkbox.value;
+                            const isChecked = checkbox.checked;
+                            const params = new URLSearchParams(
+                              window.location.search
+                            );
+                            if (isChecked) {
+                              params.append('category', optionName);
+                            } else {
+                              params.delete('category', optionName);
+                            }
+                            router.replace(`${pathname}?${params.toString()}`);
+                          }}
+                          className="h-4 w-4 rounded border-gray-300 text-secondary-500 focus:ring-secondary-400"
                         />
                         <label
                           htmlFor={`filter-${section.id}-${optionIdx}`}

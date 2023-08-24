@@ -1,6 +1,9 @@
+'use client';
+
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dispatch, Fragment, SetStateAction } from 'react';
 
 import Button from '@components/ui/Button';
@@ -18,6 +21,10 @@ export function MobileFilterDialog({
   filters,
   handleMobileFiltersOpen,
 }: MobileFilterDialogProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const categoryFilters = searchParams.getAll('category');
   return (
     <Transition.Root show={isMobileFiltersOpen} as={Fragment}>
       <Dialog
@@ -98,7 +105,26 @@ export function MobileFilterDialog({
                                     id={`${section.id}-${optionIdx}-mobile`}
                                     name={`${section.id}[]`}
                                     defaultValue={option.name}
+                                    defaultChecked={categoryFilters.includes(
+                                      option.name
+                                    )}
                                     type="checkbox"
+                                    onClick={(e) => {
+                                      const checkbox = e.currentTarget;
+                                      const optionName = checkbox.value;
+                                      const isChecked = checkbox.checked;
+                                      const params = new URLSearchParams(
+                                        window.location.search
+                                      );
+                                      if (isChecked) {
+                                        params.append('category', optionName);
+                                      } else {
+                                        params.delete('category', optionName);
+                                      }
+                                      router.replace(
+                                        `${pathname}?${params.toString()}`
+                                      );
+                                    }}
                                     className="h-4 w-4 rounded border-gray-300 text-secondary-500 focus:ring-secondary-400"
                                   />
                                   <label
@@ -108,9 +134,6 @@ export function MobileFilterDialog({
                                     {option.name}
                                   </label>
                                 </div>
-                                <span className="ml-3 text-sm text-gray-600">
-                                  {option.products.length}
-                                </span>
                               </div>
                             ))}
                           </div>

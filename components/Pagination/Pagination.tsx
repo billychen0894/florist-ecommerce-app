@@ -1,4 +1,4 @@
-import { products } from '@lib/api/products';
+import { fetchProducts } from '@actions/fetch-products';
 import { generatePagination } from '@lib/generatePagination';
 import { PaginationLink } from './PaginationLink';
 
@@ -11,17 +11,25 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
   const currentPage =
     typeof searchParams.page === 'string' ? searchParams.page : '1';
   const sort = typeof searchParams.sort === 'string' ? searchParams.sort : '';
+  const categoryFilters = searchParams.category;
 
-  const productsListResponse = await products.getAllProducts(
+  const productsResult = await fetchProducts(
     undefined,
     undefined,
-    'popular'
+    sort,
+    categoryFilters
   );
-  const productsList = productsListResponse?.data?.data
-    ? productsListResponse.data.data
-    : [];
-  const totalPages = Math.ceil(productsList.length / pageCount);
+  const totalPages = Math.ceil(productsResult.length / pageCount);
   const pagination = generatePagination(parseInt(currentPage), totalPages);
+
+  const categoryFiltersURLParams = Array.isArray(categoryFilters)
+    ? categoryFilters.length > 1
+      ? `&category=${categoryFilters.join('&category=')}`
+      : `&category=${categoryFilters.join('')}`
+    : typeof categoryFilters === 'string'
+    ? `&category=${categoryFilters}`
+    : '';
+
   return (
     <nav
       aria-label="Pagination"
@@ -34,7 +42,7 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
               ? '#'
               : `/products?page=${String(Number(currentPage) - 1)}${
                   sort ? '&sort=' + sort : ''
-                }`
+                }${categoryFiltersURLParams}`
           }
           disabled={currentPage === '1'}
         >
@@ -53,7 +61,9 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
           ) : (
             <PaginationLink
               key={idx}
-              href={`/products?page=${page}${sort ? '&sort=' + sort : ''}`}
+              href={`/products?page=${page}${
+                sort ? '&sort=' + sort : ''
+              }${categoryFiltersURLParams}`}
               current={page === currentPage}
             >
               {page}
@@ -68,7 +78,7 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
               ? '#'
               : `/products?page=${String(Number(currentPage) + 1)}${
                   sort ? '&sort=' + sort : ''
-                }`
+                }${categoryFiltersURLParams}`
           }
           disabled={currentPage === pagination[pagination.length - 1]}
         >
