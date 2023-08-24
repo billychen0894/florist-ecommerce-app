@@ -4,9 +4,10 @@ import { products } from '@lib/api/products';
 import { ProductItem } from '@lib/types/types';
 
 export const fetchProducts = async (
-  page: number,
-  limit: number,
-  sortOption: string
+  page?: number,
+  limit?: number,
+  sortOption?: string,
+  filters?: string | string[] | undefined
 ) => {
   let sort: 'popular' | 'newest' | 'price-high-to-low' | 'price-low-to-high' =
     'popular';
@@ -20,7 +21,7 @@ export const fetchProducts = async (
     sort = 'price-low-to-high';
   }
 
-  const response = await products.getAllProducts(page, limit, sort);
+  const response = await products.getAllProducts(page, limit, sort, filters);
   const allProducts = response.data.data
     ? (response.data.data as ProductItem[])
     : [];
