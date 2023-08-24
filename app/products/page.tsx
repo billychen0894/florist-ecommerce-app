@@ -22,8 +22,14 @@ export default async function Products({
     typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 12;
   const sort =
     typeof searchParams.sort === 'string' ? searchParams.sort : 'popular';
+  const categoryFilters = searchParams.category;
 
-  const productsResult = await fetchProducts(page, limit, sort);
+  const productsResult = await fetchProducts(
+    page,
+    limit,
+    sort,
+    categoryFilters
+  );
   const categoriesResult = await fetchCategories();
 
   return (
@@ -59,8 +65,7 @@ export default async function Products({
               Product filters
             </h2>
             <div className="flex items-center justify-between">
-              {/* TODO: Sort & Filter Implementation for products */}
-              <Sort searchParams={searchParams} />
+              <Sort />
               <Filter categories={categoriesResult} />
             </div>
           </section>
