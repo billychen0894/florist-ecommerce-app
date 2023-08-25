@@ -7,11 +7,15 @@ import {
   ProductsRecommendation,
 } from '@components/Product';
 import Button from '@components/ui/Button';
-import { Product, products } from '@const/products';
+import { products } from '@lib/api/products';
 
-const product: Product = products[0];
-
-export default function Product() {
+export default async function Product({
+  params,
+}: {
+  params: { product: string };
+}) {
+  const productResult = await products.getProductById(params.product);
+  const product = productResult.data.data;
   return (
     <div className="bg-white">
       <main className="mx-auto max-w-7xl sm:px-6 sm:pt-16 lg:px-8">
@@ -50,7 +54,10 @@ export default function Product() {
             </div>
           </div>
 
-          <ProductsRecommendation recommendedProducts={products.slice(0, 4)} />
+          <ProductsRecommendation
+            product={product}
+            currProductId={params.product}
+          />
         </div>
       </main>
     </div>
