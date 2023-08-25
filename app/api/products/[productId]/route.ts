@@ -22,6 +22,15 @@ export async function GET(req: Request, res: Response) {
       where: {
         id: productId,
       },
+      include: {
+        images: true,
+        categories: true,
+        productDetail: {
+          include: {
+            productDetailItems: true,
+          },
+        },
+      },
     });
 
     if (!product) {
