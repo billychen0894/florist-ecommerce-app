@@ -1,7 +1,12 @@
+'use client';
+
 import { HeartIcon } from '@heroicons/react/24/outline';
 
 import Button from '@components/ui/Button';
 import { Product } from '@lib/types/api';
+import { addItemToCart } from '@store/features/cartSlice';
+import { useAppDispatch } from '@store/hooks';
+import { useRef } from 'react';
 
 interface ProductActionsProps {
   productId: string;
@@ -9,6 +14,18 @@ interface ProductActionsProps {
 }
 
 export function ProductActions({ productId, product }: ProductActionsProps) {
+  const quantityRef = useRef<HTMLSelectElement>(null);
+  const dispatch = useAppDispatch();
+  const handleAddToCart = () => {
+    const dispatchPayload = {
+      id: productId,
+      quantity: quantityRef.current?.value
+        ? Number(quantityRef.current.value)
+        : 0,
+      product: product as Product,
+    };
+    dispatch(addItemToCart(dispatchPayload));
+  };
   return (
     <form className="mt-6">
       <div className="mt-10 flex">
@@ -19,7 +36,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
           <select
             id={`quantity-${productId}`}
             name={`quantity-${product?.name}`}
-            // ref={quantityRef}
+            ref={quantityRef}
             className="max-w-full rounded-md border border-gray-300 py-1.5 text-center text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
           >
             {[...Array(10)].map((_, i) => (
@@ -32,7 +49,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
         <Button
           type="button"
           className="flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
-          // onClick={() => {}}
+          onClick={handleAddToCart}
         >
           Add to cart
         </Button>
