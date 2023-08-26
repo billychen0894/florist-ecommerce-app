@@ -31,6 +31,25 @@ export default async function Product({
 
               <form className="mt-6">
                 <div className="mt-10 flex">
+                  <div className="flex mr-4">
+                    <label
+                      htmlFor={`quantity-${params.product}`}
+                      className="sr-only"
+                    >
+                      Quantity, {product?.name}
+                    </label>
+                    <select
+                      id={`quantity-${params.product}`}
+                      name={`quantity-${params.product}`}
+                      className="max-w-full rounded-md border border-gray-300 py-1.5 text-center text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
+                    >
+                      {[...Array(10)].map((_, i) => (
+                        <option key={i} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <Button
                     type="submit"
                     className="flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
