@@ -1,5 +1,3 @@
-'use client';
-
 import { OrderItem } from './types/api';
 
 export function getCartItemsFromLocalStorage(): OrderItem[] {
