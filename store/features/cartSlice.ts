@@ -41,9 +41,16 @@ export const localStorageMiddleware: Middleware =
     // Call the next middleware or the reducer to process the action
     const result = next(action);
     // Update localStorage if the action is related to the cart
-    if (action.type.startsWith('cart/')) {
+    if (
+      action.type.startsWith('cart/') &&
+      action.type !== 'cart/initializeCart'
+    ) {
       const { cartItems } = store.getState().cartReducer;
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      const cartItemsData = {
+        cartItems: cartItems,
+        createdAt: new Date().getTime(),
+      };
+      localStorage.setItem('cartItems', JSON.stringify(cartItemsData));
     }
     // Return the result of processing the action
     return result;
