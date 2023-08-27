@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
@@ -9,6 +11,10 @@ import Link from 'next/link';
 import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
 import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
+import { getCartItemsFromLocalStorage } from '@lib/getCartItemsFromLocalStorage';
+import { initializeCart } from '@store/features/cartSlice';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useEffect } from 'react';
 
 interface DesktopMenuProps {
   onOpen: (open: boolean) => void;
@@ -21,6 +27,15 @@ export default function DesktopMenu({
   isOpen,
   isMobile,
 }: DesktopMenuProps) {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const cachedCartItems = getCartItemsFromLocalStorage();
+      dispatch(initializeCart(cachedCartItems));
+    }
+  }, [dispatch]);
+
+  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
   return (
     <header className="relative">
       {/* Top navigation */}
@@ -91,7 +106,7 @@ export default function DesktopMenu({
                     aria-hidden="true"
                   />
                   <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                    0
+                    {cartItems.length}
                   </span>
                   <span className="sr-only">items in cart, view bag</span>
                 </Link>
