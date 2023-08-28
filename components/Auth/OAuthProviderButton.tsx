@@ -1,6 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 
 import Button from '@components/ui/Button';
 import { cn } from '@lib/classNames';
@@ -18,6 +19,11 @@ function OAuthProviderButton({
   icon,
   buttonClassName,
 }: OAuthProviderButtonProps) {
+  const callbackUrlEncoded = useSearchParams().get('callbackUrl');
+  const callbackUrl = callbackUrlEncoded
+    ? decodeURIComponent(callbackUrlEncoded)
+    : '/';
+
   return (
     <Button
       type="button"
@@ -28,7 +34,7 @@ function OAuthProviderButton({
       onClick={() =>
         signIn(provider, {
           redirect: true,
-          callbackUrl: '/',
+          callbackUrl: callbackUrl,
         })
       }
     >

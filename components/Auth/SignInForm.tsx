@@ -4,6 +4,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -50,6 +51,10 @@ function SignInForm() {
       rememberMe: false,
     },
   });
+  const callbackUrlEncoded = useSearchParams().get('callbackUrl');
+  const callbackUrl = callbackUrlEncoded
+    ? decodeURIComponent(callbackUrlEncoded)
+    : '/';
 
   const onSubmit = async (data: SignInFormData) => {
     await signIn('credentials', {
@@ -57,7 +62,7 @@ function SignInForm() {
       password: data.password,
       rememberMe: data.rememberMe,
       redirect: true,
-      callbackUrl: '/',
+      callbackUrl: callbackUrl,
     });
   };
 
