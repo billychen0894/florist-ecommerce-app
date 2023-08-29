@@ -5,14 +5,16 @@ import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Session } from 'next-auth';
 import { signIn, useSession } from 'next-auth/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
+import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { Product, ProductFullInfo } from '@lib/types/api';
 import { addItemToCart } from '@store/features/cartSlice';
 import {
   addProductsToWishlist,
+  fetchUserWishlistById,
   removeProductsFromWishlist,
 } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -29,6 +31,15 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   const dispatch = useAppDispatch();
   const userWishlist = useAppSelector((state) => state.userReducer.wishlist);
   const userWishlistProductIdArr = userWishlist.map((product) => product.id);
+  const axiosWithAuth = useAxiosWithAuth();
+
+  useEffect(() => {
+    if (session?.user.id) {
+      dispatch(
+        fetchUserWishlistById({ userId: session?.user.id, axiosWithAuth })
+      );
+    }
+  }, [dispatch, session?.user.id, axiosWithAuth]);
 
   const handleAddToCart = () => {
     const dispatchPayload = {
@@ -45,6 +56,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     if (!session) {
       setIsModalOpen(true);
     } else {
+      // TODO: Implement Post and Remove wishlist from db
       setIsModalOpen(false);
       if (userWishlistProductIdArr.includes(productId) && product) {
         dispatch(removeProductsFromWishlist(product as ProductFullInfo));
