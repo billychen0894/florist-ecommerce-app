@@ -1,10 +1,12 @@
 import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
 import cartReducer, { localStorageMiddleware } from './features/cartSlice';
+import userReducer from './features/userSlice';
 
 export function makeStore() {
   return configureStore({
     reducer: {
       cartReducer,
+      userReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(localStorageMiddleware),
