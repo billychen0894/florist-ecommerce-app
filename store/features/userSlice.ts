@@ -1,5 +1,7 @@
+import { users } from '@lib/api/users';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AxiosInstance } from 'axios';
 import { ProductFullInfo } from './../../lib/types/api.d';
 
 export interface UserState {
@@ -9,6 +11,21 @@ export interface UserState {
 const initialState: UserState = {
   wishlist: [],
 };
+
+export const fetchUserWishlistById = createAsyncThunk(
+  'user/fetchUserWishlist',
+  async (
+    data: {
+      userId: string;
+      axiosWithAuth: AxiosInstance;
+    },
+    thunkApi
+  ) => {
+    const { userId, axiosWithAuth } = data;
+    const response = await users.getUserWishlist(userId, axiosWithAuth);
+    return response.data.data?.wishList;
+  }
+);
 
 const userSlice = createSlice({
   name: 'user',
@@ -22,6 +39,13 @@ const userSlice = createSlice({
         (product) => product.id !== action.payload.id
       );
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUserWishlistById.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.wishlist = action.payload as ProductFullInfo[];
+      }
+    });
   },
 });
 
