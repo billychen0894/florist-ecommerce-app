@@ -10,11 +10,12 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   ref?: React.Ref<HTMLButtonElement> | null;
+  title?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
-    const { type, children, className, onClick, disabled } = props;
+    const { type, children, className, onClick, disabled, title } = props;
     return (
       <button
         ref={ref}
@@ -25,6 +26,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         onClick={onClick}
         disabled={disabled}
+        title={title}
       >
         {children}
       </button>
