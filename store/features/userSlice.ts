@@ -23,7 +23,8 @@ export const fetchUserWishlistById = createAsyncThunk(
   ) => {
     const { userId, axiosWithAuth } = data;
     const response = await users.getUserWishlist(userId, axiosWithAuth);
-    return response.data.data?.wishList;
+    const wishlist = response.data.data?.wishlist;
+    return wishlist;
   }
 );
 
@@ -42,9 +43,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserWishlistById.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.wishlist = action.payload as ProductFullInfo[];
-      }
+      state.wishlist = action.payload as ProductFullInfo[];
     });
   },
 });
