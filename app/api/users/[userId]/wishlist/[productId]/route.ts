@@ -145,7 +145,7 @@ export async function DELETE(req: Request, res: Response) {
       },
       data: {
         wishlist: {
-          delete: {
+          disconnect: {
             id: productId,
           },
         },
