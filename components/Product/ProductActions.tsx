@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import { users } from '@lib/api/users';
 import { Product, ProductFullInfo } from '@lib/types/api';
 import { addItemToCart } from '@store/features/cartSlice';
 import {
@@ -36,7 +37,10 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   useEffect(() => {
     if (session?.user.id) {
       dispatch(
-        fetchUserWishlistById({ userId: session?.user.id, axiosWithAuth })
+        fetchUserWishlistById({
+          userId: session?.user.id,
+          axiosWithAuth: axiosWithAuth,
+        })
       );
     }
   }, [dispatch, session?.user.id, axiosWithAuth]);
@@ -56,11 +60,16 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     if (!session) {
       setIsModalOpen(true);
     } else {
-      // TODO: Implement Post and Remove wishlist from db
       setIsModalOpen(false);
       if (userWishlistProductIdArr.includes(productId) && product) {
+        users.deleteProductFromWishlist(
+          productId,
+          session?.user.id,
+          axiosWithAuth
+        );
         dispatch(removeProductsFromWishlist(product as ProductFullInfo));
       } else {
+        users.addToUserWishlist(productId, session?.user.id, axiosWithAuth);
         dispatch(addProductsToWishlist(product as ProductFullInfo));
       }
     }
