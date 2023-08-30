@@ -120,7 +120,7 @@ export interface ProductPayload extends ProductCommonFields {
 export type Product = ProductFullInfo | ProductPayload;
 
 export interface WishList {
-  wishList: Product[] | [];
+  wishlist: Product[] | [];
 }
 
 export type Filter = 'Bouquets' | 'Flowers' | 'Plants' | 'Gifts';

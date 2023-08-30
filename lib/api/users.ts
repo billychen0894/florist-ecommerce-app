@@ -1,11 +1,5 @@
 import { SignUpFormData } from '@components/Auth/SignUpForm';
-import {
-  ApiResponse,
-  Product,
-  UpdatedUserData,
-  User,
-  WishList,
-} from '@lib/types/api';
+import { ApiResponse, UpdatedUserData, User, WishList } from '@lib/types/api';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 async function createUser(
@@ -61,10 +55,10 @@ async function addToUserWishlist(
   productId: string,
   userId: string,
   axiosWithAuth: AxiosInstance
-): Promise<AxiosResponse<ApiResponse<Product>>> {
+): Promise<AxiosResponse<ApiResponse<WishList>>> {
   const response = (await axiosWithAuth.post(`/api/users/${userId}/wishlist`, {
     productId,
-  })) as AxiosResponse<ApiResponse<Product>>;
+  })) as AxiosResponse<ApiResponse<WishList>>;
 
   return response;
 }
