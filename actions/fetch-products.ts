@@ -1,7 +1,7 @@
 'use server';
 
 import { products } from '@lib/api/products';
-import { ProductItem } from '@lib/types/types';
+import { TProduct } from '@lib/types/api';
 
 export const fetchProducts = async (
   page?: number,
@@ -23,7 +23,7 @@ export const fetchProducts = async (
 
   const response = await products.getAllProducts(page, limit, sort, filters);
   const allProducts = response.data.data
-    ? (response.data.data as ProductItem[])
+    ? (response.data.data as TProduct[])
     : [];
   return allProducts;
 };

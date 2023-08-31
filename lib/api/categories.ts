@@ -1,14 +1,15 @@
 import axios from '@lib/axios';
-import { ApiResponse, Categories } from '@lib/types/api';
+import { ApiResponse } from '@lib/types/api';
+import { Category } from '@prisma/client';
 import { AxiosResponse } from 'axios';
 
 async function getAllCategories(): Promise<
-  AxiosResponse<ApiResponse<Categories[]>>
+  AxiosResponse<ApiResponse<Category[]>>
 > {
   const response = (await axios.get(`/api/categories`)) as AxiosResponse<
-    ApiResponse<Categories[]>
+    ApiResponse<Category[]>
   >;
-  return response as AxiosResponse<ApiResponse<Categories[]>>;
+  return response as AxiosResponse<ApiResponse<Category[]>>;
 }
 
 export const categories = {

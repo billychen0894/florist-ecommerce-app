@@ -1,4 +1,4 @@
-import { OrderItem } from '@lib/types/api';
+import { TOrderItem } from '@lib/types/api';
 import type {
   AnyAction,
   Dispatch,
@@ -9,7 +9,7 @@ import type {
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface CartState {
-  cartItems: OrderItem[];
+  cartItems: TOrderItem[];
 }
 
 const initialState: CartState = {
@@ -20,10 +20,10 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    initializeCart(state, action: PayloadAction<OrderItem[]>) {
+    initializeCart(state, action: PayloadAction<TOrderItem[]>) {
       state.cartItems = action.payload;
     },
-    addItemToCart(state, action: PayloadAction<OrderItem>) {
+    addItemToCart(state, action: PayloadAction<TOrderItem>) {
       state.cartItems.push(action.payload);
     },
   },

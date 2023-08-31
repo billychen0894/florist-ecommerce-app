@@ -1,10 +1,10 @@
 import { fetchProducts } from '@actions/fetch-products';
-import { Product, ProductPayload } from '@lib/types/api';
+import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductsRecommendationProps {
-  product: Product | null;
+  product: TProduct | null;
   currProductId: string;
 }
 
@@ -12,7 +12,7 @@ export async function ProductsRecommendation({
   product,
   currProductId,
 }: ProductsRecommendationProps) {
-  const productCategories = (product as ProductPayload).categories.map(
+  const productCategories = product?.categories.map(
     (category) => category.name
   );
 

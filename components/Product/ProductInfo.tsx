@@ -1,7 +1,7 @@
-import { Product, ProductPayload } from '@lib/types/api';
+import { TProduct } from '@lib/types/api';
 
 interface ProductInfoProps {
-  product: Product | null;
+  product: TProduct | null;
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
@@ -13,9 +13,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       <div className="mt-3 space-y-3">
         <h2 className="sr-only">Product information</h2>
         <p className="text-sm tracking-tight text-shades-400">
-          {(product as ProductPayload)?.categories
-            .map((category) => category.name)
-            .join(', ')}
+          {product?.categories.map((category) => category.name).join(', ')}
         </p>
         <p className="text-3xl tracking-tight text-secondary-500">
           ${product?.price}

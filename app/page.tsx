@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
 import { products } from '@lib/api/products';
-import { ProductItem } from '@lib/types/types';
 
 export default async function Home() {
   const response = await products.getAllProducts(1, 9, 'popular');
@@ -34,9 +33,7 @@ export default async function Home() {
             </div>
             {/* Product Grid List */}
             <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
-              <ProductList
-                productsList={(top9PopularProducts as ProductItem[]) || []}
-              />
+              <ProductList productsList={top9PopularProducts || []} />
             </div>
 
             <div className="mt-6 sm:hidden">

@@ -1,8 +1,8 @@
-import { ProductItem as TProductItem } from '@lib/types/types';
+import { TProduct } from '@lib/types/api';
 import { ProductItem } from './ProductItem';
 
 interface ProductListProps {
-  productsList: TProductItem[];
+  productsList: TProduct[];
   showCategory?: boolean;
 }
 

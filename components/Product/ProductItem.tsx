@@ -1,9 +1,9 @@
-import { ProductItem } from '@lib/types/types';
+import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductItemProps {
-  product: ProductItem;
+  product: TProduct;
   showCategory?: boolean;
 }
 

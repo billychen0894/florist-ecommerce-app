@@ -5,17 +5,17 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment, useState } from 'react';
 
 import Button from '@components/ui/Button';
-import { Categories } from '@lib/types/api';
+import { Category } from '@prisma/client';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MobileFilterDialog } from './MobileFilterDialog';
 
 export interface Filter {
   id: string;
   name: string;
-  options: Categories[];
+  options: Category[];
 }
 
-export function Filter({ categories }: { categories: Categories[] }) {
+export function Filter({ categories }: { categories: Category[] }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState<boolean>(false);
   const filters: Filter[] = [
     {
