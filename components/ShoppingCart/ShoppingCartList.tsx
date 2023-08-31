@@ -59,8 +59,8 @@ export function ShoppingCartList() {
 
                 <ShoppingCartCountSelect
                   product={orderItem.product}
-                  productIdx={orderItemIdx}
                   selectCounts={10}
+                  selectedQuantity={orderItem.quantity}
                 />
               </div>
 

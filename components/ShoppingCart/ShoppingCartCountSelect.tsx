@@ -5,23 +5,24 @@ import { TProduct } from '@lib/types/api';
 
 interface ShoppingCartCountSelectProps {
   product: TProduct;
-  productIdx: number;
   selectCounts: number;
+  selectedQuantity: number;
 }
 
 export function ShoppingCartCountSelect({
   product,
-  productIdx,
+  selectedQuantity,
   selectCounts,
 }: ShoppingCartCountSelectProps) {
   return (
     <div className="mt-4 sm:mt-0 sm:pr-9">
-      <label htmlFor={`quantity-${productIdx}`} className="sr-only">
+      <label htmlFor={`quantity-${product.id}`} className="sr-only">
         Quantity, {product.name}
       </label>
       <select
-        id={`quantity-${productIdx}`}
-        name={`quantity-${productIdx}`}
+        id={`quantity-${product.id}`}
+        name={`quantity-${product.name}`}
+        value={selectedQuantity}
         className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
       >
         {[...Array(selectCounts)].map((_, i) => (
