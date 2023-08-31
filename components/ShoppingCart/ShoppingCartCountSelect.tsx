@@ -1,9 +1,10 @@
 import Button from '@components/ui/Button';
-import { Product } from '@const/products';
+
 import { XMarkIcon } from '@heroicons/react/20/solid';
+import { TProduct } from '@lib/types/api';
 
 interface ShoppingCartCountSelectProps {
-  product: Product;
+  product: TProduct;
   productIdx: number;
   selectCounts: number;
 }
