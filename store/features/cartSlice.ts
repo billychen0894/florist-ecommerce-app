@@ -1,4 +1,4 @@
-import { TOrderItem } from '@lib/types/api';
+import { TCartItem } from '@lib/types/api';
 import type {
   AnyAction,
   Dispatch,
@@ -9,27 +9,48 @@ import type {
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface CartState {
-  cartItems: TOrderItem[];
+  cartItems: Record<string, TCartItem>;
 }
 
 const initialState: CartState = {
-  cartItems: [],
+  cartItems: {},
 };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    initializeCart(state, action: PayloadAction<TOrderItem[]>) {
-      state.cartItems = action.payload;
+    initializeCart(state, action: PayloadAction<TCartItem[]>) {
+      // Convert the array of items to a record for easier access
+      state.cartItems = action.payload.reduce((acc, item) => {
+        acc[item.id] = item;
+        return acc;
+      }, {} as Record<string, TCartItem>);
     },
-    addItemToCart(state, action: PayloadAction<TOrderItem>) {
-      state.cartItems.push(action.payload);
+    addItemToCart(state, action: PayloadAction<TCartItem>) {
+      const orderItem = action.payload;
+      // If the item is already in the cart, update its quantity
+      if (state.cartItems[orderItem.id]) {
+        state.cartItems[orderItem.id].quantity += orderItem.quantity;
+      } else {
+        state.cartItems[orderItem.id] = orderItem;
+      }
+    },
+    updateCartItemQuantity(
+      state,
+      action: PayloadAction<{ itemId: string; quantity: number }>
+    ) {
+      const { itemId, quantity } = action.payload;
+      // Update the quantity of a specific item
+      if (state.cartItems[itemId]) {
+        state.cartItems[itemId].quantity = quantity;
+      }
     },
   },
 });
 
-export const { initializeCart, addItemToCart } = cartSlice.actions;
+export const { initializeCart, addItemToCart, updateCartItemQuantity } =
+  cartSlice.actions;
 
 export default cartSlice.reducer;
 
