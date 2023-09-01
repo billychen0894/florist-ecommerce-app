@@ -31,11 +31,12 @@ export default function DesktopMenu({
   useEffect(() => {
     if (typeof window !== undefined) {
       const cachedCartItems = getCartItemsFromLocalStorage();
-      dispatch(initializeCart(cachedCartItems));
+      dispatch(initializeCart(Object.values(cachedCartItems)));
     }
   }, [dispatch]);
 
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItemsArr = Object.values(cartItems);
   return (
     <header className="relative">
       {/* Top navigation */}
@@ -106,7 +107,7 @@ export default function DesktopMenu({
                     aria-hidden="true"
                   />
                   <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                    {cartItems.length}
+                    {cartItemsArr.length}
                   </span>
                   <span className="sr-only">items in cart, view bag</span>
                 </Link>

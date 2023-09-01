@@ -9,6 +9,7 @@ import { ShoppingCartCountSelect } from './ShoppingCartCountSelect';
 
 export function ShoppingCartList() {
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItemsArr = Object.values(cartItems);
   return (
     <section aria-labelledby="cart-heading" className="lg:col-span-7">
       <h2 id="cart-heading" className="sr-only">
@@ -19,7 +20,7 @@ export function ShoppingCartList() {
         role="list"
         className="divide-y divide-gray-200 border-b border-t border-gray-200"
       >
-        {cartItems.map((orderItem, orderItemIdx) => (
+        {cartItemsArr.map((orderItem) => (
           <li key={orderItem.id} className="flex py-6 sm:py-10">
             <div className="flex-shrink-0">
               <Image
