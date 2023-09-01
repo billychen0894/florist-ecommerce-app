@@ -35,7 +35,7 @@ export function ShoppingCartCountSelect({
       <select
         id={`quantity-${product.id}`}
         name={`quantity-${product.name}`}
-        value={selectedQuantity}
+        value={selectedQuantity > 10 ? 10 : selectedQuantity}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
           const newQuantity = e.target.value;
           handleChangeCartItemQuantity(product.id, Number(newQuantity));
