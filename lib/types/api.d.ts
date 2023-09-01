@@ -188,3 +188,4 @@ export type TProduct = Product & { images: Image[] } & {
 };
 
 export type TOrderItem = OrderItem & { product: TProduct };
+export type TCartItem = { id: string; quantity: number; product: TProduct };
