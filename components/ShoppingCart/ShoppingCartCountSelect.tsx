@@ -1,7 +1,11 @@
+'use client';
+
 import Button from '@components/ui/Button';
 
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { TProduct } from '@lib/types/api';
+import { updateCartItemQuantity } from '@store/features/cartSlice';
+import { useAppDispatch } from '@store/hooks';
 
 interface ShoppingCartCountSelectProps {
   product: TProduct;
@@ -14,6 +18,15 @@ export function ShoppingCartCountSelect({
   selectedQuantity,
   selectCounts,
 }: ShoppingCartCountSelectProps) {
+  const dispatch = useAppDispatch();
+
+  const handleChangeCartItemQuantity = (
+    itemId: string,
+    newSelectedQuantity: number
+  ) => {
+    dispatch(updateCartItemQuantity({ itemId, quantity: newSelectedQuantity }));
+  };
+
   return (
     <div className="mt-4 sm:mt-0 sm:pr-9">
       <label htmlFor={`quantity-${product.id}`} className="sr-only">
@@ -23,6 +36,10 @@ export function ShoppingCartCountSelect({
         id={`quantity-${product.id}`}
         name={`quantity-${product.name}`}
         value={selectedQuantity}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+          const newQuantity = e.target.value;
+          handleChangeCartItemQuantity(product.id, Number(newQuantity));
+        }}
         className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
       >
         {[...Array(selectCounts)].map((_, i) => (

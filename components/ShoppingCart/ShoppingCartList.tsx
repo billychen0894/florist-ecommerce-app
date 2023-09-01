@@ -10,6 +10,7 @@ import { ShoppingCartCountSelect } from './ShoppingCartCountSelect';
 export function ShoppingCartList() {
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
   const cartItemsArr = Object.values(cartItems);
+
   return (
     <section aria-labelledby="cart-heading" className="lg:col-span-7">
       <h2 id="cart-heading" className="sr-only">
