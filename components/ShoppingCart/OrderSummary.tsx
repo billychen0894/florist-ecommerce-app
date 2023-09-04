@@ -1,16 +1,13 @@
+'use client';
+
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
-import { shippingHoverCardInfo } from '@const/orderInfo';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
+import { formatCurrency } from '@lib/formatCurrency';
+import { useAppSelector } from '@store/hooks';
 
-interface OrderSummaryProps {
-  subtotal: number;
-  shippingEstimate: number;
-}
-
-export function OrderSummary({
-  subtotal,
-  shippingEstimate,
-}: OrderSummaryProps) {
+export function OrderSummary() {
+  const subtotal = useAppSelector((state) => state.cartReducer.subtotal);
   return (
     <section
       aria-labelledby="summary-heading"
@@ -23,7 +20,9 @@ export function OrderSummary({
       <dl className="mt-6 space-y-4">
         <div className="flex items-center justify-between">
           <dt className="text-sm text-gray-600">Subtotal</dt>
-          <dd className="text-sm font-medium text-gray-900">${subtotal}</dd>
+          <dd className="text-sm font-medium text-gray-900">
+            {formatCurrency(subtotal, 'en-CA', 'CAD')}
+          </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
           <dt className="flex items-center text-sm text-gray-600">
@@ -34,13 +33,25 @@ export function OrderSummary({
             />
           </dt>
           <dd className="text-sm font-medium text-gray-900">
-            ${shippingEstimate}
+            Not yet calculated
+          </dd>
+        </div>
+        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+          <dt className="flex text-sm text-gray-600">
+            <span>Tax estimate</span>
+            <HoverCard
+              screenReaderText={taxHoverCardInfo.screenReaderText}
+              hoverCardText={taxHoverCardInfo.hoverCardText}
+            />
+          </dt>
+          <dd className="text-sm font-medium text-gray-900">
+            Not yet calculated
           </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
           <dt className="text-base font-medium text-gray-900">Order total</dt>
           <dd className="text-base font-medium text-gray-900">
-            ${subtotal + shippingEstimate}
+            {formatCurrency(subtotal, 'en-CA', 'CAD')}
           </dd>
         </div>
       </dl>

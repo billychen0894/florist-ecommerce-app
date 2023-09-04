@@ -9,7 +9,7 @@ export default function Cart() {
         </h1>
         <form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
           <ShoppingCartList />
-          <OrderSummary subtotal={99} shippingEstimate={5} />
+          <OrderSummary />
         </form>
       </div>
     </div>
