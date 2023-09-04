@@ -2,10 +2,10 @@ import { users } from '@lib/api/users';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
-import { ProductFullInfo } from './../../lib/types/api.d';
+import { TProduct } from './../../lib/types/api.d';
 
 export interface UserState {
-  wishlist: ProductFullInfo[];
+  wishlist: TProduct[];
 }
 
 const initialState: UserState = {
@@ -32,10 +32,10 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    addProductsToWishlist(state, action: PayloadAction<ProductFullInfo>) {
+    addProductsToWishlist(state, action: PayloadAction<TProduct>) {
       state.wishlist.push(action.payload);
     },
-    removeProductsFromWishlist(state, action: PayloadAction<ProductFullInfo>) {
+    removeProductsFromWishlist(state, action: PayloadAction<TProduct>) {
       state.wishlist = state.wishlist.filter(
         (product) => product.id !== action.payload.id
       );
@@ -43,7 +43,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserWishlistById.fulfilled, (state, action) => {
-      state.wishlist = action.payload as ProductFullInfo[];
+      state.wishlist = action.payload as TProduct[];
     });
   },
 });
