@@ -31,7 +31,7 @@ export default function DesktopMenu({
   useEffect(() => {
     if (typeof window !== undefined) {
       const cachedCartItems = getCartItemsFromLocalStorage();
-      dispatch(initializeCart(Object.values(cachedCartItems)));
+      dispatch(initializeCart(cachedCartItems));
     }
   }, [dispatch]);
 
