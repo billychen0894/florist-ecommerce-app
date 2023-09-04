@@ -5,9 +5,20 @@ import Button from '@components/ui/Button';
 import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
 import { formatCurrency } from '@lib/formatCurrency';
 import { useAppSelector } from '@store/hooks';
+import { useRouter } from 'next/navigation';
 
 export function OrderSummary() {
   const subtotal = useAppSelector((state) => state.cartReducer.subtotal);
+  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItemsArr = Object.values(cartItems);
+  const router = useRouter();
+
+  const handleCheckout = () => {
+    if (cartItemsArr.length === 0) {
+      return;
+    }
+    router.push('/checkout');
+  };
   return (
     <section
       aria-labelledby="summary-heading"
@@ -58,8 +69,12 @@ export function OrderSummary() {
 
       <div className="mt-6">
         <Button
-          type="submit"
-          className="w-full border border-transparent px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+          type="button"
+          className={`w-full border border-transparent px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 ${
+            cartItemsArr.length === 0 ? 'cursor-not-allowed' : null
+          }`}
+          disabled={cartItemsArr.length === 0}
+          onClick={handleCheckout}
         >
           Checkout
         </Button>
