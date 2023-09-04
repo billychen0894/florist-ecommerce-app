@@ -5,10 +5,13 @@ import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Session } from 'next-auth';
 import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
+import Notification from '@components/ui/Notification';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { users } from '@lib/api/users';
 import { TProduct } from '@lib/types/api';
@@ -33,6 +36,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   const userWishlist = useAppSelector((state) => state.userReducer.wishlist);
   const userWishlistProductIdArr = userWishlist.map((product) => product.id);
   const axiosWithAuth = useAxiosWithAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (session?.user.id) {
@@ -45,6 +49,16 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     }
   }, [dispatch, session?.user.id, axiosWithAuth]);
 
+  const handleViewCart = () => {
+    router.push('/cart');
+    toast.dismiss();
+  };
+
+  const handleViewCheckout = () => {
+    router.push('/checkout');
+    toast.dismiss();
+  };
+
   const handleAddToCart = () => {
     const dispatchPayload = {
       id: productId,
@@ -54,6 +68,25 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
       product: product as TProduct,
     };
     dispatch(addItemToCart(dispatchPayload));
+
+    toast(
+      () => (
+        <Notification
+          firstClickHanlder={{
+            handler: handleViewCart,
+            buttonLabel: 'View Cart',
+          }}
+          secondClickHandler={{
+            handler: handleViewCheckout,
+            buttonLabel: 'Checkout',
+          }}
+          notificationText="Added to cart!"
+        />
+      ),
+      {
+        position: 'top-right',
+      }
+    );
   };
 
   const handleAddToWishlist = (session: Session | null) => {
