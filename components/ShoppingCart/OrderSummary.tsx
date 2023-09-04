@@ -1,6 +1,6 @@
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
+import { shippingHoverCardInfo } from '@const/orderInfo';
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -11,7 +11,6 @@ interface OrderSummaryProps {
 export function OrderSummary({
   subtotal,
   shippingEstimate,
-  taxEstimate,
 }: OrderSummaryProps) {
   return (
     <section
@@ -40,19 +39,9 @@ export function OrderSummary({
           </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-          <dt className="flex text-sm text-gray-600">
-            <span>Tax estimate</span>
-            <HoverCard
-              screenReaderText={taxHoverCardInfo.screenReaderText}
-              hoverCardText={taxHoverCardInfo.hoverCardText}
-            />
-          </dt>
-          <dd className="text-sm font-medium text-gray-900">${taxEstimate}</dd>
-        </div>
-        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
           <dt className="text-base font-medium text-gray-900">Order total</dt>
           <dd className="text-base font-medium text-gray-900">
-            ${subtotal + shippingEstimate + taxEstimate}
+            ${subtotal + shippingEstimate}
           </dd>
         </div>
       </dl>
