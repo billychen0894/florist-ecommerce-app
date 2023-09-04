@@ -1,13 +1,13 @@
-import { OrderItem } from './types/api';
+import { TCartItem } from './types/api';
 
-export function getCartItemsFromLocalStorage(): OrderItem[] {
+export function getCartItemsFromLocalStorage(): TCartItem[] {
   const cartItemsStr = localStorage.getItem('cartItems');
 
   // check cachedCartItems from localStorage if exists
   // the life for cachedCartItems only lives for 3 days
   if (cartItemsStr) {
     const cartItems: {
-      cartItems: OrderItem[];
+      cartItems: TCartItem[];
       createdAt: number;
     } = JSON.parse(cartItemsStr);
     const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
