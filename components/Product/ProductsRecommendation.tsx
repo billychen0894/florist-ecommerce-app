@@ -1,10 +1,11 @@
 import { fetchProducts } from '@actions/fetch-products';
-import { Product, ProductPayload } from '@lib/types/api';
+import { formatCurrency } from '@lib/formatCurrency';
+import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductsRecommendationProps {
-  product: Product | null;
+  product: TProduct | null;
   currProductId: string;
 }
 
@@ -12,7 +13,7 @@ export async function ProductsRecommendation({
   product,
   currProductId,
 }: ProductsRecommendationProps) {
-  const productCategories = (product as ProductPayload).categories.map(
+  const productCategories = product?.categories.map(
     (category) => category.name
   );
 
@@ -62,7 +63,7 @@ export async function ProductsRecommendation({
                 </p>
               </div>
               <p className="text-sm font-medium text-secondary-500">
-                ${product.price}
+                {formatCurrency(product.price, 'en-CA', 'CAD')}
               </p>
             </div>
           </div>

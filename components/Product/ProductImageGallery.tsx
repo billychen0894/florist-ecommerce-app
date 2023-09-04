@@ -4,10 +4,10 @@ import { Tab } from '@headlessui/react';
 import Image from 'next/image';
 
 import { cn } from '@lib/classNames';
-import { Product, ProductPayload } from '@lib/types/api';
+import { TProduct } from '@lib/types/api';
 
 interface ProductImageGalleryProps {
-  product: Product | null;
+  product: TProduct | null;
 }
 
 export function ProductImageGallery({ product }: ProductImageGalleryProps) {
@@ -16,7 +16,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
       {/* Image selector */}
       <div className="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
         <Tab.List className="grid grid-cols-4 gap-6">
-          {(product as ProductPayload).images.map((image) => (
+          {product?.images.map((image) => (
             <Tab
               key={image.id}
               className="relative flex h-28 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-primary-500 focus:ring-opacity-50 focus:ring-offset-4"
@@ -48,7 +48,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
       </div>
 
       <Tab.Panels className="aspect-h-1 aspect-w-1 w-full">
-        {(product as ProductPayload).images.map((image) => (
+        {product?.images.map((image) => (
           <Tab.Panel key={image.id}>
             <Image
               src={image.url}

@@ -42,7 +42,7 @@ export const options: NextAuthOptions = {
   },
   // NextAuth callback functions
   callbacks: {
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account, profile, trigger, session }) {
       // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated
       // To persist the data to the token, the callback should return a JSON object with the data
       if (account?.provider === 'google') {
@@ -102,6 +102,9 @@ export const options: NextAuthOptions = {
           }
         }
       } else {
+        if (trigger === 'update' && session) {
+          token.accessToken = session?.accessToken as string;
+        }
         return { ...token, ...user };
       }
     },

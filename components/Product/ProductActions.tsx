@@ -5,13 +5,16 @@ import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Session } from 'next-auth';
 import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
+import Notification from '@components/ui/Notification';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { users } from '@lib/api/users';
-import { Product, ProductFullInfo } from '@lib/types/api';
+import { TProduct } from '@lib/types/api';
 import { addItemToCart } from '@store/features/cartSlice';
 import {
   addProductsToWishlist,
@@ -22,7 +25,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 
 interface ProductActionsProps {
   productId: string;
-  product: Product | null;
+  product: TProduct | null;
 }
 
 export function ProductActions({ productId, product }: ProductActionsProps) {
@@ -33,6 +36,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   const userWishlist = useAppSelector((state) => state.userReducer.wishlist);
   const userWishlistProductIdArr = userWishlist.map((product) => product.id);
   const axiosWithAuth = useAxiosWithAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (session?.user.id) {
@@ -45,15 +49,44 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     }
   }, [dispatch, session?.user.id, axiosWithAuth]);
 
+  const handleViewCart = () => {
+    router.push('/cart');
+    toast.dismiss();
+  };
+
+  const handleViewCheckout = () => {
+    router.push('/checkout');
+    toast.dismiss();
+  };
+
   const handleAddToCart = () => {
     const dispatchPayload = {
       id: productId,
       quantity: quantityRef.current?.value
         ? Number(quantityRef.current.value)
         : 0,
-      product: product as Product,
+      product: product as TProduct,
     };
     dispatch(addItemToCart(dispatchPayload));
+
+    toast(
+      () => (
+        <Notification
+          firstClickHanlder={{
+            handler: handleViewCart,
+            buttonLabel: 'View Cart',
+          }}
+          secondClickHandler={{
+            handler: handleViewCheckout,
+            buttonLabel: 'Checkout',
+          }}
+          notificationText="Added to cart!"
+        />
+      ),
+      {
+        position: 'top-right',
+      }
+    );
   };
 
   const handleAddToWishlist = (session: Session | null) => {
@@ -67,10 +100,10 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
           session?.user.id,
           axiosWithAuth
         );
-        dispatch(removeProductsFromWishlist(product as ProductFullInfo));
+        dispatch(removeProductsFromWishlist(product as TProduct));
       } else {
         users.addToUserWishlist(productId, session?.user.id, axiosWithAuth);
-        dispatch(addProductsToWishlist(product as ProductFullInfo));
+        dispatch(addProductsToWishlist(product as TProduct));
       }
     }
   };

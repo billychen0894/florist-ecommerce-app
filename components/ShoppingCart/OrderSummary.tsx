@@ -1,18 +1,24 @@
+'use client';
+
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
 import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
+import { formatCurrency } from '@lib/formatCurrency';
+import { useAppSelector } from '@store/hooks';
+import { useRouter } from 'next/navigation';
 
-interface OrderSummaryProps {
-  subtotal: number;
-  shippingEstimate: number;
-  taxEstimate: number;
-}
+export function OrderSummary() {
+  const subtotal = useAppSelector((state) => state.cartReducer.subtotal);
+  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItemsArr = Object.values(cartItems);
+  const router = useRouter();
 
-export function OrderSummary({
-  subtotal,
-  shippingEstimate,
-  taxEstimate,
-}: OrderSummaryProps) {
+  const handleCheckout = () => {
+    if (cartItemsArr.length === 0) {
+      return;
+    }
+    router.push('/checkout');
+  };
   return (
     <section
       aria-labelledby="summary-heading"
@@ -25,7 +31,9 @@ export function OrderSummary({
       <dl className="mt-6 space-y-4">
         <div className="flex items-center justify-between">
           <dt className="text-sm text-gray-600">Subtotal</dt>
-          <dd className="text-sm font-medium text-gray-900">${subtotal}</dd>
+          <dd className="text-sm font-medium text-gray-900">
+            {formatCurrency(subtotal, 'en-CA', 'CAD')}
+          </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
           <dt className="flex items-center text-sm text-gray-600">
@@ -36,7 +44,7 @@ export function OrderSummary({
             />
           </dt>
           <dd className="text-sm font-medium text-gray-900">
-            ${shippingEstimate}
+            Not yet calculated
           </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
@@ -47,20 +55,26 @@ export function OrderSummary({
               hoverCardText={taxHoverCardInfo.hoverCardText}
             />
           </dt>
-          <dd className="text-sm font-medium text-gray-900">${taxEstimate}</dd>
+          <dd className="text-sm font-medium text-gray-900">
+            Not yet calculated
+          </dd>
         </div>
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
           <dt className="text-base font-medium text-gray-900">Order total</dt>
           <dd className="text-base font-medium text-gray-900">
-            ${subtotal + shippingEstimate + taxEstimate}
+            {formatCurrency(subtotal, 'en-CA', 'CAD')}
           </dd>
         </div>
       </dl>
 
       <div className="mt-6">
         <Button
-          type="submit"
-          className="w-full border border-transparent px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+          type="button"
+          className={`w-full border border-transparent px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 ${
+            cartItemsArr.length === 0 ? 'cursor-not-allowed' : null
+          }`}
+          disabled={cartItemsArr.length === 0}
+          onClick={handleCheckout}
         >
           Checkout
         </Button>

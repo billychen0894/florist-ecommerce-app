@@ -1,9 +1,10 @@
-import { ProductItem } from '@lib/types/types';
+import { formatCurrency } from '@lib/formatCurrency';
+import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductItemProps {
-  product: ProductItem;
+  product: TProduct;
   showCategory?: boolean;
 }
 
@@ -32,18 +33,20 @@ export function ProductItem({
         </div>
       </div>
       <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-black">
-        <h3>
+        <h3 className="shrink">
           <Link href={`/products/${product.id}`}>
             <span aria-hidden="true" className="absolute inset-0" />
             {product.name}
           </Link>
         </h3>
-        <p className="text-secondary-500">${product.price}</p>
+        <p className="text-secondary-500 flex-shrink-0">
+          {formatCurrency(product.price, 'en-CA', 'CAD')}
+        </p>
       </div>
       {showCategory &&
         product.categories &&
         product.categories.map((category) => (
-          <p key={category.id} className="mt-1 text-sm text-shades-500">
+          <p key={category.id} className="mt-1 text-sm text-shades-500 shrink">
             {category.name}
           </p>
         ))}

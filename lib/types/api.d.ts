@@ -2,7 +2,15 @@ import {
   orderFormDataSchema,
   orderSummarySchema,
 } from '@app/api/orders/ordersPayloadValidation';
-import { OrderStatus } from '@prisma/client';
+import {
+  Category,
+  Image,
+  OrderItem,
+  OrderStatus,
+  Product,
+  ProductDetail,
+  ProductDetailItem,
+} from '@prisma/client';
 
 export interface ApiResponse<T> {
   success?: boolean;
@@ -75,27 +83,6 @@ export interface RefreshAccessTokenResponse extends ApiResponse<null> {
   accessToken: string;
 }
 
-export interface Category {
-  name: string;
-}
-
-export interface ProductDetailItem {
-  id?: string;
-  productDetailItemName: string;
-  items: string[];
-}
-
-export interface ProductDetail {
-  productDetailItems: ProductDetailItem[];
-}
-
-export interface Image {
-  id?: string;
-  url: string;
-  name: string;
-  alt: string;
-}
-
 export interface ProductCommonFields {
   name: string;
   description: string;
@@ -103,21 +90,6 @@ export interface ProductCommonFields {
   inStock: boolean;
   leadTime: string;
 }
-
-export interface ProductFullInfo extends ProductCommonFields {
-  id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  productDetailId?: string;
-}
-
-export interface ProductPayload extends ProductCommonFields {
-  images: Image[];
-  categories: Category[];
-  productDetail: ProductDetail;
-}
-
-export type Product = ProductFullInfo | ProductPayload;
 
 export interface WishList {
   wishlist: Product[] | [];
@@ -129,11 +101,6 @@ export type Sort =
   | 'Newest'
   | 'Price-low-to-high'
   | 'Price-high-to-low';
-
-export interface Categories {
-  id: string;
-  name: string;
-}
 
 export interface OrderPayload {
   formData: yup.InferType<typeof orderFormDataSchema>;
@@ -184,12 +151,6 @@ export type DiscountCoupon =
   | DiscountCouponCommonFields
   | DiscountCouponFullInfo;
 
-export interface OrderItem {
-  id: string;
-  quantity: number;
-  product: Product;
-}
-
 export interface commonOrderFields {
   id: string;
   orderNumber: string;
@@ -219,3 +180,12 @@ export interface OrderFullInfo extends commonOrderFields {
 }
 
 export type Order = OrdersFromUser | SearchOrders | OrderFullInfo;
+
+export type TProduct = Product & { images: Image[] } & {
+  categories: Category[];
+} & {
+  productDetail: ProductDetail & { productDetailItems: ProductDetailItem[] };
+};
+
+export type TOrderItem = OrderItem & { product: TProduct };
+export type TCartItem = { id: string; quantity: number; product: TProduct };

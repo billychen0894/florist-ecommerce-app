@@ -1,5 +1,5 @@
 import axios from '@lib/axios';
-import { ApiResponse, Filter, Product, Sort } from '@lib/types/api';
+import { ApiResponse, Filter, Sort, TProduct } from '@lib/types/api';
 import { AxiosResponse } from 'axios';
 import { cache } from 'react';
 
@@ -24,7 +24,7 @@ const getAllProducts = cache(
 
     const response = (await axios.get(`/api/products`, {
       params: params,
-    })) as AxiosResponse<ApiResponse<Product[]>>;
+    })) as AxiosResponse<ApiResponse<TProduct[]>>;
 
     return response;
   }
@@ -33,7 +33,7 @@ const getAllProducts = cache(
 const getProductById = cache(async (productId: string) => {
   const response = (await axios.get(
     `/api/products/${productId}`
-  )) as AxiosResponse<ApiResponse<Product>>;
+  )) as AxiosResponse<ApiResponse<TProduct>>;
 
   return response;
 });
@@ -41,7 +41,7 @@ const getProductById = cache(async (productId: string) => {
 const searchProductsByKeyword = cache(async (keyword: string) => {
   const response = (await axios.get(
     `/api/products/search?keyword=${keyword}`
-  )) as AxiosResponse<ApiResponse<Product[]>>;
+  )) as AxiosResponse<ApiResponse<TProduct[]>>;
 
   return response;
 });
@@ -56,7 +56,7 @@ const filterAndSortProducts = cache(async (sort: Sort, filters: Filter[]) => {
 
   const response = (await axios.get(
     `/api/products/filter-and-sort?${sortQuery}&${filterQuery}`
-  )) as AxiosResponse<ApiResponse<Product[]>>;
+  )) as AxiosResponse<ApiResponse<TProduct[]>>;
 
   return response;
 });
