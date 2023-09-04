@@ -36,6 +36,11 @@ const cartSlice = createSlice({
         state.cartItems[orderItem.id] = orderItem;
       }
     },
+    removeItemFromCart(state, action: PayloadAction<{ itemId: string }>) {
+      if (state.cartItems.hasOwnProperty(action.payload.itemId)) {
+        delete state.cartItems[action.payload.itemId];
+      }
+    },
     updateCartItemQuantity(
       state,
       action: PayloadAction<{ itemId: string; quantity: number }>
@@ -49,8 +54,12 @@ const cartSlice = createSlice({
   },
 });
 
-export const { initializeCart, addItemToCart, updateCartItemQuantity } =
-  cartSlice.actions;
+export const {
+  initializeCart,
+  addItemToCart,
+  updateCartItemQuantity,
+  removeItemFromCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
 
@@ -66,12 +75,18 @@ export const localStorageMiddleware: Middleware =
       action.type.startsWith('cart/') &&
       action.type !== 'cart/initializeCart'
     ) {
-      const { cartItems } = store.getState().cartReducer;
-      const cartItemsData = {
-        cartItems: cartItems,
-        createdAt: new Date().getTime(),
-      };
-      localStorage.setItem('cartItems', JSON.stringify(cartItemsData));
+      const { cartItems }: { cartItems: Record<string, TCartItem> } =
+        store.getState().cartReducer;
+
+      if (Object.keys(cartItems).length === 0) {
+        localStorage.removeItem('cartItems');
+      } else {
+        const cartItemsData = {
+          cartItems: cartItems,
+          createdAt: new Date().getTime(),
+        };
+        localStorage.setItem('cartItems', JSON.stringify(cartItemsData));
+      }
     }
     // Return the result of processing the action
     return result;

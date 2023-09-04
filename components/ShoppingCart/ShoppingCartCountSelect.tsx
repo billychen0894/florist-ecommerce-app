@@ -4,7 +4,10 @@ import Button from '@components/ui/Button';
 
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { TProduct } from '@lib/types/api';
-import { updateCartItemQuantity } from '@store/features/cartSlice';
+import {
+  removeItemFromCart,
+  updateCartItemQuantity,
+} from '@store/features/cartSlice';
 import { useAppDispatch } from '@store/hooks';
 
 interface ShoppingCartCountSelectProps {
@@ -25,6 +28,10 @@ export function ShoppingCartCountSelect({
     newSelectedQuantity: number
   ) => {
     dispatch(updateCartItemQuantity({ itemId, quantity: newSelectedQuantity }));
+  };
+
+  const handleRemoveCartItem = (itemId: string) => {
+    dispatch(removeItemFromCart({ itemId }));
   };
 
   return (
@@ -53,6 +60,9 @@ export function ShoppingCartCountSelect({
         <Button
           type="button"
           className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500 bg-transparent hover:bg-transparent shadow-none"
+          onClick={() => {
+            handleRemoveCartItem(product.id);
+          }}
         >
           <span className="sr-only">Remove</span>
           <XMarkIcon className="h-5 w-5" aria-hidden="true" />
