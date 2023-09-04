@@ -1,3 +1,4 @@
+import { formatCurrency } from '@lib/formatCurrency';
 import { TProduct } from '@lib/types/api';
 
 interface ProductInfoProps {
@@ -16,7 +17,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           {product?.categories.map((category) => category.name).join(', ')}
         </p>
         <p className="text-3xl tracking-tight text-secondary-500">
-          ${product?.price}
+          {formatCurrency(product?.price as number, 'en-CA', 'CAD')}
         </p>
       </div>
 

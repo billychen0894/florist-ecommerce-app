@@ -4,6 +4,7 @@ import { CheckIcon, ClockIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { formatCurrency } from '@lib/formatCurrency';
 import { useAppSelector } from '@store/hooks';
 import { ShoppingCartCountSelect } from './ShoppingCartCountSelect';
 
@@ -55,7 +56,7 @@ export function ShoppingCartList() {
                     </p>
                   </div>
                   <p className="mt-1 text-sm font-medium text-gray-900">
-                    ${orderItem.product.price}
+                    {formatCurrency(orderItem.product.price, 'en-CA', 'CAD')}
                   </p>
                 </div>
 

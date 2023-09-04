@@ -1,4 +1,5 @@
 import { fetchProducts } from '@actions/fetch-products';
+import { formatCurrency } from '@lib/formatCurrency';
 import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -62,7 +63,7 @@ export async function ProductsRecommendation({
                 </p>
               </div>
               <p className="text-sm font-medium text-secondary-500">
-                ${product.price}
+                {formatCurrency(product.price, 'en-CA', 'CAD')}
               </p>
             </div>
           </div>
