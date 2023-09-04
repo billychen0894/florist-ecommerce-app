@@ -1,7 +1,5 @@
 import { OrderSummary, ShoppingCartList } from '@components/ShoppingCart';
 
-import { products } from '@const/products';
-
 export default function Cart() {
   return (
     <div className="bg-white">
@@ -10,8 +8,8 @@ export default function Cart() {
           Shopping Cart
         </h1>
         <form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-          <ShoppingCartList products={products} />
-          <OrderSummary subtotal={99} shippingEstimate={5} taxEstimate={8.32} />
+          <ShoppingCartList />
+          <OrderSummary subtotal={99} shippingEstimate={5} />
         </form>
       </div>
     </div>

@@ -5,7 +5,6 @@ import { shippingHoverCardInfo } from '@const/orderInfo';
 interface OrderSummaryProps {
   subtotal: number;
   shippingEstimate: number;
-  taxEstimate: number;
 }
 
 export function OrderSummary({
