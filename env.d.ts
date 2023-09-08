@@ -15,5 +15,6 @@ declare namespace NodeJS {
     EMAIL_SERVER_PORT: string;
     EMAIL_FROM: string;
     STRIPE_SECRET_KEY: string;
+    STRIPE_WEBHOOK_SECRET: string;
   }
 }
