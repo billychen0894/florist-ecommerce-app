@@ -141,7 +141,7 @@ model Category {
 model Order {
   id                String          @id @default(uuid())
   orderNumber       String          @unique
-  contactEmail      String
+  contactEmail      String?
   total             Float
   userId            String?
   user              User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -150,15 +150,16 @@ model Order {
   orderItems        OrderItem[]
   orderStatus       OrderStatus     @default(CREATED)
   paymentMethod     PaymentMethod   @default(CREDIT_CARD)
-  shippingMethod    ShippingMethod  @relation(fields: [shippingMethodId], references: [id], onDelete: Cascade)
-  shippingMethodId  String
-  shippingAddress   Address         @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
-  shippingAddressId String
-  billingAddress    Address         @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
-  billingAddressId  String
-  contactPhone      String
+  shippingMethod    ShippingMethod?  @relation(fields: [shippingMethodId], references: [id], onDelete: Cascade)
+  shippingMethodId  String?
+  shippingAddress   Address?         @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
+  shippingAddressId String?
+  billingAddress    Address?         @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
+  billingAddressId  String?
+  contactPhone      String?
   discountCouponId  String?
   discountCoupon    DiscountCoupon? @relation(fields: [discountCouponId], references: [id])
+  paymentStatus     PaymentStatus   @default(UNPAID)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
@@ -251,4 +252,9 @@ enum CouponStatus {
   AVAILABLE
   UNAVAILABLE
   EXPIRED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
 }
