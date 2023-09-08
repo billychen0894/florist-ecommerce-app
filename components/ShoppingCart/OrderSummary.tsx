@@ -1,5 +1,6 @@
 'use client';
 
+import { checkout } from '@actions/checkout';
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
 import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
@@ -13,11 +14,13 @@ export function OrderSummary() {
   const cartItemsArr = Object.values(cartItems);
   const router = useRouter();
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cartItemsArr.length === 0) {
       return;
     }
-    router.push('/checkout');
+    // router.push('/checkout');
+    const data = await checkout(cartItemsArr);
+    router.push(data.url);
   };
   return (
     <section
