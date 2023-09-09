@@ -10,6 +10,7 @@ datasource db {
 
 model User {
   id               String    @id @default(uuid())
+  stripeCustomerId String?
   name             String?
   email            String?   @unique
   emailVerified    DateTime?
@@ -29,6 +30,7 @@ model User {
 
 model Guest {
   id        String   @id @default(uuid())
+  stripeCustomerId String?
   name      String?
   email     String?  @unique
   createdAt DateTime @default(now())
