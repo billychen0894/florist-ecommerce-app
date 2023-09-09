@@ -38,9 +38,15 @@ async function searchOrders(
   return response;
 }
 
-async function checkout(orders: TCartItem[]) {
+async function checkout(
+  orders: TCartItem[],
+  userId?: string,
+  userAssociatedStripeId?: string
+) {
   const response = await axios.post('api/checkout', {
     orders,
+    userId: userId,
+    userAssociatedStripeId: userAssociatedStripeId,
   });
 
   return response;

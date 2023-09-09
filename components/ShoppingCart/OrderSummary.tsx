@@ -6,6 +6,7 @@ import Button from '@components/ui/Button';
 import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
 import { formatCurrency } from '@lib/formatCurrency';
 import { useAppSelector } from '@store/hooks';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export function OrderSummary() {
@@ -13,13 +14,18 @@ export function OrderSummary() {
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
   const cartItemsArr = Object.values(cartItems);
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleCheckout = async () => {
     if (cartItemsArr.length === 0) {
       return;
     }
-    // router.push('/checkout');
-    const data = await checkout(cartItemsArr);
+
+    const data = await checkout(
+      cartItemsArr,
+      session?.user.id,
+      session?.user.stripeCustomerId
+    );
     router.push(data.url);
   };
   return (
