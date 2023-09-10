@@ -1,6 +1,13 @@
+import { generateUniqueNumber } from '@lib/generateUniqueNumber';
 import { prisma } from '@lib/prisma';
 import { stripe } from '@lib/stripe';
-import { OrderStatus, PaymentStatus } from '@prisma/client';
+import {
+  AddressType,
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+  Prisma,
+} from '@prisma/client';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -22,65 +29,111 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
-  const address = session?.customer_details?.address;
+  const billingAddress = session?.customer_details?.address;
+  const shippingAddress = session?.shipping_details?.address;
   const email = session?.customer_details?.email;
-  const name = session?.customer_details?.name;
-  const phone = session?.customer_details?.phone;
+  const name =
+    session?.shipping_details?.name || session?.customer_details?.name;
+  const phone =
+    session?.shipping_details?.phone || session?.customer_details?.phone;
 
-  if (event.type === 'checkout.session.completed') {
-    const order = await prisma.order.update({
+  const orderData: Prisma.OrderCreateInput = {
+    orderNumber: generateUniqueNumber('BL'),
+    paymentMethod: PaymentMethod.CREDIT_CARD,
+    total: session?.amount_total! / 100,
+    contactEmail: email,
+    orderStatus: OrderStatus.PROCESSING,
+    paymentStatus: PaymentStatus.PAID,
+    contactPhone: phone,
+    shippingAddress: {
+      connectOrCreate: {
+        where: {
+          postalCode: shippingAddress?.postal_code!,
+        },
+        create: {
+          addressType: AddressType.SHIPPING,
+          addressLine1: shippingAddress?.line1!,
+          addressLine2: shippingAddress?.line2,
+          city: shippingAddress?.city!,
+          stateOrProvince: shippingAddress?.state!,
+          postalCode: shippingAddress?.postal_code!,
+          country: shippingAddress?.country!,
+        },
+      },
+    },
+    billingAddress: {
+      connectOrCreate: {
+        where: {
+          postalCode: billingAddress?.postal_code!,
+        },
+        create: {
+          addressType: AddressType.BILLING,
+          addressLine1: billingAddress?.line1!,
+          addressLine2: billingAddress?.line2,
+          city: billingAddress?.city!,
+          stateOrProvince: billingAddress?.state!,
+          postalCode: billingAddress?.postal_code!,
+          country: billingAddress?.country!,
+        },
+      },
+    },
+  };
+
+  // if it's guest checkout then connect/create guest in db
+  if (!session?.metadata?.userId) {
+    orderData.guest = {
+      connectOrCreate: {
+        where: {
+          email: email!,
+        },
+        create: {
+          email: email!,
+          name: name,
+          stripeCustomerId: session?.customer as string,
+        },
+      },
+    };
+  } else {
+    orderData.user = {
+      connect: { id: session?.metadata?.userId },
+    };
+
+    await prisma.user.update({
       where: {
-        id: session?.metadata?.orderId,
+        id: session?.metadata?.userId,
       },
       data: {
-        contactEmail: email,
-        orderStatus: OrderStatus.PROCESSING,
-        paymentStatus: PaymentStatus.PAID,
-        contactPhone: phone,
-        shippingAddress: {
-          connectOrCreate: {
-            where: {
-              postalCode: address?.postal_code!,
-            },
-            create: {
-              addressLine1: address?.line1!,
-              addressLine2: address?.line2,
-              city: address?.city!,
-              stateOrProvince: address?.state!,
-              postalCode: address?.postal_code!,
-              country: address?.country!,
-            },
-          },
-        },
-        billingAddress: {
-          connectOrCreate: {
-            where: {
-              postalCode: address?.postal_code!,
-            },
-            create: {
-              addressLine1: address?.line1!,
-              addressLine2: address?.line2,
-              city: address?.city!,
-              stateOrProvince: address?.state!,
-              postalCode: address?.postal_code!,
-              country: address?.country!,
-            },
-          },
-        },
-        guest: {
-          connectOrCreate: {
-            where: {
-              email: email!,
-            },
-            create: {
-              email: email!,
-              name: name,
-            },
-          },
-        },
+        stripeCustomerId: session?.customer as string,
       },
     });
   }
 
-  return new NextResponse(null, { status: 200 });
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const lineItemsObj = await stripe.checkout.sessions.listLineItems(
+        session.id,
+        {
+          expand: ['data.price.product'],
+        }
+      );
+
+      orderData.orderItems = {
+        createMany: {
+          data: lineItemsObj?.data.map((item) => ({
+            productId: (item.price?.product as Stripe.Product).metadata
+              .productId,
+            quantity: item.quantity!,
+          }))!,
+        },
+      };
+
+      await prisma.order.create({
+        data: orderData,
+      });
+    }
+    return new NextResponse(null, { status: 200 });
+  } catch (e: any) {
+    console.error(e);
+    return new NextResponse(`Error: ${e.message}`, { status: 500 });
+  }
 }

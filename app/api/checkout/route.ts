@@ -1,14 +1,16 @@
-import { generateUniqueNumber } from '@lib/generateUniqueNumber';
 import { prisma } from '@lib/prisma';
 import { stripe } from '@lib/stripe';
 import { TCartItem } from '@lib/types/api';
-import { PaymentMethod } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 export async function POST(req: Request, res: Response) {
-  const body: { orders: TCartItem[] } = await req.json();
-  const { orders } = body;
+  const body: {
+    orders: TCartItem[];
+    userId?: string;
+    userAssociatedStripeId?: string;
+  } = await req.json();
+  const { orders, userId } = body;
 
   if (Object.keys(orders).length === 0 || !orders) {
     return NextResponse.json(
@@ -34,34 +36,30 @@ export async function POST(req: Request, res: Response) {
           images: orderItem.product.images.map(
             (image) => `${process.env.APP_BASE_URL}${image.url}`
           ),
+          metadata: {
+            productId: orderItem.product.id,
+          },
         },
         unit_amount: orderItem.product.price * 100,
       },
     });
   });
 
-  const order = await prisma.order.create({
-    data: {
-      orderNumber: generateUniqueNumber('BL'),
-      paymentMethod: PaymentMethod.CREDIT_CARD,
-      total: orders.reduce((acc, orderItem) => {
-        return (acc += orderItem.quantity * orderItem.product.price);
-      }, 0),
-      orderItems: {
-        createMany: {
-          data: orders.map((orderItem) => ({
-            productId: orderItem.product.id,
-            quantity: orderItem.quantity,
-          })),
-        },
+  let user;
+  if (userId) {
+    // check if user exists in db based on provided userId
+    user = await prisma.user.findUnique({
+      where: {
+        id: userId,
       },
-    },
-  });
+    });
+  }
 
-  const session = await stripe.checkout.sessions.create({
+  const stripeSessionData: Stripe.Checkout.SessionCreateParams = {
     line_items: lineItems,
     submit_type: 'pay',
     mode: 'payment',
+    customer: user?.stripeCustomerId || undefined,
     payment_method_types: ['card'],
     billing_address_collection: 'required',
     shipping_address_collection: {
@@ -73,7 +71,7 @@ export async function POST(req: Request, res: Response) {
     success_url: `${process.env.APP_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.APP_BASE_URL}/cart`,
     metadata: {
-      orderId: order.id,
+      userId: userId ? userId : '',
     },
     automatic_tax: {
       enabled: true,
@@ -88,7 +86,14 @@ export async function POST(req: Request, res: Response) {
     invoice_creation: {
       enabled: true,
     },
-  });
+  };
+
+  if (user?.stripeCustomerId) {
+    stripeSessionData.customer_update = {
+      shipping: 'auto',
+    };
+  }
+  const session = await stripe.checkout.sessions.create(stripeSessionData);
 
   return NextResponse.json({ url: session.url });
 }
