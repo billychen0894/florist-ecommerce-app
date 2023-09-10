@@ -18,9 +18,9 @@ services:
     restart: always
     ports:
       - 8080:8080
-  stripe-cli:
-    image: stripe/stripe-cli
-    container_name: stripe-cli
-    command: 'listen --api-key ${STRIPE_SECRET_KEY} --forward-to localhost:3000/api/webhook'
-    env_file:
-      - .env
+  # stripe-cli:
+  #   image: stripe/stripe-cli
+  #   container_name: stripe-cli
+  #   command: 'listen --api-key ${STRIPE_SECRET_KEY} --forward-to localhost:3000/api/webhook'
+  #   env_file:
+  #     - .env
