@@ -21,11 +21,7 @@ export function OrderSummary() {
       return;
     }
 
-    const data = await checkout(
-      cartItemsArr,
-      session?.user.id,
-      session?.user.stripeCustomerId
-    );
+    const data = await checkout(cartItemsArr, session?.user.id);
     router.push(data.url);
   };
   return (
