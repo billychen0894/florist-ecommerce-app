@@ -1,13 +1,7 @@
 import { generateUniqueNumber } from '@lib/generateUniqueNumber';
 import { prisma } from '@lib/prisma';
 import { stripe } from '@lib/stripe';
-import {
-  AddressType,
-  OrderStatus,
-  PaymentMethod,
-  PaymentStatus,
-  Prisma,
-} from '@prisma/client';
+import { PaymentStatus, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -39,10 +33,8 @@ export async function POST(req: Request) {
 
   const orderData: Prisma.OrderCreateInput = {
     orderNumber: generateUniqueNumber('BL'),
-    paymentMethod: PaymentMethod.CREDIT_CARD,
     total: session?.amount_total! / 100,
     contactEmail: email,
-    orderStatus: OrderStatus.PROCESSING,
     paymentStatus: PaymentStatus.PAID,
     contactPhone: phone,
     shippingAddress: {
@@ -51,7 +43,6 @@ export async function POST(req: Request) {
           postalCode: shippingAddress?.postal_code!,
         },
         create: {
-          addressType: AddressType.SHIPPING,
           addressLine1: shippingAddress?.line1!,
           addressLine2: shippingAddress?.line2,
           city: shippingAddress?.city!,
@@ -67,7 +58,6 @@ export async function POST(req: Request) {
           postalCode: billingAddress?.postal_code!,
         },
         create: {
-          addressType: AddressType.BILLING,
           addressLine1: billingAddress?.line1!,
           addressLine2: billingAddress?.line2,
           city: billingAddress?.city!,
