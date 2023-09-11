@@ -7,7 +7,7 @@ type ClickHandlerObj = {
 
 interface NotificationProps {
   firstClickHanlder: ClickHandlerObj;
-  secondClickHandler: ClickHandlerObj;
+  secondClickHandler?: ClickHandlerObj;
   notificationText: string;
 }
 
@@ -35,13 +35,15 @@ export default function Notification({
         >
           {firstClickHanlder.buttonLabel}
         </button>
-        <button
-          type="button"
-          className="inline-flex px-3 py-1 border rounded-full bg-primary-500 text-white hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          onClick={secondClickHandler.handler}
-        >
-          {secondClickHandler.buttonLabel}
-        </button>
+        {secondClickHandler && (
+          <button
+            type="button"
+            className="inline-flex px-3 py-1 border rounded-full bg-primary-500 text-white hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            onClick={secondClickHandler?.handler}
+          >
+            {secondClickHandler?.buttonLabel}
+          </button>
+        )}
       </div>
     </div>
   );
