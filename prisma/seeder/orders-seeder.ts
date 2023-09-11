@@ -1,7 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { createdProducts } from './products-seeder';
-import { createdShippingMethods } from './shippingMethods-seeder';
 import { createdUsers } from './users-seeder';
 
 export function generateUniqueNumber(prefix: string) {
@@ -27,14 +26,8 @@ const orderData: Prisma.OrderCreateInput[] = [
     orderNumber: '',
     orderStatus: 'CREATED',
     contactEmail: 'test1@test.com',
-    paymentMethod: 'CREDIT_CARD',
     contactPhone: '1234567890',
     total: 1100,
-    shippingMethod: {
-      connect: {
-        id: '',
-      },
-    },
     user: {
       connect: {
         id: '',
@@ -52,7 +45,6 @@ const orderData: Prisma.OrderCreateInput[] = [
     },
     billingAddress: {
       create: {
-        addressType: 'BILLING',
         addressLine1: 'test1',
         city: 'Vancouver',
         stateOrProvince: 'BC',
@@ -62,7 +54,6 @@ const orderData: Prisma.OrderCreateInput[] = [
     },
     shippingAddress: {
       create: {
-        addressType: 'SHIPPING',
         addressLine1: 'test1',
         city: 'Vancouver',
         stateOrProvince: 'BC',
@@ -90,13 +81,6 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
                 .id,
             },
           },
-          shippingMethod: {
-            connect: {
-              id: createdShippingMethods[
-                Math.floor(Math.random() * createdShippingMethods.length)
-              ].id as string,
-            },
-          },
           orderItems: {
             create: {
               quantity: Math.floor(Math.random() * 10) + 1,
@@ -109,17 +93,8 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
               },
             },
           },
-          discountCoupon: {
-            create: {
-              code: generateUniqueNumber('CP'),
-              description: 'Test coupon',
-              discount: 0.9,
-              expiresAt: new Date('2024-12-31'),
-            },
-          },
           billingAddress: {
             create: {
-              addressType: 'BILLING',
               addressLine1: 'test1',
               city: 'Vancouver',
               stateOrProvince: 'BC',
@@ -129,7 +104,6 @@ export async function seedOrders(prisma: PrismaClient): Promise<void> {
           },
           shippingAddress: {
             create: {
-              addressType: 'SHIPPING',
               addressLine1: 'test1',
               city: 'Vancouver',
               stateOrProvince: 'BC',
