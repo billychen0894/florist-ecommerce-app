@@ -3,7 +3,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { products } from '@const/products';
 import BillingInfo from './BillingInfo';
 import ContactInfo from './ContactInfo';
 import DeliveryMethod from './DeliveryMethod';
@@ -72,7 +71,7 @@ export function CheckoutForm() {
           </div>
           <Payment />
         </div>
-        <OrderSummary products={products} />
+        <OrderSummary />
       </form>
     </FormProvider>
   );

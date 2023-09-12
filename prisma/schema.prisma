@@ -10,6 +10,7 @@ datasource db {
 
 model User {
   id               String    @id @default(uuid())
+  stripeCustomerId String?
   name             String?
   email            String?   @unique
   emailVerified    DateTime?
@@ -29,6 +30,7 @@ model User {
 
 model Guest {
   id        String   @id @default(uuid())
+  stripeCustomerId String?
   name      String?
   email     String?  @unique
   createdAt DateTime @default(now())
@@ -141,7 +143,7 @@ model Category {
 model Order {
   id                String          @id @default(uuid())
   orderNumber       String          @unique
-  contactEmail      String
+  contactEmail      String?
   total             Float
   userId            String?
   user              User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -149,16 +151,12 @@ model Order {
   guest             Guest?          @relation(fields: [guestId], references: [id], onDelete: Cascade)
   orderItems        OrderItem[]
   orderStatus       OrderStatus     @default(CREATED)
-  paymentMethod     PaymentMethod   @default(CREDIT_CARD)
-  shippingMethod    ShippingMethod  @relation(fields: [shippingMethodId], references: [id], onDelete: Cascade)
-  shippingMethodId  String
-  shippingAddress   Address         @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
-  shippingAddressId String
-  billingAddress    Address         @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
-  billingAddressId  String
-  contactPhone      String
-  discountCouponId  String?
-  discountCoupon    DiscountCoupon? @relation(fields: [discountCouponId], references: [id])
+  shippingAddress   Address?         @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
+  shippingAddressId String?
+  billingAddress    Address?         @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
+  billingAddressId  String?
+  contactPhone      String?
+  paymentStatus     PaymentStatus   @default(UNPAID)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
@@ -167,7 +165,6 @@ model Order {
 
 model Address {
   id                    String      @id @default(uuid())
-  addressType           AddressType @default(BILLING)
   addressLine1          String
   addressLine2          String?
   company               String?
@@ -183,20 +180,6 @@ model Address {
   @@map("addresses")
 }
 
-model ShippingMethod {
-  id                       String   @id @default(uuid())
-  name                     String   @unique
-  price                    Float
-  turnAround               String?
-  location                 String?
-  location_operation_hours String?
-  orders                   Order[]
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @updatedAt
-
-  @@map("shipping_methods")
-}
-
 model OrderItem {
   id        String   @id @default(uuid())
   quantity  Int
@@ -208,31 +191,6 @@ model OrderItem {
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("order_items")
-}
-
-model DiscountCoupon {
-  id                  String       @id @default(uuid())
-  code                String       @unique
-  description         String
-  discount            Float
-  status              CouponStatus @default(AVAILABLE)
-  numberOfRedemptions Int          @default(20)
-  expiresAt           DateTime
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
-  orders              Order[]
-
-  @@map("discount_coupons")
-}
-
-enum AddressType {
-  SHIPPING
-  BILLING
-}
-
-enum PaymentMethod {
-  CREDIT_CARD
-  PAYPAL
 }
 
 enum OrderStatus {
@@ -247,8 +205,7 @@ enum Role {
   admin
 }
 
-enum CouponStatus {
-  AVAILABLE
-  UNAVAILABLE
-  EXPIRED
+enum PaymentStatus {
+  UNPAID
+  PAID
 }

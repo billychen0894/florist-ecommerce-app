@@ -67,6 +67,10 @@ const cartSlice = createSlice({
           prevSelectedQuantity * selectedProductPrice;
       }
     },
+    resetCart(state) {
+      state.cartItems = {};
+      state.subtotal = 0;
+    },
   },
 });
 
@@ -75,6 +79,7 @@ export const {
   addItemToCart,
   updateCartItemQuantity,
   removeItemFromCart,
+  resetCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
@@ -94,7 +99,10 @@ export const localStorageMiddleware: Middleware =
       const { cartItems }: { cartItems: Record<string, TCartItem> } =
         store.getState().cartReducer;
 
-      if (Object.keys(cartItems).length === 0) {
+      if (
+        Object.keys(cartItems).length === 0 ||
+        action.type === 'cart/resetCart'
+      ) {
         localStorage.removeItem('cartItems');
       } else {
         const cartItemsData = {

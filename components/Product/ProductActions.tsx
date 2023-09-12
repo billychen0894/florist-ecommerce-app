@@ -54,11 +54,6 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     toast.dismiss();
   };
 
-  const handleViewCheckout = () => {
-    router.push('/checkout');
-    toast.dismiss();
-  };
-
   const handleAddToCart = () => {
     const dispatchPayload = {
       id: productId,
@@ -75,10 +70,6 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
           firstClickHanlder={{
             handler: handleViewCart,
             buttonLabel: 'View Cart',
-          }}
-          secondClickHandler={{
-            handler: handleViewCheckout,
-            buttonLabel: 'Checkout',
           }}
           notificationText="Added to cart!"
         />

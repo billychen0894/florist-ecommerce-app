@@ -9,6 +9,7 @@ declare module 'next-auth' {
       email: string;
       role: string;
       accessToken: string;
+      stripeCustomerId: string;
     } & DefaultSession['user'];
   }
 

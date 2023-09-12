@@ -1,5 +1,5 @@
 import axios from '@lib/axios';
-import { ApiResponse, Order, OrderPayload } from '@lib/types/api';
+import { ApiResponse, Order, OrderPayload, TCartItem } from '@lib/types/api';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 async function createOrder(
@@ -38,8 +38,18 @@ async function searchOrders(
   return response;
 }
 
+async function checkout(orders: TCartItem[], userId?: string) {
+  const response = await axios.post('api/checkout', {
+    orders,
+    userId: userId,
+  });
+
+  return response;
+}
+
 export const orders = {
   createOrder,
   getUserOrders,
   searchOrders,
+  checkout,
 };
