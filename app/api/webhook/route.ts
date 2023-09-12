@@ -107,6 +107,12 @@ export async function POST(req: Request) {
         }
       );
 
+      const invoiceObj = await stripe.invoices.retrieve(
+        session?.invoice as string
+      );
+      // Replace orderNumber with Invoice number issued by Stripe
+      orderData.orderNumber = invoiceObj.number!;
+
       orderData.orderItems = {
         createMany: {
           data: lineItemsObj?.data.map((item) => ({
