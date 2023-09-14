@@ -11,8 +11,9 @@ const secondaryNavigation = [
 
 export default function User({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
   return (
-    <div className="mt-2 mx-auto max-w-7xl h-full">
+    <div className="mt-2 mx-auto max-w-7xl max-h-max">
       <main>
         <header className="border-y border-black/5">
           <nav className="flex overflow-x-auto py-4">
@@ -33,8 +34,6 @@ export default function User({ children }: { children: React.ReactNode }) {
             </ul>
           </nav>
         </header>
-
-        {/* forms */}
         {children}
       </main>
     </div>
