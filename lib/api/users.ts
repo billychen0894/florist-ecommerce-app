@@ -1,5 +1,6 @@
 import { SignUpFormData } from '@components/Auth/SignUpForm';
-import { ApiResponse, UpdatedUserData, User, WishList } from '@lib/types/api';
+import { ApiResponse, UpdatedUserData, WishList } from '@lib/types/api';
+import { User } from '@prisma/client';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 async function createUser(
