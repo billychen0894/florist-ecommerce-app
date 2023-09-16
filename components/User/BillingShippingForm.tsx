@@ -105,7 +105,6 @@ export default function BillingShippingForm({
                   autoComplete="country-name"
                   disabled={isInputsDisabled}
                   defaultValue={shippingAddressObj?.country! || ''}
-                  value={shippingAddressObj?.country || ''}
                   className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                 >
                   <option value="" disabled>
@@ -125,7 +124,6 @@ export default function BillingShippingForm({
                   disabled={isInputsDisabled}
                   defaultValue={shippingAddressObj?.state || ''}
                   className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                  value={shippingAddressObj?.state || ''}
                 >
                   <option value="" disabled>
                     Select a state / province
@@ -210,7 +208,6 @@ export default function BillingShippingForm({
                   autoComplete="country-name"
                   disabled={isInputsDisabled}
                   defaultValue={billingAddressObj?.country || ''}
-                  value={billingAddressObj?.country || ''}
                   className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                 >
                   <option value="" disabled>
@@ -229,7 +226,6 @@ export default function BillingShippingForm({
                   id="shippingArea"
                   disabled={isInputsDisabled}
                   defaultValue={billingAddressObj?.state || ''}
-                  value={billingAddressObj?.state || ''}
                   className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                 >
                   <option value="" disabled>
