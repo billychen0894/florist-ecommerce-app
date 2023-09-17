@@ -1,6 +1,7 @@
+import { orders } from '@lib/api/orders';
 import { users } from '@lib/api/users';
 import { stripe } from '@lib/stripe';
-import { TProduct } from '@lib/types/api.d';
+import { Order, TProduct } from '@lib/types/api.d';
 import { User } from '@prisma/client';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -13,6 +14,7 @@ export interface UserState {
   wishlist: TProduct[];
   user: UserWithoutPass | null;
   userStripe: Stripe.Customer | null;
+  orders: Order[] | null;
   invoices: Stripe.ApiList<Stripe.Invoice> | null;
 }
 
@@ -20,6 +22,7 @@ const initialState: UserState = {
   wishlist: [],
   user: null,
   userStripe: null,
+  orders: null,
   invoices: null,
 };
 
@@ -87,7 +90,21 @@ export const fetchUserInvoices = createAsyncThunk(
     }
   }
 );
-
+export const fetchUserOrders = createAsyncThunk(
+  'user/fetchUserOrders',
+  async (
+    data: {
+      userId: string;
+      axiosWithAuth: AxiosInstance;
+    },
+    thunkApi
+  ) => {
+    const { userId, axiosWithAuth } = data;
+    const response = await orders.getUserOrders(userId, axiosWithAuth);
+    const userOrders = response.data.data;
+    return userOrders;
+  }
+);
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -114,6 +131,11 @@ const userSlice = createSlice({
       .addCase(fetchUserByStripeId.fulfilled, (state, action) => {
         if (action.payload) {
           state.userStripe = action.payload;
+        }
+      })
+      .addCase(fetchUserOrders.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.orders = action.payload;
         }
       })
       .addCase(fetchUserInvoices.fulfilled, (state, action) => {
