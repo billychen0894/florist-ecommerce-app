@@ -1,7 +1,18 @@
 'use client';
 
+import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+
+import {
+  fetchUserById,
+  fetchUserByStripeId,
+  fetchUserInvoices,
+  fetchUserOrders,
+} from '@store/features/userSlice';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 
 const secondaryNavigation = [
   { name: 'Profile', href: '/user/profile' },
@@ -11,6 +22,36 @@ const secondaryNavigation = [
 
 export default function User({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  if (!session && status === 'unauthenticated') {
+    redirect('/auth/signin');
+  }
+  const axiosWithAuth = useAxiosWithAuth();
+  const user = useAppSelector((state) => state.userReducer.user);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (session?.user.id) {
+      dispatch(
+        fetchUserById({
+          userId: session?.user.id as string,
+          axiosWithAuth: axiosWithAuth,
+        })
+      );
+      dispatch(
+        fetchUserOrders({
+          userId: session?.user.id as string,
+          axiosWithAuth: axiosWithAuth,
+        })
+      );
+    }
+
+    if (user?.stripeCustomerId) {
+      dispatch(fetchUserByStripeId(user.stripeCustomerId));
+      dispatch(fetchUserInvoices(user.stripeCustomerId));
+    }
+  }, [dispatch, axiosWithAuth, session?.user.id, user?.stripeCustomerId]);
 
   return (
     <div className="mt-2 mx-auto max-w-7xl max-h-max">
