@@ -116,18 +116,8 @@ export async function GET(req: Request, res: Response) {
         orderNumber: true,
         total: true,
         orderStatus: true,
-        paymentMethod: true,
-        shippingMethod: {
-          select: {
-            name: true,
-            turnAround: true,
-            location: true,
-            location_operation_hours: true,
-          },
-        },
         shippingAddress: true,
         billingAddress: true,
-        discountCoupon: true,
         createdAt: true,
         orderItems: {
           select: {
