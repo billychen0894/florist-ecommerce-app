@@ -1,11 +1,11 @@
 import { users } from '@lib/api/users';
 import { stripe } from '@lib/stripe';
+import { TProduct } from '@lib/types/api.d';
 import { User } from '@prisma/client';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import Stripe from 'stripe';
-import { TProduct } from './../../lib/types/api.d';
 
 type UserWithoutPass = Omit<User, 'password'>;
 
@@ -13,12 +13,14 @@ export interface UserState {
   wishlist: TProduct[];
   user: UserWithoutPass | null;
   userStripe: Stripe.Customer | null;
+  invoices: Stripe.ApiList<Stripe.Invoice> | null;
 }
 
 const initialState: UserState = {
   wishlist: [],
   user: null,
   userStripe: null,
+  invoices: null,
 };
 
 export const fetchUserWishlistById = createAsyncThunk(
@@ -67,6 +69,25 @@ export const fetchUserByStripeId = createAsyncThunk(
   }
 );
 
+export const fetchUserInvoices = createAsyncThunk(
+  'user/fetchUserInvoices',
+  async (customerStripeId: string | null | undefined, thunkApi) => {
+    if (customerStripeId) {
+      const invoices = await stripe.invoices.list(
+        {
+          customer: customerStripeId,
+        },
+        {
+          apiKey: process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY,
+        }
+      );
+      return invoices;
+    } else {
+      return null;
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -93,6 +114,11 @@ const userSlice = createSlice({
       .addCase(fetchUserByStripeId.fulfilled, (state, action) => {
         if (action.payload) {
           state.userStripe = action.payload;
+        }
+      })
+      .addCase(fetchUserInvoices.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.invoices = action.payload;
         }
       });
   },

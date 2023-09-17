@@ -7,7 +7,11 @@ import { useEffect } from 'react';
 import BillingShippingForm from '@components/User/BillingShippingForm';
 import PersonalInfoForm from '@components/User/PersonalInfoForm';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { fetchUserById, fetchUserByStripeId } from '@store/features/userSlice';
+import {
+  fetchUserById,
+  fetchUserByStripeId,
+  fetchUserInvoices,
+} from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 
 export default function Profile() {
@@ -33,6 +37,7 @@ export default function Profile() {
 
     if (user?.stripeCustomerId) {
       dispatch(fetchUserByStripeId(user.stripeCustomerId));
+      dispatch(fetchUserInvoices(user.stripeCustomerId));
     }
   }, [dispatch, axiosWithAuth, session?.user.id, user?.stripeCustomerId]);
 
