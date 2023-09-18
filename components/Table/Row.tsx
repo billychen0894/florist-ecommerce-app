@@ -15,10 +15,18 @@ export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
       <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
         {invoice.number}
       </RowData>
-      <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
+      <RowData
+        rowIndex={rowIndex}
+        invoiceLength={invoicesLength}
+        className="hidden sm:table-cell"
+      >
         {formatCurrency(Number(invoice.total / 100), 'en-CA', 'CAD')}
       </RowData>
-      <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
+      <RowData
+        rowIndex={rowIndex}
+        invoiceLength={invoicesLength}
+        className="hidden lg:table-cell"
+      >
         {invoice.orderStatus ? (
           <span className="inline-flex items-center rounded-md bg-orange-50 px-2 py-1 text-xs font-medium text-orange-500 ring-1 ring-inset ring-orange-600/20">
             {invoice.orderStatus.charAt(0) +
