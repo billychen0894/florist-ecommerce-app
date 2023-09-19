@@ -86,7 +86,11 @@ export default function PersonalInfoForm({
                   defaultValue={user?.name?.split(' ')[0]}
                   autoComplete="given-name"
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -106,7 +110,11 @@ export default function PersonalInfoForm({
                   defaultValue={user?.name?.split(' ')[1]}
                   autoComplete="family-name"
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -126,7 +134,11 @@ export default function PersonalInfoForm({
                   defaultValue={user?.email as string}
                   autoComplete="email"
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -146,7 +158,11 @@ export default function PersonalInfoForm({
                   defaultValue={userStripeInfo?.phone as string}
                   autoComplete="tel"
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>

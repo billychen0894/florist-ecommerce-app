@@ -65,7 +65,11 @@ export default function BillingShippingForm({
                   defaultValue={shippingAddressObj?.line1! || ''}
                   autoComplete="street-address"
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -79,7 +83,11 @@ export default function BillingShippingForm({
                   type="text"
                   defaultValue={shippingAddressObj?.line2! || ''}
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -92,7 +100,11 @@ export default function BillingShippingForm({
                   autoComplete="address-level2"
                   disabled={isInputsDisabled}
                   defaultValue={shippingAddressObj?.city || ''}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -105,7 +117,11 @@ export default function BillingShippingForm({
                   autoComplete="country-name"
                   disabled={isInputsDisabled}
                   defaultValue={shippingAddressObj?.country! || ''}
-                  className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : null
+                  }`}
                 >
                   <option value="" disabled>
                     Select a country
@@ -123,7 +139,11 @@ export default function BillingShippingForm({
                   id="shippingArea"
                   disabled={isInputsDisabled}
                   defaultValue={shippingAddressObj?.state || ''}
-                  className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
+                      : null
+                  }`}
                 >
                   <option value="" disabled>
                     Select a state / province
@@ -147,7 +167,11 @@ export default function BillingShippingForm({
                   autoComplete="postal-code"
                   defaultValue={shippingAddressObj?.postal_code || ''}
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -168,7 +192,11 @@ export default function BillingShippingForm({
                   autoComplete="street-address"
                   defaultValue={billingAddressObj?.line1 || ''}
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -182,7 +210,11 @@ export default function BillingShippingForm({
                   type="text"
                   disabled={isInputsDisabled}
                   defaultValue={billingAddressObj?.line2 || ''}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -195,7 +227,11 @@ export default function BillingShippingForm({
                   autoComplete="address-level2"
                   disabled={isInputsDisabled}
                   defaultValue={billingAddressObj?.city || ''}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
@@ -208,7 +244,11 @@ export default function BillingShippingForm({
                   autoComplete="country-name"
                   disabled={isInputsDisabled}
                   defaultValue={billingAddressObj?.country || ''}
-                  className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
+                      : null
+                  }`}
                 >
                   <option value="" disabled>
                     Select a country
@@ -226,7 +266,11 @@ export default function BillingShippingForm({
                   id="shippingArea"
                   disabled={isInputsDisabled}
                   defaultValue={billingAddressObj?.state || ''}
-                  className="block w-full rounded-md bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                  className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
+                      : null
+                  }`}
                 >
                   <option value="" disabled>
                     Select a state / province
@@ -250,7 +294,11 @@ export default function BillingShippingForm({
                   autoComplete="postal-code"
                   defaultValue={billingAddressObj?.postal_code || ''}
                   disabled={isInputsDisabled}
-                  className="bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                  className={` ${
+                    isInputsDisabled
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
+                      : null
+                  }`}
                 />
               </div>
             </div>
