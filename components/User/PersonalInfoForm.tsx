@@ -4,6 +4,7 @@ import { Input, Label } from '@components/ui';
 import { Skeleton } from '@components/ui/Skeleton';
 import { useAppSelector } from '@store/hooks';
 import Image from 'next/image';
+import ProfileAndSettingsSkeleton from './ProfileAndSettingsSkeleton';
 
 const avatarImage = (
   <svg
@@ -169,7 +170,7 @@ export default function PersonalInfoForm({
           </div>
         </form>
       ) : (
-        skeletonLoadingUI
+        <ProfileAndSettingsSkeleton />
       )}
     </>
   );
