@@ -96,40 +96,42 @@ export default function PersonalInfoForm({
               ) : (
                 defaultAvatarImage
               )}
-              <div>
-                <Label
-                  htmlFor="imageFile"
-                  className="rounded-md max-w-[8rem] px-3.5 py-2.5 cursor-pointer bg-secondary-500 hover:bg-secondary-400 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500"
-                >
-                  Change avatar
-                </Label>
-                <p className="mt-2 text-xs leading-5 text-gray-400">
-                  JPG, JPEG or PNG. 1MB max.
-                </p>
-                <Controller
-                  name="imageFile"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      id="imageFile"
-                      type="file"
-                      className="hidden"
-                      name="imageFile"
-                      accept="image/jpg, image/jpeg, image/png"
-                      onChange={(e) => {
-                        field.onChange(e.target.files && e.target.files[0]); // This is important to update the form control value
-                        handleImageChange(e); // Handle image preview
-                      }}
-                    />
-                  )}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name="imageFile"
-                  as="p"
-                  className="text-xs font-medium text-red-500"
-                />
-              </div>
+              {!isInputsDisabled && (
+                <div>
+                  <Label
+                    htmlFor="imageFile"
+                    className="rounded-md max-w-[8rem] px-3.5 py-2.5 cursor-pointer bg-secondary-500 hover:bg-secondary-400 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500"
+                  >
+                    Change avatar
+                  </Label>
+                  <p className="mt-2 text-xs leading-5 text-gray-400">
+                    JPG, JPEG or PNG. 1MB max.
+                  </p>
+                  <Controller
+                    name="imageFile"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="imageFile"
+                        type="file"
+                        className="hidden"
+                        name="imageFile"
+                        accept="image/jpg, image/jpeg, image/png"
+                        onChange={(e) => {
+                          field.onChange(e.target.files && e.target.files[0]); // This is important to update the form control value
+                          handleImageChange(e); // Handle image preview
+                        }}
+                      />
+                    )}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name="imageFile"
+                    as="p"
+                    className="text-xs font-medium text-red-500"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="sm:col-span-3">
