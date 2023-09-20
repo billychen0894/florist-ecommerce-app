@@ -3,8 +3,7 @@ import * as yup from 'yup';
 // Define a custom validation function for file type
 const validateFileType = (file: any) => {
   if (!file) return true; // If no file is selected, it's valid (optional)
-
-  const allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
+  const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
   return allowedFileTypes.includes(file.type);
 };
@@ -52,7 +51,7 @@ export const defaultPersonalInfoFormSchema: yup.ObjectSchema<DefaultPersonalInfo
       .mixed()
       .test(
         'fileType',
-        'Invalid file type. Only JPEG, PNG, and GIF are allowed.',
+        'Invalid file type. Only JPG, JPEG, and PNG are allowed.',
         validateFileType
       )
       .test(
