@@ -1,20 +1,21 @@
 'use client';
 
+import { ErrorMessage } from '@hookform/error-message';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Image from 'next/image';
+import { ChangeEvent, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
-import { ErrorMessage } from '@hookform/error-message';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppSelector } from '@store/hooks';
-import { useForm } from 'react-hook-form';
 import ProfileAndSettingsSkeleton from './ProfileAndSettingsSkeleton';
 import {
   PersonalInfoFormSchema,
   defaultPersonalInfoFormSchema,
 } from './personalInfoFormValidator';
 
-const avatarImage = (
+const defaultAvatarImage = (
   <svg
     className="h-24 w-24 flex-none rounded-lg border border-gray-50 shadow-sm object-cover text-gray-300"
     fill="currentColor"
@@ -35,6 +36,9 @@ export default function PersonalInfoForm({
   const userStripeInfo = useAppSelector(
     (state) => state.userReducer.userStripe
   );
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    user?.image || ''
+  );
 
   const methods = useForm<PersonalInfoFormSchema>({
     resolver: yupResolver(defaultPersonalInfoFormSchema),
@@ -50,10 +54,29 @@ export default function PersonalInfoForm({
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = methods;
 
   const onSubmit = (data: PersonalInfoFormSchema) => {
+    // TODO: Upload file image to Cloudinary
+    const file = data.imageFile;
     console.log(data);
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        setPreviewImage(event.target && (event.target.result as string));
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
   };
 
   return (
@@ -62,28 +85,50 @@ export default function PersonalInfoForm({
         <form className="md:col-span-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
             <div className="col-span-full flex items-center gap-x-8">
-              {/* TODO: IMAGE UPLOAD AND PREVIEW */}
-              {user?.image ? (
+              {previewImage ? (
                 <Image
-                  src={user?.image}
+                  src={previewImage}
                   alt="user avatar"
                   className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
                   width={250}
                   height={250}
                 />
               ) : (
-                avatarImage
+                defaultAvatarImage
               )}
               <div>
-                <Button
-                  type="button"
-                  className="bg-secondary-500 hover:bg-secondary-400"
+                <Label
+                  htmlFor="imageFile"
+                  className="rounded-md max-w-[8rem] px-3.5 py-2.5 cursor-pointer bg-secondary-500 hover:bg-secondary-400 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary-500"
                 >
                   Change avatar
-                </Button>
+                </Label>
                 <p className="mt-2 text-xs leading-5 text-gray-400">
-                  JPG or PNG. 1MB max.
+                  JPG, JPEG or PNG. 1MB max.
                 </p>
+                <Controller
+                  name="imageFile"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      id="imageFile"
+                      type="file"
+                      className="hidden"
+                      name="imageFile"
+                      accept="image/jpg, image/jpeg, image/png"
+                      onChange={(e) => {
+                        field.onChange(e.target.files && e.target.files[0]); // This is important to update the form control value
+                        handleImageChange(e); // Handle image preview
+                      }}
+                    />
+                  )}
+                />
+                <ErrorMessage
+                  errors={errors}
+                  name="imageFile"
+                  as="p"
+                  className="text-xs font-medium text-red-500"
+                />
               </div>
             </div>
 
