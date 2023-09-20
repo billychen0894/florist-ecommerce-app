@@ -1,10 +1,18 @@
 'use client';
 
-import { Input, Label } from '@components/ui';
-import { Skeleton } from '@components/ui/Skeleton';
-import { useAppSelector } from '@store/hooks';
 import Image from 'next/image';
+
+import { Input, Label } from '@components/ui';
+import Button from '@components/ui/Button';
+import { ErrorMessage } from '@hookform/error-message';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useAppSelector } from '@store/hooks';
+import { useForm } from 'react-hook-form';
 import ProfileAndSettingsSkeleton from './ProfileAndSettingsSkeleton';
+import {
+  PersonalInfoFormSchema,
+  defaultPersonalInfoFormSchema,
+} from './personalInfoFormValidator';
 
 const avatarImage = (
   <svg
@@ -28,37 +36,33 @@ export default function PersonalInfoForm({
     (state) => state.userReducer.userStripe
   );
 
-  const skeletonLoadingUI = (
-    <Skeleton className="md:col-span-2">
-      <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-        <div className="col-span-full flex items-center gap-x-8">
-          <div className="h-24 w-24 flex-none rounded-lg shadow-sm bg-slate-200" />
-        </div>
-        <div className="sm:col-span-3">
-          <div className="h-6 max-w-[6rem] bg-slate-200 rounded-lg" />
-          <div className="mt-2 h-10 bg-slate-200 rounded-lg " />
-        </div>
-        <div className="sm:col-span-3">
-          <div className="h-6 max-w-[6rem] bg-slate-200 rounded-lg" />
-          <div className="mt-2 h-10 bg-slate-200 rounded-lg " />
-        </div>
-        <div className="col-span-full">
-          <div className="h-6 max-w-[6rem] bg-slate-200 rounded-lg" />
-          <div className="mt-2 h-10 bg-slate-200 rounded-lg " />
-        </div>
-        <div className="col-span-full">
-          <div className="h-6 max-w-[6rem] bg-slate-200 rounded-lg" />
-          <div className="mt-2 h-10 bg-slate-200 rounded-lg " />
-        </div>
-      </div>
-    </Skeleton>
-  );
+  const methods = useForm<PersonalInfoFormSchema>({
+    resolver: yupResolver(defaultPersonalInfoFormSchema),
+    defaultValues: {
+      firstName: user?.name?.split(' ')[0],
+      lastName: user?.name?.split(' ')[1],
+      email: user?.email as string,
+      contactPhone: userStripeInfo?.phone as string,
+      imageFile: user?.image,
+    },
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  const onSubmit = (data: PersonalInfoFormSchema) => {
+    console.log(data);
+  };
+
   return (
     <>
       {user && userStripeInfo ? (
-        <form className="md:col-span-2">
+        <form className="md:col-span-2" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
             <div className="col-span-full flex items-center gap-x-8">
+              {/* TODO: IMAGE UPLOAD AND PREVIEW */}
               {user?.image ? (
                 <Image
                   src={user?.image}
@@ -70,11 +74,22 @@ export default function PersonalInfoForm({
               ) : (
                 avatarImage
               )}
+              <div>
+                <Button
+                  type="button"
+                  className="bg-secondary-500 hover:bg-secondary-400"
+                >
+                  Change avatar
+                </Button>
+                <p className="mt-2 text-xs leading-5 text-gray-400">
+                  JPG or PNG. 1MB max.
+                </p>
+              </div>
             </div>
 
             <div className="sm:col-span-3">
               <Label
-                htmlFor="first-name"
+                htmlFor="firstName"
                 className="block text-sm font-medium leading-6 text-gray-800"
               >
                 First name
@@ -82,10 +97,10 @@ export default function PersonalInfoForm({
               <div className="mt-2">
                 <Input
                   type="text"
-                  name="first-name"
-                  id="first-name"
+                  id="firstName"
                   defaultValue={user?.name?.split(' ')[0]}
                   autoComplete="given-name"
+                  {...register('firstName')}
                   disabled={isInputsDisabled}
                   className={` ${
                     isInputsDisabled
@@ -94,6 +109,12 @@ export default function PersonalInfoForm({
                   }`}
                 />
               </div>
+              <ErrorMessage
+                errors={errors}
+                name="firstName"
+                as="p"
+                className="text-sm font-medium text-red-500 mt-1 ml-1"
+              />
             </div>
 
             <div className="sm:col-span-3">
@@ -106,10 +127,10 @@ export default function PersonalInfoForm({
               <div className="mt-2">
                 <Input
                   type="text"
-                  name="last-name"
-                  id="last-name"
+                  id="lastName"
                   defaultValue={user?.name?.split(' ')[1]}
                   autoComplete="family-name"
+                  {...register('lastName')}
                   disabled={isInputsDisabled}
                   className={` ${
                     isInputsDisabled
@@ -118,6 +139,12 @@ export default function PersonalInfoForm({
                   }`}
                 />
               </div>
+              <ErrorMessage
+                errors={errors}
+                name="lastName"
+                as="p"
+                className="text-sm font-medium text-red-500 mt-1 ml-1"
+              />
             </div>
 
             <div className="col-span-full">
@@ -130,10 +157,10 @@ export default function PersonalInfoForm({
               <div className="mt-2">
                 <Input
                   id="email"
-                  name="email"
                   type="email"
                   defaultValue={user?.email as string}
                   autoComplete="email"
+                  {...register('email')}
                   disabled={isInputsDisabled}
                   className={` ${
                     isInputsDisabled
@@ -142,6 +169,12 @@ export default function PersonalInfoForm({
                   }`}
                 />
               </div>
+              <ErrorMessage
+                errors={errors}
+                name="email"
+                as="p"
+                className="text-sm font-medium text-red-500 mt-1 ml-1"
+              />
             </div>
 
             <div className="col-span-full">
@@ -154,10 +187,10 @@ export default function PersonalInfoForm({
               <div className="mt-2">
                 <Input
                   type="text"
-                  name="phone"
-                  id="phone"
+                  id="contactPhone"
                   defaultValue={userStripeInfo?.phone as string}
                   autoComplete="tel"
+                  {...register('contactPhone')}
                   disabled={isInputsDisabled}
                   className={` ${
                     isInputsDisabled
@@ -165,6 +198,20 @@ export default function PersonalInfoForm({
                       : null
                   }`}
                 />
+              </div>
+              <ErrorMessage
+                errors={errors}
+                name="contactPhone"
+                as="p"
+                className="text-sm font-medium text-red-500 mt-1 ml-1"
+              />
+              <div className="mt-8 flex">
+                <Button
+                  type="submit"
+                  className="bg-secondary-500 hover:bg-secondary-400"
+                >
+                  Save
+                </Button>
               </div>
             </div>
           </div>
