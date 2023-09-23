@@ -6,9 +6,13 @@ import Image from 'next/image';
 import { ChangeEvent, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
+import { imageUpload } from '@actions/imageUpload';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
-import { useAppSelector } from '@store/hooks';
+import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import { users } from '@lib/api/users';
+import { updateUserInfo } from '@store/features/userSlice';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import ProfileAndSettingsSkeleton from './ProfileAndSettingsSkeleton';
 import {
   PersonalInfoFormSchema,
@@ -36,6 +40,8 @@ export default function PersonalInfoForm({
   const userStripeInfo = useAppSelector(
     (state) => state.userReducer.userStripe
   );
+  const dispatch = useAppDispatch();
+  const axiosWithAuth = useAxiosWithAuth();
   const [previewImage, setPreviewImage] = useState<string | null>(
     user?.image || ''
   );
@@ -45,7 +51,6 @@ export default function PersonalInfoForm({
     defaultValues: {
       firstName: user?.name?.split(' ')[0],
       lastName: user?.name?.split(' ')[1],
-      email: user?.email as string,
       contactPhone: userStripeInfo?.phone as string,
       imageFile: user?.image,
     },
@@ -57,10 +62,48 @@ export default function PersonalInfoForm({
     control,
   } = methods;
 
-  const onSubmit = (data: PersonalInfoFormSchema) => {
-    // TODO: Upload file image to Cloudinary
-    const file = data.imageFile;
-    console.log(data);
+  const onSubmit = async (data: PersonalInfoFormSchema) => {
+    // TODO: Upload file image to Cloudinary -> USE Upload API to track public id and generate image url. If public id cannot be override then detroy it
+    const file = data.imageFile as File;
+    let uploadResult: { public_id: string; url: string } | undefined =
+      undefined;
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        if (event.target) {
+          uploadResult = await imageUpload(
+            event.target.result,
+            user?.cloudinaryPublicId!
+          );
+        }
+
+        if (uploadResult) {
+          dispatch(
+            updateUserInfo({
+              firstName: data.firstName,
+              lastName: data.lastName,
+              phone: data.contactPhone,
+              image: uploadResult.url,
+            })
+          );
+
+          await users.updateUser(
+            {
+              name: `${data.firstName} ${data.lastName}`,
+              phone: data.contactPhone,
+              image: uploadResult.url,
+              cloudinaryPublicId: uploadResult.public_id,
+            },
+            user?.id!,
+            axiosWithAuth
+          );
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -189,36 +232,6 @@ export default function PersonalInfoForm({
               <ErrorMessage
                 errors={errors}
                 name="lastName"
-                as="p"
-                className="text-sm font-medium text-red-500 mt-1 ml-1"
-              />
-            </div>
-
-            <div className="col-span-full">
-              <Label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-800"
-              >
-                Email address
-              </Label>
-              <div className="mt-2">
-                <Input
-                  id="email"
-                  type="email"
-                  defaultValue={user?.email as string}
-                  autoComplete="email"
-                  {...register('email')}
-                  disabled={isInputsDisabled}
-                  className={` ${
-                    isInputsDisabled
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
-                      : null
-                  }`}
-                />
-              </div>
-              <ErrorMessage
-                errors={errors}
-                name="email"
                 as="p"
                 className="text-sm font-medium text-red-500 mt-1 ml-1"
               />
