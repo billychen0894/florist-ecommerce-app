@@ -117,6 +117,23 @@ const userSlice = createSlice({
         (product) => product.id !== action.payload.id
       );
     },
+    updateUserInfo(
+      state,
+      action: PayloadAction<{
+        firstName: string | null;
+        lastName: string | null;
+        phone: string | null;
+        image: string | null;
+      }>
+    ) {
+      const { firstName, lastName, phone, image } = action.payload;
+
+      if (state.user) {
+        state.user.name = `${firstName} ${lastName}`;
+        state.user.phone = phone;
+        state.user.image = image;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -146,7 +163,10 @@ const userSlice = createSlice({
   },
 });
 
-export const { addProductsToWishlist, removeProductsFromWishlist } =
-  userSlice.actions;
+export const {
+  addProductsToWishlist,
+  removeProductsFromWishlist,
+  updateUserInfo,
+} = userSlice.actions;
 
 export default userSlice.reducer;
