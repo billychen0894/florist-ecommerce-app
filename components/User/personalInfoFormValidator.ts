@@ -20,7 +20,6 @@ const validateFileSize = (file: any) => {
 export interface DefaultPersonalInfoFormSchemaProps {
   firstName: string;
   lastName: string;
-  email: string;
   contactPhone: string;
   imageFile?: {} | null | undefined;
 }
@@ -35,10 +34,6 @@ export const defaultPersonalInfoFormSchema: yup.ObjectSchema<DefaultPersonalInfo
       .string()
       .required('Last name is required')
       .max(50, 'Last name cannot exceed 50 characters.'),
-    email: yup
-      .string()
-      .email('Your email is invalid')
-      .required('Your email is required.'),
     contactPhone: yup
       .string()
       .required('Please enter your phone number')
