@@ -11,6 +11,7 @@ declare module 'next-auth' {
       accessToken: string;
       stripeCustomerId: string;
       cloudinaryPublicId: string;
+      phone: string;
     } & DefaultSession['user'];
   }
 

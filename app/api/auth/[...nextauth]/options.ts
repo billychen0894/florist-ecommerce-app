@@ -115,6 +115,7 @@ export const options: NextAuthOptions = {
       session.user.id = token?.id;
       session.user.stripeCustomerId = token?.stripeCustomerId;
       session.user.cloudinaryPublicId = token?.cloudinaryPublicId;
+      session.user.phone = token?.phone;
       session.user.accessToken = token.access_token ?? token.accessToken;
       session.user.refreshToken = token.refresh_token ?? token.refreshToken;
       session.user.expiresAt = token.expires_at ?? token.exp;
