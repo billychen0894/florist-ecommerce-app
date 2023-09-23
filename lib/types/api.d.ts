@@ -43,7 +43,9 @@ export interface UpdatedUserData {
   emailVerified?: boolean;
   emailVerifyToken?: string;
   image?: string;
+  phone?: string;
   password?: string;
+  cloudinaryPublicId?: string;
 }
 
 export interface User {
