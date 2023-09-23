@@ -29,7 +29,7 @@ export function Avatar({ avatarImageUrl, avatarImageAlt }: AvatarProps) {
   }
 
   return (
-    <div className="group relative">
+    <div className="group relative h-6 w-6 sm:h-7 sm:w-7">
       <div className="absolute top-0 left-0 w-full h-full rounded-full group-hover:bg-gray-500/20 transition" />
       {avatarImage}
     </div>
