@@ -11,9 +11,6 @@ export default function Settings() {
           <h2 className="text-base font-semibold leading-7 text-gray-800">
             Personal Information
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
-            To update your personal information, please go to settings.
-          </p>
         </div>
 
         <PersonalInfoForm isInputsDisabled={false} />
@@ -24,10 +21,6 @@ export default function Settings() {
           <h2 className="text-base font-semibold leading-7 text-gray-800">
             Billing and Shipping Information
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
-            To update your billing and shipping information, please go to
-            settings.
-          </p>
         </div>
         <BillingShippingForm isInputsDisabled={false} />
       </div>
