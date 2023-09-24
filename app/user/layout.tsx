@@ -7,7 +7,6 @@ import { redirect, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 import {
-  fetchUserById,
   fetchUserByStripeId,
   fetchUserInvoices,
   fetchUserOrders,
@@ -33,12 +32,6 @@ export default function User({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (session?.user.id) {
-      dispatch(
-        fetchUserById({
-          userId: session?.user.id as string,
-          axiosWithAuth: axiosWithAuth,
-        })
-      );
       dispatch(
         fetchUserOrders({
           userId: session?.user.id as string,
