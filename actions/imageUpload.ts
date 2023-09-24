@@ -17,7 +17,6 @@ export const imageUpload = async (file: any, public_id?: string) => {
         overwrite: true,
       });
 
-      console.log('result', result);
       return result;
     }
   } catch (err) {
