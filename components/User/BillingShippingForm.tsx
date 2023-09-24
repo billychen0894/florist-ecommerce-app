@@ -143,7 +143,7 @@ export default function BillingShippingForm({
               id="shippingCountry"
               autoComplete="country-name"
               disabled={isInputsDisabled}
-              defaultValue={shippingAddressObj?.country! || ''}
+              value={shippingAddressObj?.country! || ''}
               {...register('shippingCountry')}
               className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
                 isInputsDisabled
@@ -306,7 +306,7 @@ export default function BillingShippingForm({
               autoComplete="country-name"
               disabled={isInputsDisabled}
               {...register('billingCountry')}
-              defaultValue={billingAddressObj?.country || ''}
+              value={billingAddressObj?.country || ''}
               className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
                 isInputsDisabled
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
