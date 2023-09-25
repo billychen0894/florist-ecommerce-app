@@ -163,7 +163,6 @@ export default function PersonalInfoForm({
         uploadResult = await handleImageUpload(file, user?.cloudinaryPublicId!);
 
         if (uploadResult && firstName && lastName) {
-          console.log('fire file user update');
           handleUserUpdate({
             firstName,
             lastName,
@@ -172,7 +171,6 @@ export default function PersonalInfoForm({
           });
         }
       } else {
-        console.log('fire user update');
         handleUserUpdate({
           firstName: firstName!,
           lastName: lastName!,
@@ -237,7 +235,6 @@ export default function PersonalInfoForm({
                     className="hidden"
                     name="imageFile"
                     accept="image/jpg, image/jpeg, image/png"
-                    defaultValue={user?.image ? user?.image : ''}
                     onChange={(e) => {
                       field.onChange(e.target.files && e.target.files[0]); // This is important to update the form control value
                       handleImageChange(e); // Handle image preview
