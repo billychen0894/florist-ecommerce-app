@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 // Define a custom validation function for file type
 const validateFileType = (file: any) => {
-  if (!file) return true; // If no file is selected, it's valid (optional)
+  if (!file || typeof file === 'string') return true; // If no file is selected, it's valid (optional)
   const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
   return allowedFileTypes.includes(file.type);
@@ -10,7 +10,7 @@ const validateFileType = (file: any) => {
 
 // Define a custom validation function for file size (1MB = 1024 * 1024 bytes)
 const validateFileSize = (file: any) => {
-  if (!file) return true; // If no file is selected, it's valid (optional)
+  if (!file || typeof file === 'string') return true; // If no file is selected, it's valid (optional)
 
   const maxSizeBytes = 1024 * 1024; // 1MB
 
