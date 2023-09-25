@@ -134,6 +134,14 @@ const userSlice = createSlice({
         state.user.image = image;
       }
     },
+    updateUserStripeInfo(state, action: PayloadAction<{}>) {
+      if (state.userStripe) {
+        state.userStripe = {
+          ...state.userStripe,
+          ...action.payload,
+        };
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -167,6 +175,7 @@ export const {
   addProductsToWishlist,
   removeProductsFromWishlist,
   updateUserInfo,
+  updateUserStripeInfo,
 } = userSlice.actions;
 
 export default userSlice.reducer;
