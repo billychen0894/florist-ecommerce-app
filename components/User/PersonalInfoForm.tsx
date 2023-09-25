@@ -8,6 +8,10 @@ import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 import { imageUpload } from '@actions/imageUpload';
+import {
+  createStripeCustomer,
+  updateStripeCustomer,
+} from '@actions/stripeCustomer';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
 import Spinner from '@components/ui/Spinner';
@@ -103,8 +107,10 @@ export default function PersonalInfoForm({
       lastName: string;
       phone: string;
       uploadResult?: { public_id: string; url: string };
+      stripeCustomerId?: string;
     }) => {
-      const { firstName, lastName, phone, uploadResult } = userData;
+      const { firstName, lastName, phone, uploadResult, stripeCustomerId } =
+        userData;
       const image = uploadResult
         ? uploadResult.url
         : user?.image
@@ -130,6 +136,28 @@ export default function PersonalInfoForm({
         user?.id!,
         axiosWithAuth
       );
+
+      if (stripeCustomerId) {
+        await updateStripeCustomer(stripeCustomerId, {
+          name: `${firstName} ${lastName}`,
+          phone,
+        });
+      } else {
+        const stripeCustomerId = await createStripeCustomer({
+          name: `${firstName} ${lastName}`,
+          phone,
+        });
+
+        if (stripeCustomerId) {
+          await users.updateUser(
+            {
+              stripeCustomerId: stripeCustomerId,
+            },
+            user?.id!,
+            axiosWithAuth
+          );
+        }
+      }
 
       toast.success('Personal Info successfully updated!');
     },
@@ -168,6 +196,7 @@ export default function PersonalInfoForm({
             lastName,
             phone: phone!,
             uploadResult,
+            stripeCustomerId: user?.stripeCustomerId!,
           });
         }
       } else {
@@ -176,6 +205,7 @@ export default function PersonalInfoForm({
           lastName: lastName!,
           phone: phone!,
           uploadResult: undefined,
+          stripeCustomerId: user?.stripeCustomerId!,
         });
       }
     } catch (err: any) {
