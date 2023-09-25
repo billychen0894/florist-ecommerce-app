@@ -18,9 +18,9 @@ const validateFileSize = (file: any) => {
 };
 
 export interface DefaultPersonalInfoFormSchemaProps {
-  firstName: string;
-  lastName: string;
-  contactPhone: string;
+  firstName?: string;
+  lastName?: string;
+  contactPhone?: string;
   imageFile?: {} | null | undefined;
 }
 
@@ -28,20 +28,20 @@ export const defaultPersonalInfoFormSchema: yup.ObjectSchema<DefaultPersonalInfo
   yup.object({
     firstName: yup
       .string()
-      .required('First name is required')
-      .max(50, 'First name cannot exceed 50 characters.'),
+      .max(50, 'First name cannot exceed 50 characters.')
+      .optional(),
     lastName: yup
       .string()
-      .required('Last name is required')
-      .max(50, 'Last name cannot exceed 50 characters.'),
+      .max(50, 'Last name cannot exceed 50 characters.')
+      .optional(),
     contactPhone: yup
       .string()
-      .required('Please enter your phone number')
       .max(20, 'Your phone number cannot exceed 20 characters.')
       .matches(
-        /^(\+?1[ -]?)?\(?([0-9]{3})\)?[ -]?([0-9]{3})[ -]?([0-9]{4})$/,
+        /^(?:(?:\+1[ -]?)?(?:\(\d{3}\)|\d{3})[ -]?\d{3}[ -]?\d{4})?$/,
         'Your phone number is invalid'
-      ),
+      )
+      .optional(),
     imageFile: yup
       .mixed()
       .test(
@@ -54,7 +54,8 @@ export const defaultPersonalInfoFormSchema: yup.ObjectSchema<DefaultPersonalInfo
         'File size exceeds the maximum limit of 1MB.',
         validateFileSize
       )
-      .nullable(),
+      .nullable()
+      .optional(),
   });
 
 export type PersonalInfoFormSchema = yup.InferType<
