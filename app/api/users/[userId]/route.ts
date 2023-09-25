@@ -149,16 +149,22 @@ export async function PUT(req: Request, res: Response) {
       emailVerified?: Date;
       emailVerifyToken?: string;
       image?: string;
+      phone?: string;
+      cloudinaryPublicId?: string;
       password?: string;
       confirmPassword?: string;
+      stripeCustomerId?: string;
     } = await req.json();
     const {
       name,
       emailVerified,
       emailVerifyToken,
       image,
+      phone,
       password,
       confirmPassword,
+      cloudinaryPublicId,
+      stripeCustomerId,
     } = body;
     const userId = req.url.slice(req.url.lastIndexOf('/') + 1);
 
@@ -308,8 +314,11 @@ export async function PUT(req: Request, res: Response) {
       name: name || existingUser.name,
       emailVerified: emailVerified || existingUser.emailVerified,
       emailVerifyToken: emailVerifyToken || existingUser.emailVerifyToken,
+      phone: phone || existingUser.phone,
       image: image || existingUser.image,
       password: hashedNewPassword || existingUser.password,
+      cloudinaryPublicId: cloudinaryPublicId || existingUser.cloudinaryPublicId,
+      stripeCustomerId: stripeCustomerId || existingUser.stripeCustomerId,
     };
 
     // update user in database

@@ -10,6 +10,8 @@ declare module 'next-auth' {
       role: string;
       accessToken: string;
       stripeCustomerId: string;
+      cloudinaryPublicId: string;
+      phone: string;
     } & DefaultSession['user'];
   }
 

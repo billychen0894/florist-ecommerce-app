@@ -16,5 +16,8 @@ declare namespace NodeJS {
     EMAIL_FROM: string;
     STRIPE_SECRET_KEY: string;
     STRIPE_WEBHOOK_SECRET: string;
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_CLOUD_API_SECRET: string;
+    CLOUDINARY_CLOUD_API_KEY: string;
   }
 }

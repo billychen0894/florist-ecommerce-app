@@ -94,6 +94,7 @@ export async function POST(req: Request) {
       },
       data: {
         stripeCustomerId: session?.customer as string,
+        phone,
       },
     });
   }

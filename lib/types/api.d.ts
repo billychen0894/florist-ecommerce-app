@@ -43,7 +43,10 @@ export interface UpdatedUserData {
   emailVerified?: boolean;
   emailVerifyToken?: string;
   image?: string;
+  phone?: string;
   password?: string;
+  cloudinaryPublicId?: string;
+  stripeCustomerId?: string;
 }
 
 export interface User {

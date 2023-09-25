@@ -1,5 +1,6 @@
 import { SignUpFormData } from '@components/Auth/SignUpForm';
-import { ApiResponse, UpdatedUserData, User, WishList } from '@lib/types/api';
+import { ApiResponse, UpdatedUserData, WishList } from '@lib/types/api';
+import { User } from '@prisma/client';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 async function createUser(
@@ -21,10 +22,10 @@ async function updateUser(
   userData: UpdatedUserData,
   userId: string,
   axiosWithAuth: AxiosInstance
-): Promise<AxiosResponse<User>> {
+): Promise<AxiosResponse<ApiResponse<User>>> {
   const response = (await axiosWithAuth.put(`/api/users/${userId}`, {
     ...userData,
-  })) as AxiosResponse<User>;
+  })) as AxiosResponse<ApiResponse<User>>;
 
   return response;
 }
@@ -32,10 +33,10 @@ async function updateUser(
 async function getUser(
   userId: string,
   axiosWithAuth: AxiosInstance
-): Promise<AxiosResponse<User>> {
+): Promise<AxiosResponse<ApiResponse<User>>> {
   const response = (await axiosWithAuth.get(
     `/api/users/${userId}`
-  )) as AxiosResponse<User>;
+  )) as AxiosResponse<ApiResponse<User>>;
 
   return response;
 }
@@ -43,10 +44,10 @@ async function getUser(
 async function deleteUser(
   userId: string,
   axiosWithAuth: AxiosInstance
-): Promise<AxiosResponse<User>> {
+): Promise<AxiosResponse<ApiResponse<null>>> {
   const response = (await axiosWithAuth.delete(
     `/api/users/${userId}`
-  )) as AxiosResponse<User>;
+  )) as AxiosResponse<ApiResponse<null>>;
 
   return response;
 }

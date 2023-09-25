@@ -1,3 +1,5 @@
+'use client';
+
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -24,16 +26,16 @@ export default function MobileMenu({
     <>
       <div className="flow-root">
         <Link
-          href="/account"
+          href="/user/profile"
           className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
           onClick={() => onOpen(false)}
         >
-          Account
+          Profile
         </Link>
       </div>
       <div className="flow-root">
         <Link
-          href="/orders"
+          href="/user/orders"
           className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
           onClick={() => onOpen(false)}
         >
@@ -42,7 +44,7 @@ export default function MobileMenu({
       </div>
       <div className="flow-root">
         <Link
-          href="/orders"
+          href="/user/settings"
           className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
           onClick={() => onOpen(false)}
         >
