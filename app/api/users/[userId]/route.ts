@@ -153,6 +153,7 @@ export async function PUT(req: Request, res: Response) {
       cloudinaryPublicId?: string;
       password?: string;
       confirmPassword?: string;
+      stripeCustomerId?: string;
     } = await req.json();
     const {
       name,
@@ -163,6 +164,7 @@ export async function PUT(req: Request, res: Response) {
       password,
       confirmPassword,
       cloudinaryPublicId,
+      stripeCustomerId,
     } = body;
     const userId = req.url.slice(req.url.lastIndexOf('/') + 1);
 
@@ -316,6 +318,7 @@ export async function PUT(req: Request, res: Response) {
       image: image || existingUser.image,
       password: hashedNewPassword || existingUser.password,
       cloudinaryPublicId: cloudinaryPublicId || existingUser.cloudinaryPublicId,
+      stripeCustomerId: stripeCustomerId || existingUser.stripeCustomerId,
     };
 
     // update user in database

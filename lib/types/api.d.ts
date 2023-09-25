@@ -46,6 +46,7 @@ export interface UpdatedUserData {
   phone?: string;
   password?: string;
   cloudinaryPublicId?: string;
+  stripeCustomerId?: string;
 }
 
 export interface User {
