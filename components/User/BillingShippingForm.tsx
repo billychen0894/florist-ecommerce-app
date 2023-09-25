@@ -1,13 +1,23 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
+import {
+  createStripeCustomer,
+  updateStripeCustomer,
+} from '@actions/stripeCustomer';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
+import Spinner from '@components/ui/Spinner';
 import { shippingLocations } from '@const/shippingLocation';
 import { ErrorMessage } from '@hookform/error-message';
-import { useAppSelector } from '@store/hooks';
+import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import { users } from '@lib/api/users';
+import { updateUserStripeInfo } from '@store/features/userSlice';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import {
   BillingShippingFormSchema,
   defaultBillingShippingFormSchema,
@@ -23,6 +33,9 @@ export default function BillingShippingForm({
   const userStripeInfo = useAppSelector(
     (state) => state.userReducer.userStripe
   );
+  const user = useAppSelector((state) => state.userReducer.user);
+  const dispacth = useAppDispatch();
+  const axiosWithAuth = useAxiosWithAuth();
   const billingAddressObj = userStripeInfo?.address;
   const shippingAddressObj = userStripeInfo?.shipping?.address;
 
@@ -47,11 +60,123 @@ export default function BillingShippingForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting, isDirty },
+    setValue,
   } = methods;
 
-  const onSubmit = (data: BillingShippingFormSchema) => {
-    console.log(data);
+  useEffect(() => {
+    const formDefaultValues: { [key: string]: string } = {
+      shippingAddressLine1: shippingAddressObj?.line1 || '',
+      shippingAddressLine2: shippingAddressObj?.line2 || '',
+      shippingCity: shippingAddressObj?.city || '',
+      shippingArea: shippingAddressObj?.state || '',
+      shippingPostalCode: shippingAddressObj?.postal_code || '',
+      shippingCountry: shippingAddressObj?.country || '',
+      billingAddressLine1: billingAddressObj?.line1 || '',
+      billingAddressLine2: billingAddressObj?.line2 || '',
+      billingCity: billingAddressObj?.city || '',
+      billingArea: billingAddressObj?.state || '',
+      billingPostalCode: billingAddressObj?.postal_code || '',
+      billingCountry: billingAddressObj?.country || '',
+    };
+
+    Object.keys(formDefaultValues).forEach((key) =>
+      setValue(key, formDefaultValues[key] as never)
+    );
+  }, [billingAddressObj, shippingAddressObj, setValue]);
+
+  const isFormDataSameAsCurrent = useCallback(
+    (formData: BillingShippingFormSchema): boolean => {
+      if (shippingAddressObj && billingAddressObj && formData) {
+        return (
+          formData.shippingAddressLine1 === shippingAddressObj?.line1 &&
+          formData.shippingAddressLine2 === shippingAddressObj?.line2 &&
+          formData.shippingCity === shippingAddressObj?.city &&
+          formData.shippingArea === shippingAddressObj?.state &&
+          formData.shippingPostalCode === shippingAddressObj?.postal_code &&
+          formData.shippingCountry === shippingAddressObj?.country &&
+          formData.billingAddressLine1 === billingAddressObj?.line1 &&
+          formData.billingAddressLine2 === billingAddressObj?.line2 &&
+          formData.billingCity === billingAddressObj?.city &&
+          formData.billingArea === billingAddressObj?.state &&
+          formData.billingPostalCode === billingAddressObj?.postal_code &&
+          formData.billingCountry === billingAddressObj?.country
+        );
+      }
+      return false;
+    },
+    [billingAddressObj, shippingAddressObj]
+  );
+
+  const onSubmit = async (data: BillingShippingFormSchema) => {
+    try {
+      const isDataSameAsCurrent = isFormDataSameAsCurrent(data);
+
+      if (!isDirty || isDataSameAsCurrent) {
+        toast.error('No information updated. Cannot save');
+        return;
+      }
+
+      const {
+        shippingAddressLine1,
+        shippingAddressLine2,
+        shippingCity,
+        shippingArea,
+        shippingPostalCode,
+        shippingCountry,
+        billingAddressLine1,
+        billingAddressLine2,
+        billingCity,
+        billingArea,
+        billingPostalCode,
+        billingCountry,
+      } = data;
+
+      const stripeInfo = {
+        address: {
+          city: billingCity,
+          country: billingCountry,
+          line1: billingAddressLine1,
+          line2: billingAddressLine2,
+          postal_code: billingPostalCode,
+          state: billingArea,
+        },
+        shipping: {
+          address: {
+            city: shippingCity,
+            country: shippingCountry,
+            line1: shippingAddressLine1,
+            line2: shippingAddressLine2,
+            postal_code: shippingPostalCode,
+            state: shippingArea,
+          },
+          name: user?.name,
+          phone: user?.phone,
+        },
+      };
+
+      if (user?.stripeCustomerId) {
+        await updateStripeCustomer(user?.stripeCustomerId, stripeInfo);
+
+        dispacth(updateUserStripeInfo(stripeInfo));
+
+        toast.success('Successfully updated!');
+      } else {
+        const stripeCustomerId = await createStripeCustomer(stripeInfo);
+
+        if (stripeCustomerId) {
+          await users.updateUser(
+            {
+              stripeCustomerId: stripeCustomerId,
+            },
+            user?.id!,
+            axiosWithAuth
+          );
+        }
+      }
+    } catch (err: any) {
+      console.log('Error: ', err.message);
+    }
   };
 
   return (
@@ -143,7 +268,7 @@ export default function BillingShippingForm({
               id="shippingCountry"
               autoComplete="country-name"
               disabled={isInputsDisabled}
-              value={shippingAddressObj?.country! || ''}
+              defaultValue={shippingAddressObj?.country! || ''}
               {...register('shippingCountry')}
               className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
                 isInputsDisabled
@@ -306,7 +431,7 @@ export default function BillingShippingForm({
               autoComplete="country-name"
               disabled={isInputsDisabled}
               {...register('billingCountry')}
-              value={billingAddressObj?.country || ''}
+              defaultValue={billingAddressObj?.country || ''}
               className={`block w-full rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 ${
                 isInputsDisabled
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
@@ -386,9 +511,17 @@ export default function BillingShippingForm({
       <div className="mt-8 flex">
         <Button
           type="submit"
-          className="bg-secondary-500 hover:bg-secondary-400"
+          className={
+            isSubmitting
+              ? 'bg-secondary-200 text-secondary-400 cursor-not-allowed border-secondary-300 hover:bg-secondary-200'
+              : 'bg-secondary-500 hover:bg-secondary-400'
+          }
+          disabled={isSubmitting}
         >
-          Save
+          <div className="flex">
+            {isSubmitting && <Spinner />}
+            <span className="block">Save</span>
+          </div>
         </Button>
       </div>
     </form>
