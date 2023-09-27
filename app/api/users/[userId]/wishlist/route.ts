@@ -307,7 +307,11 @@ export async function GET(req: Request, res: Response) {
         id: userId,
       },
       select: {
-        wishlist: true,
+        wishlist: {
+          include: {
+            images: true,
+          },
+        },
       },
     });
 
