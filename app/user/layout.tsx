@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 const secondaryNavigation = [
   { name: 'Profile', href: '/user/profile' },
   { name: 'Orders', href: '/user/orders' },
+  { name: 'Wishlist', href: '/user/wishlist' },
   { name: 'Settings', href: '/user/settings' },
 ];
 

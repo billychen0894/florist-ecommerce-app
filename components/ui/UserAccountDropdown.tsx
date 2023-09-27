@@ -1,13 +1,21 @@
 import { Menu, Transition } from '@headlessui/react';
 import { cn } from '@lib/classNames';
 import { signOut } from 'next-auth/react';
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 import Button from './Button';
+import Link from 'next/link';
 
 interface UserAcccountDropdownProps {
   email: string;
-  avatar: JSX.Element | null;
+  avatar: React.ReactElement | null;
 }
+
+const menuItems: { href: string; label: string }[] = [
+  { href: '/user/profile', label: 'Profile' },
+  { href: '/user/orders', label: 'Orders' },
+  { href: '/user/wishlist', label: 'Wishlist' },
+  { href: '/user/settings', label: 'Settings' },
+];
 
 export default function UserAcccountDropdown({
   avatar,
@@ -38,45 +46,21 @@ export default function UserAcccountDropdown({
             </p>
           </div>
           <div className="py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="/user/profile"
-                  className={cn(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Profile
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="/user/orders"
-                  className={cn(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Manage Orders
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="/user/settings"
-                  className={cn(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Settings
-                </a>
-              )}
-            </Menu.Item>
+            {menuItems.map((item) => (
+              <Menu.Item key={item.href}>
+                {({ active }) => (
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      'block px-4 py-2 text-sm'
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                )}
+              </Menu.Item>
+            ))}
           </div>
           <div className="py-1">
             <Menu.Item>
