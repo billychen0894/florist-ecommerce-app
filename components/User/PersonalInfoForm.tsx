@@ -20,8 +20,8 @@ import { users } from '@lib/api/users';
 import { updateUserInfo } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import {
-  PersonalInfoFormSchema,
   defaultPersonalInfoFormSchema,
+  PersonalInfoFormSchema,
 } from './personalInfoFormValidator';
 
 const defaultAvatarImage = (
@@ -71,7 +71,6 @@ export default function PersonalInfoForm({
       setValue(key, formDefaultValues[key] as never)
     );
   }, [user?.image, user?.name, user?.phone, setValue]);
-
   const handleImageUpload = useCallback(
     async (file: File, cloudinaryPublicId?: string) => {
       // Return a Promise that resolves with the uploadResult or undefined
@@ -191,7 +190,7 @@ export default function PersonalInfoForm({
         uploadResult = await handleImageUpload(file, user?.cloudinaryPublicId!);
 
         if (uploadResult && firstName && lastName) {
-          handleUserUpdate({
+          await handleUserUpdate({
             firstName,
             lastName,
             phone: phone!,
@@ -200,7 +199,7 @@ export default function PersonalInfoForm({
           });
         }
       } else {
-        handleUserUpdate({
+        await handleUserUpdate({
           firstName: firstName!,
           lastName: lastName!,
           phone: phone!,
