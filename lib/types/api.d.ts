@@ -95,7 +95,7 @@ export interface ProductCommonFields {
 }
 
 export interface WishList {
-  wishlist: Product[] | [];
+  wishlist: TProduct[] | [];
 }
 
 export type Filter = 'Bouquets' | 'Flowers' | 'Plants' | 'Gifts';
