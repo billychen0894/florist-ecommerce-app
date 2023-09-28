@@ -47,7 +47,7 @@ export function Filter({ categories }: { categories: Category[] }) {
 
         {/* Desktop Filter */}
         <Popover.Group className="hidden sm:flex sm:items-baseline sm:space-x-8">
-          {filters.map((section, sectionIdx) => (
+          {filters.map((section) => (
             <Popover
               as="div"
               key={section.name}
@@ -96,6 +96,7 @@ export function Filter({ categories }: { categories: Category[] }) {
                             if (isChecked) {
                               params.append('category', optionName);
                             } else {
+                              // @ts-ignore
                               params.delete('category', optionName);
                             }
                             router.replace(`${pathname}?${params.toString()}`);
