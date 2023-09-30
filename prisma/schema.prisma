@@ -16,6 +16,7 @@ model User {
   email            String?   @unique
   emailVerified    DateTime?
   emailVerifyToken String?
+  passwordVerificationToken String?
   phone            String?
   image            String?
   password         String?
