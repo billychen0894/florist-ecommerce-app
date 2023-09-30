@@ -47,7 +47,7 @@ export const sendForgotPasswordEmail = async (email: string) => {
             <div style="background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                 <h1 style="font-size: 24px; margin-bottom: 20px;">Hello,</h1>
                 <p style="font-size: 16px; margin-bottom: 20px;">You have requested to reset your password. Click the button below to reset your password:</p>
-                <a style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;" href="${process.env.APP_BASE_URL}/forgot-password/reset?token=${verifyToken}">Reset Password</a>
+                <a style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;" href="${process.env.APP_BASE_URL}/auth/forgot-password/reset?token=${verifyToken}">Reset Password</a>
                 <p style="font-size: 16px; margin-bottom: 20px;">If you didn't request this, you can ignore this email. Your password won't be changed.</p>
                 <p style="font-size: 16px;">Thanks,<br>Blossom Lane</p>
             </div>
