@@ -10,6 +10,7 @@ import * as yup from 'yup';
 
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
+import Spinner from '@components/ui/Spinner';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -42,7 +43,7 @@ function SignInForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setError,
   } = useForm<SignInFormData>({
     resolver: yupResolver(signInFormSchema),
@@ -140,7 +141,10 @@ function SignInForm() {
           type="submit"
           className="flex w-full justify-center px-3 py-1.5 leading-6"
         >
-          Sign in
+          <div className="flex justify-center items-center">
+            {isSubmitting && <Spinner />}
+            <span className="inline-block">Sign in</span>
+          </div>
         </Button>
       </div>
     </form>

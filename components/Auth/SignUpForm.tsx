@@ -18,6 +18,7 @@ import { emails } from '@lib/api/email';
 import { users } from '@lib/api/users';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import { cn } from '@lib/classNames';
+import Spinner from '@components/ui/Spinner';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -326,7 +327,10 @@ function SignUpForm() {
             )}
             disabled={isSubmitting || !isValid}
           >
-            Create Account
+            <div className="flex justify-center items-center">
+              {isSubmitting && <Spinner />}
+              <span className="inline-block">Create Account</span>
+            </div>
           </Button>
         </div>
       </form>
