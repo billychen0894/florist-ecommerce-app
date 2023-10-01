@@ -1,7 +1,7 @@
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
-import { Dispatch, Fragment, SetStateAction } from 'react';
+import React, { Dispatch, Fragment, SetStateAction } from 'react';
 
 import { cn } from '@lib/classNames';
 import Button from './Button';
@@ -9,11 +9,11 @@ import Button from './Button';
 interface ModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  svgIcon?: JSX.Element;
+  svgIcon?: React.ReactElement;
   iconBgColor?: string;
   title: string;
   description?: string;
-  buttonText: string;
+  buttonText: string | React.ReactElement;
   buttonAction?: () => void;
   backdropAction?: () => void;
 }
