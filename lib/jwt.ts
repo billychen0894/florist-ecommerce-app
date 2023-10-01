@@ -68,25 +68,6 @@ export function verifyJwtAccessToken(accessToken: string) {
 
     return payload as JwtPayload;
   } catch (error) {
-    // if (error instanceof TokenExpiredError) {
-    //   try {
-    //     const decodedPayloadWithoutSignature = jwt.decode(accessToken);
-    //     const payload = decodedPayloadWithoutSignature as JwtPayload;
-    //     const { createdAt, exp, iat, ...restPayload } = payload;
-    //     const newAccessToken = signJwtAccessToken(restPayload);
-
-    //     if (newAccessToken) {
-    //       const newPayload = jwt.verify(
-    //         newAccessToken,
-    //         accessTokenSecret!
-    //       ) as JwtPayload;
-    //       return newPayload;
-    //     }
-    //   } catch (refreshError) {
-    //     console.error('Error refreshing token:', refreshError);
-    //     return null;
-    //   }
-    // }
     console.error('Error verifying token:', error);
     return error;
   }
