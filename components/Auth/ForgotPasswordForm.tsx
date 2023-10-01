@@ -40,7 +40,7 @@ const checkEmailIfExists = asyncCacheTest(
     })
 );
 
-const signInFormSchema = yup.object().shape({
+const forgotPasswordSchema = yup.object().shape({
   email: yup
     .string()
     .email('Invalid email address')
@@ -61,15 +61,15 @@ const signInFormSchema = yup.object().shape({
     }),
 });
 
-export type SignInFormData = yup.InferType<typeof signInFormSchema>;
+export type ForgotPasswordData = yup.InferType<typeof forgotPasswordSchema>;
 
 function ForgotPassword() {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<SignInFormData>({
-    resolver: yupResolver(signInFormSchema),
+  } = useForm<ForgotPasswordData>({
+    resolver: yupResolver(forgotPasswordSchema),
     defaultValues: {
       email: '',
     },
@@ -85,7 +85,7 @@ function ForgotPassword() {
     name: emailName,
   } = register('email');
 
-  const onSubmit = async (data: SignInFormData) => {
+  const onSubmit = async (data: ForgotPasswordData) => {
     try {
       const result = await sendForgotPasswordEmail(data.email);
 
