@@ -2,28 +2,29 @@ import { orders } from '@lib/api/orders';
 import { users } from '@lib/api/users';
 import { stripe } from '@lib/stripe';
 import { Order, TProduct } from '@lib/types/api.d';
-import { User } from '@prisma/client';
+import { OrderStatus, User } from '@prisma/client';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import Stripe from 'stripe';
 
 type UserWithoutPass = Omit<User, 'password'>;
+interface ExtendedStripeInvoice extends Stripe.Invoice {
+  orderStatus: OrderStatus;
+}
 
 export interface UserState {
   wishlist: TProduct[];
   user: UserWithoutPass | null;
   userStripe: Stripe.Customer | null;
-  orders: Order[] | null;
-  invoices: Stripe.ApiList<Stripe.Invoice> | null;
+  userOrders: ExtendedStripeInvoice[];
 }
 
 const initialState: UserState = {
   wishlist: [],
   user: null,
   userStripe: null,
-  orders: null,
-  invoices: null,
+  userOrders: [],
 };
 
 export const fetchUserWishlistById = createAsyncThunk(
@@ -72,10 +73,19 @@ export const fetchUserByStripeId = createAsyncThunk(
   }
 );
 
-export const fetchUserInvoices = createAsyncThunk(
-  'user/fetchUserInvoices',
-  async (customerStripeId: string | null | undefined, thunkApi) => {
-    if (customerStripeId) {
+export const fetchUserOrders = createAsyncThunk(
+  'user/fetchUserOrders',
+  async (
+    data: {
+      userId: string;
+      customerStripeId: string | null | undefined;
+      axiosWithAuth: AxiosInstance;
+    },
+    thunkApi
+  ) => {
+    const { userId, axiosWithAuth, customerStripeId } = data;
+
+    if (customerStripeId && userId) {
       const invoices = await stripe.invoices.list(
         {
           customer: customerStripeId,
@@ -84,25 +94,25 @@ export const fetchUserInvoices = createAsyncThunk(
           apiKey: process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY,
         }
       );
-      return invoices;
-    } else {
-      return null;
+
+      const response = await orders.getUserOrders(userId, axiosWithAuth);
+      const userOrders = response.data.data;
+
+      if (invoices.data.length > 0 && userOrders && userOrders?.length > 0) {
+        return invoices?.data.map((invoice) => {
+          const [mappedInvoice] = userOrders?.filter(
+            (order) => order.orderNumber === invoice?.number
+          ) as Order[];
+
+          return {
+            ...invoice,
+            orderStatus: mappedInvoice?.orderStatus,
+          };
+        });
+      } else {
+        return [];
+      }
     }
-  }
-);
-export const fetchUserOrders = createAsyncThunk(
-  'user/fetchUserOrders',
-  async (
-    data: {
-      userId: string;
-      axiosWithAuth: AxiosInstance;
-    },
-    thunkApi
-  ) => {
-    const { userId, axiosWithAuth } = data;
-    const response = await orders.getUserOrders(userId, axiosWithAuth);
-    const userOrders = response.data.data;
-    return userOrders;
   }
 );
 const userSlice = createSlice({
@@ -160,12 +170,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserOrders.fulfilled, (state, action) => {
         if (action.payload) {
-          state.orders = action.payload;
-        }
-      })
-      .addCase(fetchUserInvoices.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.invoices = action.payload;
+          state.userOrders = action.payload;
         }
       });
   },
