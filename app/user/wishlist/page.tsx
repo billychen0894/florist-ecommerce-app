@@ -28,19 +28,21 @@ export default function Wishlist() {
   return (
     <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 ">
       <div className="flex flex-row-reverse my-6">
-        <Button
-          type="button"
-          className={`w-16 h-10 ${
-            !isEditToggle
-              ? 'bg-primary-500 hover:bg-primary-400'
-              : 'bg-secondary-500 hover:bg-secondary-400'
-          }`}
-          onClick={() => {
-            setisEditToggle(!isEditToggle);
-          }}
-        >
-          {isEditToggle ? 'Done' : 'Edit'}
-        </Button>
+        {wishlist.length > 0 && (
+          <Button
+            type="button"
+            className={`w-16 h-10 ${
+              !isEditToggle
+                ? 'bg-primary-500 hover:bg-primary-400'
+                : 'bg-secondary-500 hover:bg-secondary-400'
+            }`}
+            onClick={() => {
+              setisEditToggle(!isEditToggle);
+            }}
+          >
+            {isEditToggle ? 'Done' : 'Edit'}
+          </Button>
+        )}
       </div>
       <section className="my-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
         {wishlist.length > 0 ? (
