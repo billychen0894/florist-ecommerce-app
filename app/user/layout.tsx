@@ -40,6 +40,14 @@ export default function User({ children }: { children: React.ReactNode }) {
           axiosWithAuth,
         })
       );
+    } else {
+      dispatch(
+        fetchUserOrders({
+          userId: session?.user.id as string,
+          customerStripeId: null,
+          axiosWithAuth,
+        })
+      );
     }
   }, [dispatch, axiosWithAuth, session?.user.id, user?.stripeCustomerId]);
 

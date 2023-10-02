@@ -1,23 +1,11 @@
 'use client';
 
-import Row from '@components/Table/Row';
 import StickyHeader from '@components/Table/StickyHeader';
-import { Order } from '@lib/types/api';
 import { useAppSelector } from '@store/hooks';
+import Row from '@components/Table/Row';
 
 export default function Orders() {
-  const invoices = useAppSelector((state) => state.userReducer.invoices);
-  const orders = useAppSelector((state) => state.userReducer.orders);
-  const invoicesAndOrdersCombined = invoices?.data.map((invoice) => {
-    const [mappedInvoice] = orders?.filter(
-      (order) => order.orderNumber === invoice?.number
-    ) as Order[];
-
-    return {
-      ...invoice,
-      orderStatus: mappedInvoice?.orderStatus,
-    };
-  });
+  const userOrders = useAppSelector((state) => state.userReducer.userOrders);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -41,18 +29,16 @@ export default function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {invoicesAndOrdersCombined &&
-                invoicesAndOrdersCombined.length > 0 ? (
-                  invoicesAndOrdersCombined?.map((invoice, idx) => (
+                {userOrders && userOrders.length > 0 ? (
+                  userOrders?.map((invoice, idx) => (
                     <Row
                       key={invoice.id}
                       rowIndex={idx}
                       invoice={invoice}
-                      invoicesLength={invoicesAndOrdersCombined?.length}
+                      invoicesLength={userOrders?.length}
                     />
                   ))
-                ) : invoicesAndOrdersCombined &&
-                  invoicesAndOrdersCombined.length === 0 ? (
+                ) : (
                   <tr>
                     <td
                       colSpan={5}
@@ -61,7 +47,7 @@ export default function Orders() {
                       No orders. You haven&apos;t placed any orders yet.
                     </td>
                   </tr>
-                ) : null}
+                )}
               </tbody>
             </table>
           </div>
