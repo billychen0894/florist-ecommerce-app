@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { seedCategories } from './categories-seeder';
-import { seedOrders } from './orders-seeder';
 import { seedProducts } from './products-seeder';
 import { seedUsers } from './users-seeder';
 
@@ -13,7 +12,6 @@ async function main() {
     await seedUsers(prisma);
     await seedCategories(prisma);
     await seedProducts(prisma);
-    await seedOrders(prisma);
 
     console.log(`Seeding finished.`);
   } catch (error) {

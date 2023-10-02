@@ -4,12 +4,13 @@ import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
+import Spinner from '@components/ui/Spinner';
 
 // Override default email regex
 yup.addMethod(yup.string, 'email', function validateEmail(message) {
@@ -33,22 +34,22 @@ const signInFormSchema = yup.object({
       'Password must contain at least one uppercase and lowercase letter, and one number'
     )
     .required('Password is required'),
-  rememberMe: yup.boolean().defined(),
 });
 
 export type SignInFormData = yup.InferType<typeof signInFormSchema>;
 
 function SignInForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    setError,
   } = useForm<SignInFormData>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
       email: '',
       password: '',
-      rememberMe: false,
     },
   });
   const callbackUrlEncoded = useSearchParams().get('callbackUrl');
@@ -57,13 +58,27 @@ function SignInForm() {
     : '/';
 
   const onSubmit = async (data: SignInFormData) => {
-    await signIn('credentials', {
-      email: data.email,
-      password: data.password,
-      rememberMe: data.rememberMe,
-      redirect: true,
-      callbackUrl: callbackUrl,
-    });
+    try {
+      const signInRes = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        callbackUrl: callbackUrl,
+      });
+
+      if (signInRes?.url) {
+        const url = new URL(signInRes.url);
+        const path = url.pathname;
+        router.push(path);
+      } else {
+        console.log('SingIn credential failed: ', signInRes?.error);
+        setError('password', {
+          message: 'Incorrect password. Please try again.',
+        });
+      }
+    } catch (err: any) {
+      console.log('Error: ', err.message);
+    }
   };
 
   return (
@@ -110,25 +125,10 @@ function SignInForm() {
         />
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <Input
-            id="rememberMe"
-            type="checkbox"
-            {...register('rememberMe')}
-            className="h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-          />
-          <Label
-            htmlFor="rememberMe"
-            className="ml-3 block text-sm leading-6 text-gray-900"
-          >
-            Remember Me
-          </Label>
-        </div>
-
+      <div className="flex items-center justify-end">
         <div className="text-sm leading-6">
           <Link
-            href="/forgot-password"
+            href="/auth/forgot-password"
             className="font-semibold text-primary-500 hover:text-primary-400"
           >
             Forgot password?
@@ -141,7 +141,10 @@ function SignInForm() {
           type="submit"
           className="flex w-full justify-center px-3 py-1.5 leading-6"
         >
-          Sign in
+          <div className="flex justify-center items-center">
+            {isSubmitting && <Spinner />}
+            <span className="inline-block">Sign in</span>
+          </div>
         </Button>
       </div>
     </form>

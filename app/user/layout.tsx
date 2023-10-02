@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 
 import {
   fetchUserByStripeId,
-  fetchUserInvoices,
   fetchUserOrders,
 } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -32,18 +31,23 @@ export default function User({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (session?.user.id) {
+    if (user?.stripeCustomerId) {
+      dispatch(fetchUserByStripeId(user.stripeCustomerId));
       dispatch(
         fetchUserOrders({
           userId: session?.user.id as string,
-          axiosWithAuth: axiosWithAuth,
+          customerStripeId: user.stripeCustomerId,
+          axiosWithAuth,
         })
       );
-    }
-
-    if (user?.stripeCustomerId) {
-      dispatch(fetchUserByStripeId(user.stripeCustomerId));
-      dispatch(fetchUserInvoices(user.stripeCustomerId));
+    } else {
+      dispatch(
+        fetchUserOrders({
+          userId: session?.user.id as string,
+          customerStripeId: null,
+          axiosWithAuth,
+        })
+      );
     }
   }, [dispatch, axiosWithAuth, session?.user.id, user?.stripeCustomerId]);
 

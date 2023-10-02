@@ -1,13 +1,16 @@
 import { ArrowSmallLeftIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Denied() {
   return (
     <main className="relative isolate min-h-full">
-      <img
+      <Image
         src="/images/cover4.jpg"
         alt="Red flowers background image"
         className="absolute inset-0 -z-10 h-full w-full object-cover object-top"
+        width={500}
+        height={500}
       />
       <div className="mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">
         <p className="text-base font-semibold leading-8 text-white">Oh no...</p>
@@ -15,7 +18,7 @@ export default function Denied() {
           Access Denied
         </h1>
         <p className="mt-4 text-base text-white/95 sm:mt-6">
-          Sorry, you don't have access to this page even though you are
+          Sorry, you don&apos;t have access to this page even though you are
           currently signed in.
         </p>
         <Link

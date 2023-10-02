@@ -2,10 +2,8 @@ import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { FcGoogle } from 'react-icons/fc';
 
 import { options } from '@app/api/auth/[...nextauth]/options';
-import OAuthProviderButton from '@components/Auth/OAuthProviderButton';
 import SignInForm from '@components/Auth/SignInForm';
 
 export default async function SignIn() {
@@ -47,32 +45,8 @@ export default async function SignIn() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-            {/* Sign In Credential Form */}
             <SignInForm />
             <div>
-              <div className="relative mt-10">
-                <div
-                  className="absolute inset-0 flex items-center"
-                  aria-hidden="true"
-                >
-                  <div className="w-full border-t border-gray-200" />
-                </div>
-                <div className="relative flex justify-center text-sm font-medium leading-6">
-                  <span className="bg-white px-6 text-gray-900">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              {/* Google Providers */}
-              <div className="mt-6 grid grid-cols-1 gap-4">
-                <OAuthProviderButton
-                  provider="google"
-                  providerLabel="Google"
-                  buttonClassName="bg-white text-black/[.54] drop-shadow-sm hover:drop-shadow-md ring-1 ring-black/[.05]"
-                  icon={<FcGoogle className="h-5 w-5" aria-hidden="true" />}
-                />
-              </div>
               <p className="mt-10 text-center text-sm text-gray-500">
                 Don&apos;t have an account?{' '}
                 <Link
