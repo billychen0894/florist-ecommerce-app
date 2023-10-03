@@ -6,6 +6,7 @@ const nextConfig = {
       'tailwindui.com',
       'lh3.googleusercontent.com',
       'res.cloudinary.com',
+      'images.unsplash.com',
     ],
   },
   experimental: {
