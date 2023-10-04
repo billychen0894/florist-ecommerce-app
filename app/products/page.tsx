@@ -74,7 +74,13 @@ export default async function Products({
           </section>
           {/* Products */}
           <section className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            <ProductList productsList={productsResult} showCategory />
+            {productsResult.length > 0 ? (
+              <ProductList productsList={productsResult} showCategory />
+            ) : (
+              <p className="text-sm text-gray-400 col-span-full text-center">
+                No products found.
+              </p>
+            )}
           </section>
           <Pagination pageCount={12} searchParams={searchParams} />
         </main>
