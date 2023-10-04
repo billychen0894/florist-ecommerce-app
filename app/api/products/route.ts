@@ -12,13 +12,17 @@ export async function GET(req: Request) {
         : Number(searchParams.get('limit'));
     const page =
       searchParams.get('page') === null ? 1 : Number(searchParams.get('page'));
+    const keyword =
+      searchParams.get('keyword') == null
+        ? undefined
+        : searchParams.get('keyword');
     const skip = limit === undefined ? 0 : (page - 1) * limit;
     const popular = sort === 'popular' ? 'desc' : 'asc';
     const newest = sort === 'newest' ? 'desc' : 'asc';
     const price = sort === 'price-high-to-low' ? 'desc' : 'asc';
     let queryFilters = {};
 
-    if (filters && filters.length > 0) {
+    if (filters && filters.length > 0 && !keyword) {
       queryFilters = {
         categories: {
           some: {
@@ -26,6 +30,25 @@ export async function GET(req: Request) {
               in: filters,
             },
           },
+        },
+      };
+    } else if (filters && filters.length > 0 && keyword) {
+      queryFilters = {
+        categories: {
+          some: {
+            name: {
+              in: filters,
+            },
+          },
+        },
+        name: {
+          search: keyword,
+        },
+      };
+    } else if (filters && filters.length === 0 && keyword) {
+      queryFilters = {
+        name: {
+          search: keyword,
         },
       };
     }
