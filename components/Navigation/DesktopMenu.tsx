@@ -15,7 +15,8 @@ import { cn } from '@lib/classNames';
 import { getCartItemsFromLocalStorage } from '@lib/getCartItemsFromLocalStorage';
 import { initializeCart } from '@store/features/cartSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import SearchWindow from '@components/ui/SearchWindow';
 
 interface DesktopMenuProps {
   onOpen: (open: boolean) => void;
@@ -35,98 +36,111 @@ export default function DesktopMenu({
       dispatch(initializeCart(cachedCartItems));
     }
   }, [dispatch]);
+  const [isSearchWindowOpen, setIsSearchWindowOpen] = useState<boolean>(false);
 
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
   const cartItemsArr = Object.values(cartItems);
   return (
-    <header className="relative">
-      {/* Top navigation */}
-      <nav
-        aria-label="Top"
-        className="relative z-20 bg-white bg-opacity-90 backdrop-blur-xl backdrop-filter"
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center">
-            {/* Hamburger Menu Icon */}
-            <Button
-              type="button"
-              className=" bg-white hover:bg-transparent shadow-none p-2 text-gray-400 lg:hidden"
-              onClick={() => onOpen(true)}
-            >
-              <span className="sr-only">Open menu</span>
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </Button>
+    <>
+      <SearchWindow open={isSearchWindowOpen} onOpen={setIsSearchWindowOpen} />
+      <header className="relative">
+        {/* Top navigation */}
+        <nav
+          aria-label="Top"
+          className="relative z-20 bg-white bg-opacity-90 backdrop-blur-xl backdrop-filter"
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center">
+              {/* Hamburger Menu Icon */}
+              <Button
+                type="button"
+                className=" bg-white hover:bg-transparent shadow-none p-2 text-gray-400 lg:hidden"
+                onClick={() => onOpen(true)}
+              >
+                <span className="sr-only">Open menu</span>
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+              </Button>
 
-            {/* Logo */}
-            <div className="ml-4 flex lg:ml-0">
-              <Link href="/">
-                <span className="sr-only">Your Company</span>
-                <Image
-                  className="h-16 w-auto"
-                  src="/images/logo.png"
-                  alt="logo"
-                  width={500}
-                  height={500}
-                />
-              </Link>
-            </div>
-
-            {/* Menu */}
-            <div className="hidden lg:ml-8 lg:block lg:self-stretch">
-              <div className="flex h-full space-x-8">
-                {headerNavigation.pages.map((page) => (
-                  <Link
-                    key={page.name}
-                    href={page.href}
-                    className="flex items-center text-sm font-medium text-gray-700 hover:text-secondary-500"
-                  >
-                    {page.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="ml-auto flex items-center">
-              {!isMobile && <AuthenticationButtons isMobile={isMobile} />}
-
-              {/* Search */}
-              <div className="ml-4 flow-root lg:ml-6">
-                <Link
-                  href="#"
-                  className="p-2 text-gray-400 hover:text-secondary-500"
-                >
-                  <span className="sr-only">Search</span>
-                  <MagnifyingGlassIcon className="h-6 w-6" aria-hidden="true" />
-                </Link>
-              </div>
-
-              {/* Cart */}
-              <div className="ml-4 flow-root lg:ml-6 relative">
-                <Link href="/cart" className="group -m-2 flex items-center p-2">
-                  <ShoppingBagIcon
-                    className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-secondary-500"
-                    aria-hidden="true"
+              {/* Logo */}
+              <div className="ml-4 flex lg:ml-0">
+                <Link href="/">
+                  <span className="sr-only">Your Company</span>
+                  <Image
+                    className="h-16 w-auto"
+                    src="/images/logo.png"
+                    alt="logo"
+                    width={500}
+                    height={500}
                   />
-                  <span
-                    className={cn(
-                      'text-xs font-medium text-gray-700 group-hover:text-gray-800 absolute top-1 right-0.5 transfrom translate-x-1/2 -translate-y-1/2 text-center',
-                      `${
-                        cartItemsArr.length > 0
-                          ? 'text-white rounded-full bg-red-500 group-hover:text-white h-4 w-4'
-                          : null
-                      }`,
-                      `${cartItemsArr.length >= 10 ? 'text-[10px]' : null}`
-                    )}
-                  >
-                    {cartItemsArr.length > 0 ? cartItemsArr.length : null}
-                  </span>
-                  <span className="sr-only">items in cart, view bag</span>
                 </Link>
+              </div>
+
+              {/* Menu */}
+              <div className="hidden lg:ml-8 lg:block lg:self-stretch">
+                <div className="flex h-full space-x-8">
+                  {headerNavigation.pages.map((page) => (
+                    <Link
+                      key={page.name}
+                      href={page.href}
+                      className="flex items-center text-sm font-medium text-gray-700 hover:text-secondary-500"
+                    >
+                      {page.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="ml-auto flex items-center">
+                {!isMobile && <AuthenticationButtons isMobile={isMobile} />}
+
+                {/* Search */}
+                <div className="ml-4 flow-root lg:ml-6">
+                  <Link
+                    href="#"
+                    className="p-2 text-gray-400 hover:text-secondary-500"
+                    onClick={() => {
+                      setIsSearchWindowOpen(true);
+                    }}
+                  >
+                    <span className="sr-only">Search</span>
+                    <MagnifyingGlassIcon
+                      className="h-6 w-6"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                </div>
+
+                {/* Cart */}
+                <div className="ml-4 flow-root lg:ml-6 relative">
+                  <Link
+                    href="/cart"
+                    className="group -m-2 flex items-center p-2"
+                  >
+                    <ShoppingBagIcon
+                      className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-secondary-500"
+                      aria-hidden="true"
+                    />
+                    <span
+                      className={cn(
+                        'text-xs font-medium text-gray-700 group-hover:text-gray-800 absolute top-1 right-0.5 transfrom translate-x-1/2 -translate-y-1/2 text-center',
+                        `${
+                          cartItemsArr.length > 0
+                            ? 'text-white rounded-full bg-red-500 group-hover:text-white h-4 w-4'
+                            : null
+                        }`,
+                        `${cartItemsArr.length >= 10 ? 'text-[10px]' : null}`
+                      )}
+                    >
+                      {cartItemsArr.length > 0 ? cartItemsArr.length : null}
+                    </span>
+                    <span className="sr-only">items in cart, view bag</span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </nav>
-    </header>
+        </nav>
+      </header>
+    </>
   );
 }
