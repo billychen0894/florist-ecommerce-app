@@ -3,6 +3,7 @@
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
+  PencilSquareIcon,
   ShoppingBagIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -17,6 +18,7 @@ import { initializeCart } from '@store/features/cartSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useEffect, useState } from 'react';
 import SearchWindow from '@components/ui/SearchWindow';
+import { useSession } from 'next-auth/react';
 
 interface DesktopMenuProps {
   onOpen: (open: boolean) => void;
@@ -30,6 +32,7 @@ export default function DesktopMenu({
   isMobile,
 }: DesktopMenuProps) {
   const dispatch = useAppDispatch();
+  const { data: session, status } = useSession();
   useEffect(() => {
     if (typeof window !== undefined) {
       const cachedCartItems = getCartItemsFromLocalStorage();
@@ -40,6 +43,7 @@ export default function DesktopMenu({
 
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
   const cartItemsArr = Object.values(cartItems);
+
   return (
     <>
       <SearchWindow open={isSearchWindowOpen} onOpen={setIsSearchWindowOpen} />
@@ -136,6 +140,23 @@ export default function DesktopMenu({
                     <span className="sr-only">items in cart, view bag</span>
                   </Link>
                 </div>
+                {/*Admin Edit Link*/}
+                {session &&
+                  session.user.role === 'admin' &&
+                  status === 'authenticated' && (
+                    <div className="ml-4 flow-root lg:ml-6 relative">
+                      <Link
+                        href="/admin/dashboard"
+                        className="group -m-2 flex items-center p-2"
+                      >
+                        <PencilSquareIcon
+                          className="h-6 w-6 flex-shrink-0 text-red-500 group-hover:text-red-400"
+                          aria-hidden="true"
+                        />
+                        <span className="sr-only">Admin Edit</span>
+                      </Link>
+                    </div>
+                  )}
               </div>
             </div>
           </div>
