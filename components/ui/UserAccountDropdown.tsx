@@ -5,21 +5,21 @@ import React, { Fragment } from 'react';
 import Button from './Button';
 import Link from 'next/link';
 
+interface MenuItem {
+  href: string;
+  label: string;
+}
+
 interface UserAcccountDropdownProps {
   email: string;
   avatar: React.ReactElement | null;
+  menuItems: MenuItem[];
 }
-
-const menuItems: { href: string; label: string }[] = [
-  { href: '/user/profile', label: 'Profile' },
-  { href: '/user/orders', label: 'Orders' },
-  { href: '/user/wishlist', label: 'Wishlist' },
-  { href: '/user/settings', label: 'Settings' },
-];
 
 export default function UserAcccountDropdown({
   avatar,
   email,
+  menuItems,
 }: UserAcccountDropdownProps) {
   return (
     <Menu as="span" className="hidden relative sm:inline-block text-left">
