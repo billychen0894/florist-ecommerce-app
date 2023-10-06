@@ -24,10 +24,7 @@ const navigation = [
   { name: 'Settings', href: '/admin/settings' },
 ];
 
-export const adminMenuItems = [
-  { label: 'Your Profile', href: '/admin/profile' },
-  { label: 'Account Settings', href: '/admin/account-settings' },
-];
+export const adminMenuItems = [{ label: 'Account', href: '/admin/account' }];
 
 export default function AdminNavigation() {
   const { data: session } = useSession();
