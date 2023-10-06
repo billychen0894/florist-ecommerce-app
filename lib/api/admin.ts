@@ -11,6 +11,17 @@ async function getAllUsers(
   return response;
 }
 
+async function deleteUserById(
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/users/${userId}`
+  )) as ApiResponse<null>;
+
+  return response;
+}
+
 async function createProduct(
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
@@ -151,4 +162,5 @@ export const admin = {
   createCoupons,
   getCoupons,
   deleteCouponByCouponNumber,
+  deleteUserById,
 };
