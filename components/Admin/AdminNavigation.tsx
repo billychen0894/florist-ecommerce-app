@@ -106,7 +106,7 @@ export default function AdminNavigation() {
                   </div>
                   <div className="-mr-2 flex md:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-indigo-600 p-2 text-indigo-200 hover:bg-indigo-500 hover:bg-opacity-75 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600">
+                    <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-primary-300 p-2 text-indigo-200 hover:bg-primary-500 hover:bg-opacity-75 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-300">
                       <span className="absolute -inset-0.5" />
                       <span className="sr-only">Open main menu</span>
                       {open ? (
@@ -124,6 +124,70 @@ export default function AdminNavigation() {
                   </div>
                 </div>
               </div>
+              <Disclosure.Panel className="md:hidden">
+                <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+                  {navigation.map((item) => (
+                    <Disclosure.Button
+                      key={item.name}
+                      as="a"
+                      href={item.href}
+                      className={cn(
+                        pathname === item.href
+                          ? 'bg-primary-500 text-white'
+                          : 'text-white hover:bg-primary-500 hover:bg-opacity-75',
+                        'block rounded-md px-3 py-2 text-base font-medium'
+                      )}
+                      aria-current={pathname === item.href ? 'page' : undefined}
+                    >
+                      {item.name}
+                    </Disclosure.Button>
+                  ))}
+                </div>
+                <div className="border-t border-primary-500 pb-3 pt-4">
+                  <div className="flex items-center px-5">
+                    <div className="flex-shrink-0">
+                      <Image
+                        className="h-10 w-10 rounded-full"
+                        src={admin?.image!}
+                        alt={session?.user.name || 'user avatar'}
+                        width={500}
+                        height={500}
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-base font-medium text-white">
+                        {session?.user?.name!}
+                      </div>
+                      <div className="text-sm font-medium text-secondary-300">
+                        {session?.user?.email!}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 space-y-1 px-2">
+                    <Link
+                      href="/"
+                      className="block rounded-md px-3 py-2 text-base font-medium text-white hover:text-secondary-300"
+                    >
+                      Go to Store Front
+                    </Link>
+                    {adminMenuItems.map((item) => (
+                      <Disclosure.Button
+                        key={item.label}
+                        as="a"
+                        href={item.href}
+                        className={cn(
+                          pathname === item.href
+                            ? 'bg-primary-500'
+                            : 'hover:bg-primary-500 hover:bg-opacity-75',
+                          'block rounded-md px-3 py-2 text-base font-medium text-white '
+                        )}
+                      >
+                        {item.label}
+                      </Disclosure.Button>
+                    ))}
+                  </div>
+                </div>
+              </Disclosure.Panel>
             </>
           )}
         </Disclosure>
