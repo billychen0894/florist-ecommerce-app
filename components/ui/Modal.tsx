@@ -13,9 +13,10 @@ interface ModalProps {
   iconBgColor?: string;
   title: string;
   description?: string;
-  buttonText: string | React.ReactElement;
+  buttonText?: string | React.ReactElement;
   buttonAction?: () => void;
   backdropAction?: () => void;
+  additionalBtns?: React.ReactElement;
 }
 
 export default function Modal({
@@ -28,6 +29,7 @@ export default function Modal({
   iconBgColor,
   buttonAction,
   backdropAction,
+  additionalBtns,
 }: ModalProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -95,6 +97,7 @@ export default function Modal({
                   >
                     {buttonText}
                   </Button>
+                  {additionalBtns}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
