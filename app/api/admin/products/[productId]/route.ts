@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
-import { ProductPayload } from '@lib/types/api';
+import { TProduct } from '@lib/types/api';
 import { productsPayloadSchema } from '../productsPayloadValidation';
 
 export async function PUT(req: Request, res: Response) {
   try {
     const productId = req.url.slice(req.url.lastIndexOf('/') + 1);
-    const body: ProductPayload = await req.json();
+    const body: TProduct = await req.json();
     const {
       name,
       description,
