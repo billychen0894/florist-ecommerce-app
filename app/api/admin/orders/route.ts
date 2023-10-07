@@ -68,15 +68,6 @@ export async function GET(req: Request, res: Response) {
         contactPhone: true,
         total: true,
         orderStatus: true,
-        paymentMethod: true,
-        shippingMethod: {
-          select: {
-            name: true,
-            turnAround: true,
-            location: true,
-            location_operation_hours: true,
-          },
-        },
         shippingAddress: {
           select: {
             addressLine1: true,
@@ -113,7 +104,6 @@ export async function GET(req: Request, res: Response) {
             },
           },
         },
-        discountCoupon: {},
       },
     });
 
