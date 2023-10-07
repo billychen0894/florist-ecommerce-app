@@ -7,6 +7,7 @@ import { fetchUserById } from '@store/features/userSlice';
 import { useSession } from 'next-auth/react';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { redirect } from 'next/navigation';
+import { fetchAccountUsers } from '@store/features/adminSlice';
 
 export default function AdminLayout({
   children,
@@ -25,6 +26,7 @@ export default function AdminLayout({
   useEffect(() => {
     if (!admin && session && session.user.role === 'admin') {
       dispatch(fetchUserById({ userId: session.user.id, axiosWithAuth }));
+      dispatch(fetchAccountUsers(axiosWithAuth));
     }
   }, [admin, dispatch, session, axiosWithAuth]);
 
