@@ -1,12 +1,13 @@
-import { ApiResponse, DiscountCoupon, Order, User } from '@lib/types/api';
-import { AxiosInstance } from 'axios';
+import { ApiResponse, DiscountCoupon, User } from '@lib/types/api';
+import { AxiosInstance, AxiosResponse } from 'axios';
+import { Order } from '@prisma/client';
 
 async function getAllUsers(
   axiosWithAuth: AxiosInstance
-): Promise<ApiResponse<User[]>> {
-  const response = (await axiosWithAuth.get('/api/admin/users')) as ApiResponse<
-    User[]
-  >;
+): Promise<AxiosResponse<ApiResponse<User[]>>> {
+  const response = (await axiosWithAuth.get(
+    '/api/admin/users'
+  )) as AxiosResponse<ApiResponse<User[]>>;
 
   return response;
 }
