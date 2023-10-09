@@ -67,7 +67,11 @@ export default function Row({
           </span>
         )}
       </RowData>
-      <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
+      <RowData
+        rowIndex={rowIndex}
+        invoiceLength={invoicesLength}
+        className="hidden sm:table-cell"
+      >
         <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
           {paymentStatus?.charAt(0).toUpperCase()! +
             paymentStatus?.slice(1).toLowerCase()!}
@@ -78,7 +82,7 @@ export default function Row({
           href={invoiceUrl as string}
           className="text-secondary-500 hover:text-secondary-300 flex justify-center items-center gap-1"
         >
-          <DocumentTextIcon className="h-6 w-6" />
+          <DocumentTextIcon className="h-6 w-6 hidden sm:inline-block" />
           <span>View invoice</span>
           <span className="sr-only">, {''}</span>
         </Link>
