@@ -115,6 +115,7 @@ model Order {
   user              User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   guestId           String?
   guest             Guest?        @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  invoiceUrl        String?       @unique
   orderItems        OrderItem[]
   orderStatus       OrderStatus   @default(CREATED)
   shippingAddress   Address?      @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
