@@ -26,6 +26,8 @@ export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
       : 'orderNumber' in invoice
       ? `/admin/orders/${invoice.orderNumber}`
       : '#';
+  const invoiceTotal =
+    'number' in invoice ? Number(invoice.total) / 100 : invoice.total;
 
   return (
     <tr>
@@ -37,7 +39,7 @@ export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
         invoiceLength={invoicesLength}
         className="hidden sm:table-cell"
       >
-        {formatCurrency(Number(invoice.total / 100), 'en-CA', 'CAD')}
+        {formatCurrency(invoiceTotal, 'en-CA', 'CAD')}
       </RowData>
       <RowData
         rowIndex={rowIndex}
