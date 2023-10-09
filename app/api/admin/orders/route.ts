@@ -68,6 +68,7 @@ export async function GET(req: Request, res: Response) {
         contactPhone: true,
         total: true,
         orderStatus: true,
+        paymentStatus: true,
         shippingAddress: {
           select: {
             addressLine1: true,
