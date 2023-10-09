@@ -113,6 +113,7 @@ export async function POST(req: Request) {
       );
       // Replace orderNumber with Invoice number issued by Stripe
       orderData.orderNumber = invoiceObj.number!;
+      orderData.stripeInvoiceId = invoiceObj.id;
 
       orderData.orderItems = {
         createMany: {
