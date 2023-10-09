@@ -20,8 +20,9 @@ const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard' },
   { name: 'Orders', href: '/admin/orders' },
   { name: 'Products', href: '/admin/products' },
+  { name: 'Categories', href: '/admin/categories' },
   { name: 'Customers', href: '/admin/customers' },
-  { name: 'Settings', href: '/admin/settings' },
+  { name: 'Store Management', href: '/admin/store-management' },
 ];
 
 export const adminMenuItems = [{ label: 'Account', href: '/admin/account' }];
@@ -31,7 +32,9 @@ export default function AdminNavigation() {
   const admin = useAppSelector((state) => state.userReducer.user);
   const pathname = usePathname();
   const pathnameParts = pathname.split('/');
-  const currentPageName = pathnameParts[pathnameParts.length - 1];
+  const currentPageName = pathnameParts[pathnameParts.length - 1]
+    .split('-')
+    .join(' ');
 
   return (
     <>
