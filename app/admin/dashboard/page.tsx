@@ -8,17 +8,20 @@ import { redirect } from '@node_modules/next/navigation';
 import { useEffect } from 'react';
 import { fetchUserById } from '@store/features/userSlice';
 import { fetchAccountUsers, fetchOrders } from '@store/features/adminSlice';
+import { formatCurrency } from '@lib/formatCurrency';
 
 export default function Dashboard() {
   const accountUsers = useAppSelector(
     (state) => state.adminReducer.accountUsers
   );
   const orders = useAppSelector((state) => state.adminReducer.orders);
-
   const admin = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
   const axiosWithAuth = useAxiosWithAuth();
   const { data: session, status } = useSession();
+  const totalRevenue = orders.reduce((pre, curr) => {
+    return pre + curr.total;
+  }, 0);
 
   if (session?.user.role !== 'admin' && status === 'unauthenticated') {
     redirect('/denied');
@@ -44,7 +47,10 @@ export default function Dashboard() {
             stat={accountUsers.length.toString()}
           />
           <StatCard name="Total Orders" stat={orders.length.toString()} />
-          <StatCard name="Revenue" stat="123" />
+          <StatCard
+            name="Revenue"
+            stat={formatCurrency(totalRevenue, 'en-CA', 'CAD')}
+          />
         </dl>
       </div>
     </div>
