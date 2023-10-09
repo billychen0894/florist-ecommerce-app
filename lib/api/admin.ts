@@ -89,10 +89,10 @@ async function deleteCategoryById(
 
 async function getOrders(
   axiosWithAuth: AxiosInstance
-): Promise<ApiResponse<Order[]>> {
+): Promise<AxiosResponse<ApiResponse<Order[]>>> {
   const response = (await axiosWithAuth.get(
     '/api/admin/orders'
-  )) as ApiResponse<Order[]>;
+  )) as AxiosResponse<ApiResponse<Order[]>>;
 
   return response;
 }

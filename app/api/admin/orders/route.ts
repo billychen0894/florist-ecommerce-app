@@ -111,7 +111,7 @@ export async function GET(req: Request, res: Response) {
       return NextResponse.json(
         {
           success: true,
-          orders: [],
+          data: [],
           message: 'Currently no orders to retrieve.',
         },
         {
@@ -123,7 +123,7 @@ export async function GET(req: Request, res: Response) {
     return NextResponse.json(
       {
         success: true,
-        orders: orders,
+        data: orders,
         message: 'Successfully retrieved orders.',
       },
       {
