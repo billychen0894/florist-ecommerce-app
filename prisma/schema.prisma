@@ -9,52 +9,52 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(uuid())
-  stripeCustomerId String?
-  cloudinaryPublicId String?
-  name             String?
-  email            String?   @unique
-  emailVerified    DateTime?
-  emailVerifyToken String?
+  id                        String    @id @default(uuid())
+  stripeCustomerId          String?
+  cloudinaryPublicId        String?
+  name                      String?
+  email                     String?   @unique
+  emailVerified             DateTime?
+  emailVerifyToken          String?
   passwordVerificationToken String?
-  phone            String?
-  image            String?
-  password         String?
-  role             Role      @default(user)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  orders           Order[]
-  wishlist         Product[]
+  phone                     String?
+  image                     String?
+  password                  String?
+  role                      Role      @default(user)
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+  orders                    Order[]
+  wishlist                  Product[]
 
   @@map("users")
 }
 
 model Guest {
-  id        String   @id @default(uuid())
+  id               String   @id @default(uuid())
   stripeCustomerId String?
-  name      String?
-  email     String?  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
+  name             String?
+  email            String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  orders           Order[]
 
   @@map("guests")
 }
 
 model Product {
-  id              String        @id @default(uuid())
-  name            String
-  description     String
-  price           Float
-  images          Image[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  categories      Category[]
-  orderItems      OrderItem[]
-  inStock         Boolean       @default(true)
-  leadTime        String
-  productDetail   ProductDetail?
-  wishlist        User[]
+  id            String         @id @default(uuid())
+  name          String
+  description   String
+  price         Float
+  images        Image[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  categories    Category[]
+  orderItems    OrderItem[]
+  inStock       Boolean        @default(true)
+  leadTime      String
+  productDetail ProductDetail?
+  wishlist      User[]
 
   @@map("products")
 }
@@ -62,8 +62,8 @@ model Product {
 model ProductDetail {
   id                 String              @id @default(uuid())
   productDetailItems ProductDetailItem[]
-  productId          String             @unique
-  product            Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId          String              @unique
+  product            Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 
@@ -106,41 +106,42 @@ model Category {
 }
 
 model Order {
-  id                String          @id @default(uuid())
-  orderNumber       String          @unique
+  id                String        @id @default(uuid())
+  orderNumber       String        @unique
+  stripeInvoiceId   String?       @unique
   contactEmail      String?
   total             Float
   userId            String?
-  user              User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   guestId           String?
-  guest             Guest?          @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  guest             Guest?        @relation(fields: [guestId], references: [id], onDelete: Cascade)
   orderItems        OrderItem[]
-  orderStatus       OrderStatus     @default(CREATED)
-  shippingAddress   Address?         @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
+  orderStatus       OrderStatus   @default(CREATED)
+  shippingAddress   Address?      @relation("shippingAddress", fields: [shippingAddressId], references: [id], onDelete: Cascade)
   shippingAddressId String?
-  billingAddress    Address?         @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
+  billingAddress    Address?      @relation("billingAddress", fields: [billingAddressId], references: [id], onDelete: Cascade)
   billingAddressId  String?
   contactPhone      String?
-  paymentStatus     PaymentStatus   @default(UNPAID)
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
+  paymentStatus     PaymentStatus @default(UNPAID)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   @@map("orders")
 }
 
 model Address {
-  id                    String      @id @default(uuid())
+  id                    String   @id @default(uuid())
   addressLine1          String
   addressLine2          String?
   company               String?
   city                  String
   stateOrProvince       String
   country               String
-  postalCode            String      @unique
-  createdAt             DateTime    @default(now())
-  updatedAt             DateTime    @updatedAt
-  ordersShippingAddress Order[]     @relation("shippingAddress")
-  ordersBillingAddress  Order[]     @relation("billingAddress")
+  postalCode            String   @unique
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  ordersShippingAddress Order[]  @relation("shippingAddress")
+  ordersBillingAddress  Order[]  @relation("billingAddress")
 
   @@map("addresses")
 }
