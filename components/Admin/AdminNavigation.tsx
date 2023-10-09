@@ -32,9 +32,9 @@ export default function AdminNavigation() {
   const admin = useAppSelector((state) => state.userReducer.user);
   const pathname = usePathname();
   const pathnameParts = pathname.split('/');
-  const currentPageName = pathnameParts[pathnameParts.length - 1]
-    .split('-')
-    .join(' ');
+  const currentPageName = pathname.startsWith('/admin/orders')
+    ? pathnameParts[pathnameParts.length - 1]
+    : pathnameParts[pathnameParts.length - 1].split('-').join(' ');
 
   return (
     <>
@@ -198,6 +198,9 @@ export default function AdminNavigation() {
       <header className="bg-white shadow">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
+            {pathname.startsWith('/admin/orders') && pathname != '/admin/orders'
+              ? 'Invoice '
+              : null}
             {capitalizeWords(currentPageName)}
           </h1>
         </div>
