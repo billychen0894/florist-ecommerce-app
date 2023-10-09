@@ -1,8 +1,11 @@
+'use client';
+
 import { formatCurrency } from '@lib/formatCurrency';
 import { $Enums, Order } from '@prisma/client';
 import Link from 'next/link';
-import Stripe from 'stripe';
 import RowData from './RowData';
+import { DocumentTextIcon } from '@node_modules/@heroicons/react/24/outline';
+import Stripe from 'stripe';
 
 interface RowProps {
   rowIndex: number;
@@ -10,8 +13,14 @@ interface RowProps {
     | (Stripe.Invoice & { orderStatus: $Enums.OrderStatus })
     | (Order & { paymentStatus: $Enums.PaymentStatus });
   invoicesLength: number;
+  additionalRows?: React.ReactElement;
 }
-export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
+export default function Row({
+  rowIndex,
+  invoice,
+  invoicesLength,
+  additionalRows,
+}: RowProps) {
   const invoiceNumber =
     'number' in invoice ? invoice.number : invoice.orderNumber;
   const paymentStatus =
@@ -24,8 +33,9 @@ export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
     'hosted_invoice_url' in invoice
       ? invoice.hosted_invoice_url
       : 'orderNumber' in invoice
-      ? `/admin/orders/${invoice.orderNumber}`
+      ? invoice.invoiceUrl
       : '#';
+
   const invoiceTotal =
     'number' in invoice ? Number(invoice.total) / 100 : invoice.total;
 
@@ -66,11 +76,14 @@ export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
       <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
         <Link
           href={invoiceUrl as string}
-          className="text-secondary-500 hover:text-secondary-300"
+          className="text-secondary-500 hover:text-secondary-300 flex justify-center items-center gap-1"
         >
-          View invoice<span className="sr-only">, {''}</span>
+          <DocumentTextIcon className="h-6 w-6" />
+          <span>View invoice</span>
+          <span className="sr-only">, {''}</span>
         </Link>
       </RowData>
+      {additionalRows}
     </tr>
   );
 }
