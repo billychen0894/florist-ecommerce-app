@@ -64,6 +64,8 @@ export async function GET(req: Request, res: Response) {
       select: {
         id: true,
         orderNumber: true,
+        stripeInvoiceId: true,
+        invoiceUrl: true,
         contactEmail: true,
         contactPhone: true,
         total: true,
