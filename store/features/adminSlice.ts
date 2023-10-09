@@ -24,6 +24,13 @@ export const fetchAccountUsers = createAsyncThunk(
   }
 );
 
+export const fetchOrders = createAsyncThunk(
+  'admin/fetchOrders',
+  async (axiosWithAuth: AxiosInstance, thunkAPI) => {
+    const response = await admin.getOrders(axiosWithAuth);
+    return response.data.data as Order[];
+  }
+);
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
@@ -31,9 +38,13 @@ const adminSlice = createSlice({
     // Add reducers here
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAccountUsers.fulfilled, (state, action) => {
-      state.accountUsers = action.payload;
-    });
+    builder
+      .addCase(fetchAccountUsers.fulfilled, (state, action) => {
+        state.accountUsers = action.payload;
+      })
+      .addCase(fetchOrders.fulfilled, (state, action) => {
+        state.orders = action.payload;
+      });
   },
 });
 
