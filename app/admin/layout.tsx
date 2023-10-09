@@ -1,7 +1,7 @@
 'use client';
 
 import AdminNavigation from '@components/Admin/AdminNavigation';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useAppDispatch } from '@store/hooks';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { useSession } from '@node_modules/next-auth/react';
 import { redirect } from '@node_modules/next/navigation';
@@ -16,7 +16,6 @@ export default function AdminLayout({
 }) {
   const dispatch = useAppDispatch();
   const axiosWithAuth = useAxiosWithAuth();
-  const admin = useAppSelector((state) => state.userReducer.user);
   const { data: session, status } = useSession();
 
   if (session?.user.role !== 'admin' && status === 'unauthenticated') {
@@ -29,7 +28,7 @@ export default function AdminLayout({
       dispatch(fetchAccountUsers(axiosWithAuth));
       dispatch(fetchOrders(axiosWithAuth));
     }
-  }, [admin, dispatch, session, axiosWithAuth]);
+  }, [dispatch, session, axiosWithAuth]);
   return (
     <div className="min-h-full">
       <AdminNavigation />
