@@ -1,10 +1,10 @@
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { User } from '@lib/types/api';
 import { Order } from '@prisma/client';
 import { AxiosInstance } from 'axios';
 import { admin } from '@lib/api/admin';
-
-// import type { PayloadAction} from "@reduxjs/toolkit";
+import { OrderStatus } from '@node_modules/@prisma/client';
 
 export interface AdminState {
   accountUsers: User[];
@@ -35,7 +35,23 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    // Add reducers here
+    updateOrder(
+      state,
+      action: PayloadAction<{
+        stripeInvoiceId: string;
+        orderStatus: OrderStatus;
+      }>
+    ) {
+      if (action.payload.stripeInvoiceId) {
+        const orderIdx = state.orders.findIndex(
+          (order) => order.stripeInvoiceId === action.payload.stripeInvoiceId
+        );
+        state.orders[orderIdx] = {
+          ...state.orders[orderIdx],
+          ...action.payload,
+        };
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -48,8 +64,6 @@ const adminSlice = createSlice({
   },
 });
 
-export const {
-  /* Add action creators here */
-} = adminSlice.actions;
+export const { updateOrder } = adminSlice.actions;
 
 export default adminSlice.reducer;
