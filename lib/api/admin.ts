@@ -1,6 +1,6 @@
 import { ApiResponse, DiscountCoupon, User } from '@lib/types/api';
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { Order } from '@prisma/client';
+import { Order, OrderStatus } from '@prisma/client';
 
 async function getAllUsers(
   axiosWithAuth: AxiosInstance
@@ -108,13 +108,16 @@ async function deleteOrderById(
   return response;
 }
 
-async function updateOrderById(
+async function updateOrderByStripeId(
   orderId: string,
+  data: {
+    orderStatus: OrderStatus;
+  },
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
-  const response = (await axiosWithAuth.put(
-    `/api/admin/orders/${orderId}`
-  )) as ApiResponse<null>;
+  const response = (await axiosWithAuth.put(`/api/admin/orders/${orderId}`, {
+    ...data,
+  })) as ApiResponse<null>;
 
   return response;
 }
@@ -159,7 +162,7 @@ export const admin = {
   deleteCategoryById,
   getOrders,
   deleteOrderById,
-  updateOrderById,
+  updateOrderByStripeId,
   createCoupons,
   getCoupons,
   deleteCouponByCouponNumber,
