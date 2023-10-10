@@ -42,7 +42,7 @@ export default function Orders() {
                 additionalRows={
                   <RowData rowIndex={idx} invoiceLength={orders?.length}>
                     <Link
-                      href={`/admin/orders/${invoice.orderNumber}/edit`}
+                      href={`/admin/orders/${invoice.stripeInvoiceId}/edit`}
                       className="text-blue-500 hover:text-blue-400 flex justify-center items-center gap-1"
                     >
                       <PencilSquareIcon className="h-6 w-6 hidden sm:inline-block" />
