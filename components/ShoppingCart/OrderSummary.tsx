@@ -3,7 +3,7 @@
 import { checkout } from '@actions/checkout';
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/OrderInfo';
 import { formatCurrency } from '@lib/formatCurrency';
 import { useAppSelector } from '@store/hooks';
 import { useSession } from 'next-auth/react';
