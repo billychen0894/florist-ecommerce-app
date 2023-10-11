@@ -1,13 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Disclosure } from '@node_modules/@headlessui/react';
 import { cn } from '@lib/classNames';
-import {
-  Bars3Icon,
-  BuildingStorefrontIcon,
-  XMarkIcon,
-} from '@node_modules/@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import capitalizeWords from '@lib/capitalizeWords';
@@ -15,6 +9,9 @@ import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
 import { Avatar } from '@components/ui';
 import { useSession } from 'next-auth/react';
 import { useAppSelector } from '@store/hooks';
+import { Disclosure } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/20/solid';
+import { Bars3Icon, BuildingStorefrontIcon } from '@heroicons/react/24/outline';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard' },
@@ -148,13 +145,11 @@ export default function AdminNavigation() {
                 </div>
                 <div className="border-t border-primary-500 pb-3 pt-4">
                   <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
-                      <Image
-                        className="h-10 w-10 rounded-full"
-                        src={admin?.image!}
-                        alt={session?.user.name || 'user avatar'}
-                        width={500}
-                        height={500}
+                    <div className="flex-shrink-0 inline-block h-10 w-10 overflow-hidden rounded-full bg-gray-100">
+                      <Avatar
+                        avatarImageUrl={admin?.image!}
+                        avatarImageAlt={session?.user.name || 'user avatar'}
+                        className="h-10 w-10"
                       />
                     </div>
                     <div className="ml-3">
