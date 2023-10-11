@@ -56,7 +56,7 @@ export default function AdminNavigation() {
                       />
                     </div>
                     <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
+                      <div className="ml-10 flex items-baseline space-x-2">
                         {navigation.map((item) => (
                           <Link
                             key={item.name}
@@ -65,7 +65,7 @@ export default function AdminNavigation() {
                               pathname === item.href
                                 ? 'bg-primary-500 text-white'
                                 : 'text-white hover:bg-primary-500 hover:bg-opacity-75',
-                              'rounded-md px-3 py-2 text-sm font-medium'
+                              'rounded-md px-2 py-1 lg:px-3 lg:py-2 text-sm font-medium'
                             )}
                             aria-current={
                               pathname === item.href ? 'page' : undefined
