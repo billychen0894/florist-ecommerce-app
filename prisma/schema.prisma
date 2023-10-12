@@ -51,6 +51,7 @@ model Product {
   updatedAt     DateTime       @updatedAt
   categories    Category[]
   orderItems    OrderItem[]
+  units         Float          @default(0)
   inStock       Boolean        @default(true)
   leadTime      String
   productDetail ProductDetail?
