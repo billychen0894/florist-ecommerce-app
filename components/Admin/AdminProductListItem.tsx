@@ -2,7 +2,7 @@
 
 import Image from '@node_modules/next/image';
 import { TProduct } from '@lib/types/api';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 interface AdminProductListItem {
   product: TProduct;
@@ -12,10 +12,13 @@ export default function AdminProductListItem({
 }: AdminProductListItem) {
   const router = useRouter();
   const pathname = usePathname();
+  const productId = useSearchParams().get('productId');
 
   return (
     <li
-      className="flex gap-x-4 px-3 py-5 hover:bg-gray-100 cursor-pointer"
+      className={`flex gap-x-4 px-3 py-5 hover:bg-primary-100 cursor-pointer ${
+        productId === product.id ? 'bg-primary-200' : ''
+      }`}
       data-productid={product.id}
       onClick={(e) => {
         const params = new URLSearchParams(window.location.search);
