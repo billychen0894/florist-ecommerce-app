@@ -16,7 +16,7 @@ export default function AdminProductListItem({
   return (
     <li
       className="flex gap-x-4 px-3 py-5 hover:bg-gray-100 cursor-pointer"
-      data-productId={product.id}
+      data-productid={product.id}
       onClick={(e) => {
         const params = new URLSearchParams(window.location.search);
         if (params.has('productId') && e.currentTarget.dataset.productid) {
