@@ -45,16 +45,18 @@ export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> 
         'fileLength',
         'Maximum of 4 image files can be uploaded',
         (files: any) => {
-          return !!(files && files.length < 4);
+          return !!(
+            files && files.existingImages.length + files.newImages.length <= 4
+          );
         }
       )
       .required('Product should have at least one image'),
     categories: yup
       .array()
       .of(
-        yup
-          .object()
-          .shape({ name: yup.string().required('Categories name is required') })
+        yup.object().shape({
+          name: yup.string().required('Category name is required'),
+        })
       )
       .required('Product categories is required'),
     units: yup
