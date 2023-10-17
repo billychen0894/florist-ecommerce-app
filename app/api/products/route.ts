@@ -58,6 +58,11 @@ export async function GET(req: Request) {
         images: true,
         categories: true,
         orderItems: true,
+        productDetail: {
+          include: {
+            productDetailItems: true,
+          },
+        },
       },
       skip: skip,
       orderBy: [
