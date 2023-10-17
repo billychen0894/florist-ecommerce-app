@@ -5,60 +5,34 @@ import { Input, Label } from '@components/ui';
 import { PlusIcon } from '@node_modules/@heroicons/react/20/solid';
 import { ErrorMessage } from '@node_modules/@hookform/error-message';
 import { useFormContext } from 'react-hook-form';
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import { ChangeEvent } from 'react';
 
-type ImageUploadSectionProps = {
-  images: { existingImages: string[]; newImages: File[] };
-  setImages: Dispatch<
-    SetStateAction<{ existingImages: string[]; newImages: File[] }>
-  >;
-};
-
-export default function ImageUploadSection({
-  images,
-  setImages,
-}: ImageUploadSectionProps) {
+export default function ImageUploadSection() {
   const {
     control,
     formState: { errors },
     setValue,
+    getValues,
   } = useFormContext();
+
+  const currentImages: { existingImages: string[]; newImages: File[] } =
+    getValues('images');
 
   const handleImageRemove = (imageCategory: string, imageIndex: number) => {
     if (imageCategory === 'existingImages') {
-      setValue('images', {
-        existingImages: images.existingImages.filter(
-          (_, i) => i !== imageIndex
-        ),
-        newImages: images.newImages,
-      });
-
-      setImages((prevState) => {
-        const updatedExistingImages = prevState.existingImages.filter(
-          (_, i) => i !== imageIndex
-        );
-        return {
-          existingImages: updatedExistingImages,
-          newImages: prevState.newImages,
-        };
-      });
+      setValue(
+        'images.existingImages',
+        currentImages.existingImages.filter((_, i) => i !== imageIndex),
+        { shouldValidate: true }
+      );
     }
 
     if (imageCategory === 'newImages') {
-      setValue('images', {
-        existingImages: images.existingImages,
-        newImages: images.newImages.filter((_, i) => i !== imageIndex),
-      });
-
-      setImages((prevState) => {
-        const updatedNewImages = prevState.newImages.filter(
-          (_, i) => i !== imageIndex
-        );
-        return {
-          existingImages: prevState.existingImages,
-          newImages: updatedNewImages,
-        };
-      });
+      setValue(
+        'images.newImages',
+        currentImages.newImages.filter((_, i) => i !== imageIndex),
+        { shouldValidate: true }
+      );
     }
   };
 
@@ -78,10 +52,11 @@ export default function ImageUploadSection({
         newImages.push(file);
 
         if (newImages.length === files.length) {
-          setImages((prevState) => ({
-            existingImages: prevState.existingImages,
-            newImages: [...prevState.newImages, ...newImages],
-          }));
+          setValue(
+            'images.newImages',
+            [...currentImages.newImages, ...newImages],
+            { shouldValidate: true }
+          );
         }
       }
     }
@@ -93,18 +68,20 @@ export default function ImageUploadSection({
         Images
       </h3>
       {/*Place states here: if no items then show this comp.*/}
-      {images &&
-        images?.existingImages.length === 0 &&
-        images.newImages.length === 0 && <ContextMenu>No items</ContextMenu>}
+      {currentImages &&
+        currentImages?.existingImages.length === 0 &&
+        currentImages.newImages.length === 0 && (
+          <ContextMenu>No items</ContextMenu>
+        )}
       <Controller
         name="images"
         control={control}
         render={({ field }) => (
           <>
-            {(images && images.existingImages.length > 0) ||
-            images.newImages.length > 0 ? (
+            {(currentImages && currentImages.existingImages.length > 0) ||
+            currentImages.newImages.length > 0 ? (
               <div className="mt-2 flex items-center rounded-lg border border-dashed border-gray-900/25 p-2 gap-3">
-                {images.existingImages.map((image, idx) => (
+                {currentImages.existingImages.map((image, idx) => (
                   <ImageUploadPreview
                     key={idx}
                     index={idx}
@@ -112,7 +89,7 @@ export default function ImageUploadSection({
                     onClick={() => handleImageRemove('existingImages', idx)}
                   />
                 ))}
-                {images.newImages.map((image, idx) => (
+                {currentImages.newImages.map((image, idx) => (
                   <ImageUploadPreview
                     key={idx}
                     index={idx}
@@ -130,14 +107,7 @@ export default function ImageUploadSection({
               className="hidden"
               onChange={(e) => {
                 if (e.target.files) {
-                  const newImageFiles = Array.from(e.target.files);
                   handleImageChange(e);
-                  // Input listening to image files changes, but this onChange will override previous state,
-                  // therefore, on every change newImages should be added on top of previous state
-                  field.onChange({
-                    existingImages: images.existingImages,
-                    newImages: [...images.newImages, ...newImageFiles],
-                  });
                 }
               }}
             />
