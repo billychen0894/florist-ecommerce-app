@@ -5,24 +5,22 @@ import { ErrorMessage } from '@hookform/error-message';
 import { Controller, useFormContext } from 'react-hook-form';
 import ContextMenu from '@components/ui/ContextMenu';
 import { Category } from '@prisma/client';
-import { Dispatch, SetStateAction, useRef } from 'react';
+import { useRef } from 'react';
 
 type CategoriesSection = {
   categories: Category[];
-  selectedCategories: { name: string }[];
-  setSelectedCategories: Dispatch<SetStateAction<{ name: string }[]>>;
 };
 
-export default function CategoriesSection({
-  categories,
-  selectedCategories,
-  setSelectedCategories,
-}: CategoriesSection) {
+export default function CategoriesSection({ categories }: CategoriesSection) {
   const selectRef = useRef<HTMLSelectElement | null>(null);
   const {
     formState: { errors },
     control,
+    setValue,
+    getValues,
   } = useFormContext();
+
+  const currentCategories: { name: string }[] = getValues('categories');
 
   return (
     <div className="col-span-full">
@@ -57,20 +55,23 @@ export default function CategoriesSection({
                 className="max-w-md w-40 py-1.5 bg-transparent hover:bg-gray-100 text-gray-500 font-normal border border-gray-300"
                 onClick={() => {
                   if (selectRef.current && selectRef.current?.value) {
-                    const isCateogrySelected = selectedCategories.some(
+                    const isCateogrySelected = currentCategories.some(
                       (category) => category.name === selectRef.current?.value
                     );
                     const updatedSelectedCategory = isCateogrySelected
-                      ? selectedCategories
+                      ? currentCategories
                       : [
-                          ...selectedCategories,
+                          ...currentCategories,
                           { name: selectRef.current?.value },
                         ];
 
                     field.onChange(updatedSelectedCategory);
 
                     if (!isCateogrySelected) {
-                      setSelectedCategories(updatedSelectedCategory);
+                      setValue('categories', updatedSelectedCategory, {
+                        shouldValidate: true,
+                      });
+                      selectRef.current.value = '';
                     } else {
                       return;
                     }
@@ -83,19 +84,21 @@ export default function CategoriesSection({
                 </div>
               </Button>
             </div>
-            {selectedCategories.length === 0 && (
+            {currentCategories.length === 0 && (
               <ContextMenu>No categories</ContextMenu>
             )}
-            {selectedCategories.length > 0 && (
+            {currentCategories.length > 0 && (
               <div className="mt-2 flex items-center rounded-lg border border-dashed border-gray-900/25 p-2 gap-2">
-                {selectedCategories.map((category, idx) => (
+                {currentCategories.map((category, idx) => (
                   <div
                     key={idx}
                     className="group w-24 h-8 inline-flex justify-center items-center rounded-full bg-green-50 hover:bg-red-100 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20 hover:ring-red-600/20 cursor-pointer transition"
                     onClick={() => {
                       const updatedSelectedCategories =
-                        selectedCategories.filter((_, i) => idx !== i);
-                      setSelectedCategories(updatedSelectedCategories);
+                        currentCategories.filter((_, i) => idx !== i);
+                      setValue('categories', updatedSelectedCategories, {
+                        shouldValidate: true,
+                      });
                       field.onChange(updatedSelectedCategories);
                     }}
                   >
