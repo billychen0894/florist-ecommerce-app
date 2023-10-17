@@ -58,6 +58,7 @@ export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> 
           name: yup.string().required('Category name is required'),
         })
       )
+      .min(1, 'Product should have at least one category')
       .required('Product categories is required'),
     units: yup
       .number()
