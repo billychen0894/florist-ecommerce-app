@@ -8,22 +8,43 @@ import { Control, useFieldArray } from '@node_modules/react-hook-form';
 import { useFormContext } from 'react-hook-form';
 import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
 import { Input } from '@components/ui';
+import { TProduct } from '@lib/types/api';
+import { useEffect } from 'react';
 
 type ProductDetailSection = {
   control: Control<ProductDetailsFormSchema>;
+  selectedProduct: TProduct;
 };
 export default function ProductDetailSection({
   control,
+  selectedProduct,
 }: ProductDetailSection) {
   const {
     register,
     getValues,
     formState: { errors },
   } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     name: 'productDetail.productDetailItems',
     control,
   });
+
+  useEffect(() => {
+    if (selectedProduct.id) {
+      const existingProductDetailItems =
+        selectedProduct.productDetail.productDetailItems.map((item) => ({
+          productDetailItemName: item.productDetailItemName,
+          items: item.items,
+        }));
+      if (existingProductDetailItems.length > 0) {
+        replace(existingProductDetailItems);
+      }
+    }
+  }, [
+    replace,
+    selectedProduct.productDetail.productDetailItems,
+    selectedProduct,
+  ]);
 
   return (
     <div className="col-span-full">
@@ -42,10 +63,20 @@ export default function ProductDetailSection({
             if (productDetailItems.length >= 3) {
               return;
             } else {
-              append({
-                productDetailItemName: '',
-                items: ['', '', '', '', ''],
-              });
+              append([
+                {
+                  productDetailItemName: 'Product',
+                  items: ['', '', '', '', ''],
+                },
+                {
+                  productDetailItemName: 'Care',
+                  items: ['', '', '', '', ''],
+                },
+                {
+                  productDetailItemName: 'Delivery',
+                  items: ['', '', '', '', ''],
+                },
+              ]);
             }
           }}
           className={cn(
@@ -57,6 +88,19 @@ export default function ProductDetailSection({
         >
           Add
         </PlusCircleIcon>
+        <MinusCircleIcon
+          onClick={() => {
+            remove();
+          }}
+          className={cn(
+            'w-6 h-6 text-red-500 hover:text-red-400 cursor-pointer',
+            getValues('productDetail.productDetailItems').length < 3
+              ? 'text-gray-400 hover:text-gray-300 cursor-not-allowed'
+              : ''
+          )}
+        >
+          Remove
+        </MinusCircleIcon>
       </div>
       <ErrorMessage
         name="productDetail.productDetailItems"
@@ -75,6 +119,8 @@ export default function ProductDetailSection({
               {...register(
                 `productDetail.productDetailItems.${index}.productDetailItemName` as const
               )}
+              disabled
+              defaultValue={field.productDetailItemName}
             >
               <option value="">Select a product detail name</option>
               <option value="Product">Product</option>
@@ -82,7 +128,7 @@ export default function ProductDetailSection({
               <option value="Delivery">Delivery</option>
             </select>
             <div className="w-full flex justify-center items-center gap-1 flex-wrap">
-              {field.items.map((subField, subIndex) => {
+              {field.items.map((_, subIndex) => {
                 return (
                   <Input
                     key={subIndex}
@@ -96,14 +142,6 @@ export default function ProductDetailSection({
                 );
               })}
             </div>
-            <MinusCircleIcon
-              onClick={() => {
-                remove(index);
-              }}
-              className="w-7 h-7 text-red-500 hover:text-red-400 cursor-pointer"
-            >
-              Remove
-            </MinusCircleIcon>
           </section>
         );
       })}
