@@ -1,10 +1,5 @@
 import * as yup from 'yup';
-import {
-  Category,
-  Product,
-  ProductDetail,
-  ProductDetailItem,
-} from '@prisma/client';
+import { Category, Product, ProductDetail } from '@prisma/client';
 
 type OmittedProduct = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>;
 type OmittedCategory = Omit<Category, 'id' | 'createdAt' | 'updatedAt'>;
@@ -12,16 +7,17 @@ type OmittedProductDetail = Omit<
   ProductDetail,
   'id' | 'createdAt' | 'updatedAt' | 'productId'
 >;
-type OmittedProductDetailItem = Omit<
-  ProductDetailItem,
-  'id' | 'createdAt' | 'updatedAt' | 'productDetailId'
->;
+
+type TProductDetailItem = {
+  productDetailItemName: string;
+  items: (string | undefined)[];
+};
 
 type OmittedTProduct = OmittedProduct & {
   categories: OmittedCategory[];
 } & {
   productDetail: OmittedProductDetail & {
-    productDetailItems: OmittedProductDetailItem[];
+    productDetailItems: TProductDetailItem[];
   };
 } & {
   images: {};
@@ -82,7 +78,8 @@ export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> 
                 .required('Product detail item name is required'),
               items: yup
                 .array()
-                .of(yup.string().required('Product detail item is required'))
+                .of(yup.string())
+                .min(1, 'Each Product detail should at least have one item')
                 .required('Product detail item is required'),
             })
           )
