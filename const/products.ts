@@ -90,7 +90,7 @@ export const products: Product[] = [
         ],
       },
       {
-        name: 'Delivery and Pickup',
+        name: 'Delivery',
         items: [
           'In Toronto, Vancouver and Kelowna we offer the option to either have your bouquet delivered, or picked up from any of our local studios on the date of your choice',
           'Delivery rates are determined by your postal code, and will be displayed upon checkout. They range from $14.99 up to $70 depending on distance from our central studios.',
