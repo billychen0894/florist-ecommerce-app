@@ -3,12 +3,15 @@
 import Image from '@node_modules/next/image';
 import { TProduct } from '@lib/types/api';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Dispatch, SetStateAction } from 'react';
 
 interface AdminProductListItem {
   product: TProduct;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 export default function AdminProductListItem({
   product,
+  setOpen,
 }: AdminProductListItem) {
   const router = useRouter();
   const pathname = usePathname();
@@ -21,6 +24,7 @@ export default function AdminProductListItem({
       }`}
       data-productid={product.id}
       onClick={(e) => {
+        setOpen(true);
         const params = new URLSearchParams(window.location.search);
         if (params.has('productId') && e.currentTarget.dataset.productid) {
           params.delete('productId');

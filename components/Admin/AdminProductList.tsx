@@ -1,56 +1,31 @@
-'use client';
-
 import { TProduct } from '@lib/types/api';
-import { fetchProducts } from '@actions/fetch-products';
 import Button from '@components/ui/Button';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { InfiniteData } from '@tanstack/react-query';
 import Spinner from '@components/ui/Spinner';
-import { Fragment } from 'react';
+import { Dispatch, Fragment, SetStateAction } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { Input } from '@components/ui';
 import AdminProductListItem from '@components/Admin/AdminProductListItem';
 
 interface ProductListProps {
-  products: TProduct[];
-  keyword: string | undefined;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  data: InfiniteData<TProduct[]> | undefined;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => void;
+  hasNextPage: boolean | undefined;
 }
 
 export default function AdminProductList({
-  products,
-  keyword,
+  setOpen,
+  data,
+  isFetchingNextPage,
+  fetchNextPage,
+  hasNextPage,
 }: ProductListProps) {
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ['query', keyword],
-      queryFn: async ({ pageParam = 1 }) => {
-        const response = await fetchProducts(
-          pageParam,
-          12,
-          undefined,
-          undefined,
-          keyword
-        );
-        return response;
-      },
-      getNextPageParam: (lastPage, allPages) => {
-        const limit = 12;
-        const nextPage =
-          lastPage.length === limit ? allPages.length + 1 : undefined;
-        return nextPage;
-      },
-      initialData: {
-        pages: [products],
-        pageParams: [1],
-      },
-    });
-
   return (
-    <nav
-      className="h-screen overflow-y-scroll scroll-smooth px-2"
-      aria-label="ProductsList"
-    >
+    <nav className="scroll-smooth px-2" aria-label="ProductsList">
       <h2 className="text-lg font-medium text-gray-900">Product List</h2>
-      <form className="my-6 py-px flex gap-x-4 sticky top-0" action="#">
+      <form className="my-6 py-px flex gap-x-4 sticky top-1" action="#">
         <div className="min-w-0 flex-1">
           <label htmlFor="search" className="sr-only">
             Search
@@ -76,7 +51,11 @@ export default function AdminProductList({
         {data?.pages.map((productsPage, idx) => (
           <Fragment key={idx}>
             {productsPage.map((product) => (
-              <AdminProductListItem product={product} key={product.id} />
+              <AdminProductListItem
+                product={product}
+                key={product.id}
+                setOpen={setOpen}
+              />
             ))}
           </Fragment>
         ))}
