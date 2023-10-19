@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 
 type ProductDetailSection = {
   control: Control<ProductDetailsFormSchema>;
-  selectedProduct: TProduct;
+  selectedProduct: TProduct | undefined;
 };
 export default function ProductDetailSection({
   control,
@@ -30,9 +30,9 @@ export default function ProductDetailSection({
   });
 
   useEffect(() => {
-    if (selectedProduct.id) {
+    if (selectedProduct?.id) {
       const existingProductDetailItems =
-        selectedProduct.productDetail.productDetailItems.map((item) => ({
+        selectedProduct?.productDetail?.productDetailItems.map((item) => ({
           productDetailItemName: item.productDetailItemName,
           items: item.items,
         }));
@@ -42,7 +42,7 @@ export default function ProductDetailSection({
     }
   }, [
     replace,
-    selectedProduct.productDetail.productDetailItems,
+    selectedProduct?.productDetail?.productDetailItems,
     selectedProduct,
   ]);
 
@@ -60,7 +60,7 @@ export default function ProductDetailSection({
             const productDetailItems = getValues(
               'productDetail.productDetailItems'
             );
-            if (productDetailItems.length >= 3) {
+            if (productDetailItems && productDetailItems.length >= 3) {
               return;
             } else {
               append([
@@ -81,7 +81,7 @@ export default function ProductDetailSection({
           }}
           className={cn(
             'h-6 w-6 text-blue-500 hover:text-blue-400 cursor-pointer',
-            getValues('productDetail.productDetailItems').length >= 3
+            getValues('productDetail.productDetailItems')?.length >= 3
               ? 'text-gray-400 hover:text-gray-300 cursor-not-allowed'
               : ''
           )}
@@ -94,7 +94,7 @@ export default function ProductDetailSection({
           }}
           className={cn(
             'w-6 h-6 text-red-500 hover:text-red-400 cursor-pointer',
-            getValues('productDetail.productDetailItems').length < 3
+            getValues('productDetail.productDetailItems')?.length < 3
               ? 'text-gray-400 hover:text-gray-300 cursor-not-allowed'
               : ''
           )}
