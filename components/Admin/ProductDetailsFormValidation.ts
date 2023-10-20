@@ -20,7 +20,10 @@ type OmittedTProduct = OmittedProduct & {
     productDetailItems: TProductDetailItem[];
   };
 } & {
-  images: {};
+  images: {
+    existingImages: string[];
+    newImages: File[];
+  };
 };
 
 export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> =
@@ -36,17 +39,42 @@ export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> 
       .positive('Price must be a positive number')
       .required('Price is required'),
     images: yup
-      .mixed()
+      .object()
+      .shape({
+        existingImages: yup
+          .array()
+          .of(
+            yup
+              .string()
+              .min(1, 'Product should at least have one image')
+              .defined()
+          )
+          .required('Product images are required'),
+        newImages: yup
+          .array()
+          .of(
+            yup
+              .mixed<File>()
+              .defined()
+              .test(
+                'is-File',
+                'This is not a correct file type',
+                (file) => file instanceof File
+              )
+          )
+          .required('Product images are required'),
+      })
       .test(
         'fileLength',
-        'Maximum of 4 image files can be uploaded',
-        (files: any) => {
-          return !!(
-            files && files.existingImages.length + files.newImages.length <= 4
-          );
-        }
+        'Maximum of 4 uploads',
+        (value) => value.existingImages.length + value.newImages.length <= 4
       )
-      .required('Product should have at least one image'),
+      .test(
+        'minFileLength',
+        'Product requires at least one image',
+        (value) => value.existingImages.length + value.newImages.length >= 1
+      )
+      .required('Product images are required'),
     categories: yup
       .array()
       .of(
