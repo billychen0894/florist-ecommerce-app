@@ -70,14 +70,12 @@ export default function AdminProduct({
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage}
       />
-      {productId && (
-        <SlideOver open={open} setOpen={setOpen}>
-          <AdminProductDetailsForm
-            categories={categories}
-            selectedProduct={selectedProduct}
-          />
-        </SlideOver>
-      )}
+      <SlideOver open={open} setOpen={setOpen}>
+        <AdminProductDetailsForm
+          categories={categories}
+          selectedProduct={selectedProduct}
+        />
+      </SlideOver>
     </div>
   );
 }
