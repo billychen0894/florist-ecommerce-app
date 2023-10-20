@@ -1,6 +1,6 @@
 'use client';
 
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
   defaultProductDetailsFromSchema,
   ProductDetailsFormSchema,
@@ -10,47 +10,41 @@ import { Input, Label } from '@components/ui';
 import { ErrorMessage } from '@hookform/error-message';
 import { Textarea } from '@components/ui/Textarea';
 import Button from '@components/ui/Button';
-import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import ImageUploadSection from '@components/Admin/ImageUploadSection';
 import CategoriesSection from '@components/Admin/CategoriesSection';
 import { Category } from '@prisma/client';
-import { cn } from '@lib/classNames';
+import { TProduct } from '@lib/types/api';
+import ProductDetailSection from '@components/Admin/ProductDetailSection';
+import toast from 'react-hot-toast';
+import { multiImagesUpload } from '@actions/imageUpload';
 
 type AdminProductDetailsForm = {
   categories: Category[];
+  selectedProduct: TProduct | undefined;
 };
 
 export default function AdminProductDetailsForm({
   categories,
+  selectedProduct,
 }: AdminProductDetailsForm) {
-  // TODO: fetch selected images as default state
-  const [images, setImages] = useState<{
-    existingImages: string[];
-    newImages: File[];
-  }>({
-    existingImages: [
-      '/images/products/product1.jpg',
-      '/images/products/product2.jpg',
-    ],
-    newImages: [],
-  });
-  const [selectedCategories, setSelectedCategories] = useState<
-    { name: string }[]
-  >([{ name: 'Plants' }]);
   const methods = useForm<ProductDetailsFormSchema>({
     resolver: yupResolver(defaultProductDetailsFromSchema),
     defaultValues: {
       name: '',
       description: '',
       price: 0,
-      images: { existingImages: images.existingImages, newImages: [] },
-      categories: selectedCategories,
+      images: { existingImages: [], newImages: [] },
+      categories: [],
       units: 1,
       inStock: true,
       leadTime: '',
       productDetail: {
-        productDetailItems: [],
+        productDetailItems:
+          selectedProduct?.productDetail?.productDetailItems.map((item) => ({
+            productDetailItemName: item.productDetailItemName,
+            items: item.items,
+          })),
       },
     },
   });
@@ -58,28 +52,105 @@ export default function AdminProductDetailsForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty, isSubmitting },
     watch,
     control,
-    getValues,
+    setValue,
   } = methods;
 
-  const { fields, append, remove } = useFieldArray({
-    name: 'productDetail.productDetailItems',
-    control,
-  });
+  useEffect(() => {
+    if (selectedProduct) {
+      const existingProductImages = selectedProduct.images.map(
+        (image) => image.url
+      );
 
-  const onSubmit = (data: ProductDetailsFormSchema) => {
-    // Get image files from `data` and upload to Cloudinary server
-    // Need to think of Cloudinary server storage management technique
-    console.log(data);
+      const existingProductCategories = selectedProduct.categories.map(
+        (category) => ({ name: category.name })
+      );
+
+      const existingProductDetailItems =
+        selectedProduct?.productDetail?.productDetailItems.map((item) => ({
+          productDetailItemName: item.productDetailItemName,
+          items: item.items,
+        }));
+
+      const formDefaultValues: { [key: string]: string | {} } = {
+        name: selectedProduct.name || '',
+        description: selectedProduct.description || '',
+        price: selectedProduct.price || '',
+        images: {
+          existingImages: existingProductImages,
+          newImages: [],
+        },
+        categories: existingProductCategories,
+        units: selectedProduct.units || 0,
+        inStock: selectedProduct.inStock || false,
+        leadTime: selectedProduct.leadTime || '',
+        productDetail: {
+          productDetailItems: existingProductDetailItems,
+        },
+      };
+
+      Object.keys(formDefaultValues).forEach((key) =>
+        // @ts-ignore
+        setValue(key, formDefaultValues[key] as never, { shouldValidate: true })
+      );
+    }
+  }, [selectedProduct, setValue]);
+
+  const onSubmit = async (data: ProductDetailsFormSchema) => {
+    try {
+      const { images } = data;
+      if (
+        !isDirty &&
+        images.newImages.length === 0 &&
+        selectedProduct?.images.length === data.images.existingImages.length
+      ) {
+        toast.error('No changes to current product. Cannot be saved.');
+        return;
+      }
+
+      const newImageFilesPromises = images.newImages.map((image) => {
+        return new Promise<{ imageFile: string | ArrayBuffer } | null>(
+          async (resolve) => {
+            try {
+              const reader = new FileReader();
+
+              reader.onload = (event) => {
+                if (event.target && event.target.result) {
+                  resolve({ imageFile: event.target.result });
+                } else {
+                  resolve(null);
+                }
+              };
+
+              reader.readAsDataURL(image);
+            } catch (err: any) {
+              console.error('Something went wrong', err.message);
+              resolve(null);
+            }
+          }
+        );
+      });
+
+      const newImagesFilesResult = await Promise.all(newImageFilesPromises);
+      const newImagesFiles = newImagesFilesResult.filter(
+        (item) => item !== null
+      ) as { imageFile: string | ArrayBuffer }[];
+
+      const result = await multiImagesUpload(newImagesFiles);
+      console.log(result);
+      console.log(data);
+    } catch (err: any) {
+      console.error('Error during saving product info: ', err.message);
+    }
   };
 
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full hidden sm:block bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"
+        className="w-full bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl"
       >
         <div className="px-4 py-6 sm:p-8">
           <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -191,93 +262,12 @@ export default function AdminProductDetailsForm({
                 className="text-xs font-medium text-red-500 mt-1 ml-1"
               />
             </div>
-            <ImageUploadSection images={images} setImages={setImages} />
-            <CategoriesSection
-              categories={categories}
-              selectedCategories={selectedCategories}
-              setSelectedCategories={setSelectedCategories}
+            <ImageUploadSection />
+            <CategoriesSection categories={categories} />
+            <ProductDetailSection
+              control={control}
+              selectedProduct={selectedProduct}
             />
-            <div className="col-span-full">
-              <h3 className="col-span-full font-medium leading-6 text-sm text-gray-900">
-                Product detail
-              </h3>
-              <div className="flex items-center gap-1">
-                <h3 className="text-xs text-gray-400 leading-6">
-                  Add product details for each item
-                </h3>
-                <PlusCircleIcon
-                  onClick={() => {
-                    const productDetailItems = getValues(
-                      'productDetail.productDetailItems'
-                    );
-                    if (productDetailItems.length >= 3) {
-                      return;
-                    } else {
-                      append({
-                        productDetailItemName: '',
-                        items: ['', '', ''],
-                      });
-                    }
-                  }}
-                  className={cn(
-                    'h-6 w-6 text-blue-500 hover:text-blue-400 cursor-pointer',
-                    getValues('productDetail.productDetailItems').length >= 3
-                      ? 'text-gray-400 hover:text-gray-300 cursor-not-allowed'
-                      : ''
-                  )}
-                >
-                  Add
-                </PlusCircleIcon>
-              </div>
-              <ErrorMessage
-                name="productDetail.productDetailItems"
-                errors={errors}
-                as="p"
-                className="text-xs font-medium text-red-500 mt-1 ml-1"
-              />
-              {fields.map((field, index) => {
-                return (
-                  <section
-                    key={field.id}
-                    className="flex justify-center items-center gap-1 mt-2"
-                  >
-                    <select
-                      key={field.id}
-                      className="max-w-[8rem] block rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm border-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100"
-                      {...register(
-                        `productDetail.productDetailItems.${index}.productDetailItemName`
-                      )}
-                    >
-                      <option value="">Select a product detail name</option>
-                      <option value="Product">Product</option>
-                      <option value="Care">Care</option>
-                      <option value="Delivery">Delivery</option>
-                    </select>
-                    <div className="flex justify-center items-center gap-1">
-                      {field.items.map((subField, subIndex) => {
-                        return (
-                          <Input
-                            key={subIndex}
-                            type="text"
-                            {...register(
-                              `productDetail.productDetailItems.${index}.items.${subIndex}`
-                            )}
-                          />
-                        );
-                      })}
-                      <MinusCircleIcon
-                        onClick={() => {
-                          remove(index);
-                        }}
-                        className="w-20 text-red-500 hover:text-red-400 cursor-pointer"
-                      >
-                        Remove
-                      </MinusCircleIcon>
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
