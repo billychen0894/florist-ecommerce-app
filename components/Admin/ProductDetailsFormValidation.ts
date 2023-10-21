@@ -79,7 +79,6 @@ export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> 
         const currentFileSize = value.newImages.reduce((prev, curr) => {
           return prev + curr.size;
         }, 0);
-        console.log('current', currentFileSize);
         return currentFileSize <= maxFileSize;
       })
       .required('Product images are required'),
