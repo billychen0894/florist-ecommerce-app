@@ -14,10 +14,12 @@ import { useEffect } from 'react';
 import ImageUploadSection from '@components/Admin/ImageUploadSection';
 import CategoriesSection from '@components/Admin/CategoriesSection';
 import { Category } from '@prisma/client';
-import { TProduct } from '@lib/types/api';
+import { ProductReqPayload, TProduct } from '@lib/types/api';
 import ProductDetailSection from '@components/Admin/ProductDetailSection';
 import toast from 'react-hot-toast';
 import { multiImagesUpload } from '@actions/imageUpload';
+import { admin } from '@lib/api/admin';
+import useAxiosWithAuth from '@hooks/useAxiosAuth';
 
 type AdminProductDetailsForm = {
   categories: Category[];
@@ -28,6 +30,7 @@ export default function AdminProductDetailsForm({
   categories,
   selectedProduct,
 }: AdminProductDetailsForm) {
+  const axiosWithAuth = useAxiosWithAuth();
   const methods = useForm<ProductDetailsFormSchema>({
     resolver: yupResolver(defaultProductDetailsFromSchema),
     defaultValues: {
@@ -101,6 +104,13 @@ export default function AdminProductDetailsForm({
   const onSubmit = async (data: ProductDetailsFormSchema) => {
     try {
       const { images } = data;
+      const reqPayload: ProductReqPayload = {
+        ...data,
+        images: {
+          existingImages: [...data.images.existingImages],
+          newImages: [],
+        },
+      };
       if (
         !isDirty &&
         images.newImages.length === 0 &&
@@ -139,10 +149,29 @@ export default function AdminProductDetailsForm({
       ) as { imageFile: string | ArrayBuffer }[];
 
       const result = await multiImagesUpload(newImagesFiles);
-      console.log(result);
+
+      if (result && result?.length > 0) {
+        reqPayload.images.newImages = result.filter((item) => item !== null);
+      }
+
+      if (selectedProduct?.id && reqPayload) {
+        const response = await admin.updateProductById(
+          selectedProduct?.id,
+          reqPayload,
+          axiosWithAuth
+        );
+
+        if (response.status === 200) {
+          return toast.success('Product is updated successfully');
+        } else {
+          return toast.error('Something went wrong while updating product');
+        }
+      }
+
       console.log(data);
     } catch (err: any) {
       console.error('Error during saving product info: ', err.message);
+      return toast.error('Something went wrong while updating product');
     }
   };
 
