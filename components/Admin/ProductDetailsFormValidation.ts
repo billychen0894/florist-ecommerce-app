@@ -74,6 +74,14 @@ export const defaultProductDetailsFromSchema: yup.ObjectSchema<OmittedTProduct> 
         'Product requires at least one image',
         (value) => value.existingImages.length + value.newImages.length >= 1
       )
+      .test('FileSize', 'Image files cannot excceed 10MB', (value) => {
+        const maxFileSize = 1024 * 1024 * 10;
+        const currentFileSize = value.newImages.reduce((prev, curr) => {
+          return prev + curr.size;
+        }, 0);
+        console.log('current', currentFileSize);
+        return currentFileSize <= maxFileSize;
+      })
       .required('Product images are required'),
     categories: yup
       .array()
