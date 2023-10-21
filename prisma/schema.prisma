@@ -86,6 +86,7 @@ model ProductDetailItem {
 model Image {
   id        String   @id @default(uuid())
   url       String
+  publicId  String? @unique
   name      String
   alt       String
   createdAt DateTime @default(now())
