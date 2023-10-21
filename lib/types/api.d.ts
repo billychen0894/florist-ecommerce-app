@@ -11,6 +11,7 @@ import {
   ProductDetail,
   ProductDetailItem,
 } from '@prisma/client';
+import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
 
 export interface ApiResponse<T> {
   success?: boolean;
@@ -192,3 +193,9 @@ export type TProduct = Product & { images: Image[] } & {
 
 export type TOrderItem = OrderItem & { product: TProduct };
 export type TCartItem = { id: string; quantity: number; product: TProduct };
+export type ProductReqPayload = Omit<ProductDetailsFormSchema, 'images'> & {
+  images: {
+    existingImages: string[];
+    newImages: ({ url: string; publicId: string } | null)[];
+  };
+};

@@ -1,4 +1,9 @@
-import { ApiResponse, DiscountCoupon, User } from '@lib/types/api';
+import {
+  ApiResponse,
+  DiscountCoupon,
+  ProductReqPayload,
+  User,
+} from '@lib/types/api';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { Order, OrderStatus } from '@prisma/client';
 
@@ -34,10 +39,12 @@ async function createProduct(
 
 async function updateProductById(
   productId: string,
+  data: ProductReqPayload,
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
   const response = (await axiosWithAuth.put(
-    `/api/admin/products/${productId}`
+    `/api/admin/products/${productId}`,
+    { ...data }
   )) as ApiResponse<null>;
   return response;
 }
