@@ -49,8 +49,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </h3>
                 <Disclosure.Panel as="div" className="prose prose-sm pb-6">
                   <ul role="list">
-                    {detailItem.items.map((item) => (
-                      <li key={item}>{item}</li>
+                    {detailItem.items.map((item, idx) => (
+                      <li key={idx}>{item}</li>
                     ))}
                   </ul>
                 </Disclosure.Panel>
