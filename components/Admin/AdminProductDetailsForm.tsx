@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
 import { multiImagesUpload } from '@actions/imageUpload';
 import { admin } from '@lib/api/admin';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import Spinner from '@components/ui/Spinner';
 
 type AdminProductDetailsForm = {
   categories: Category[];
@@ -102,6 +103,7 @@ export default function AdminProductDetailsForm({
   }, [selectedProduct, setValue]);
 
   const onSubmit = async (data: ProductDetailsFormSchema) => {
+    // Fine tune submitting updates -> add feedback
     try {
       const { images } = data;
       const reqPayload: ProductReqPayload = {
@@ -300,7 +302,16 @@ export default function AdminProductDetailsForm({
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
-          <Button type="submit">Save</Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            <div className="flex justify-center items-center">
+              {isSubmitting && <Spinner />}
+              <span>Save</span>
+            </div>
+          </Button>
         </div>
       </form>
     </FormProvider>
