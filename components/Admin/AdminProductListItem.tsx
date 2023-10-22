@@ -35,7 +35,7 @@ export default function AdminProductListItem({
         ) {
           params.append('productId', e.currentTarget.dataset.productid);
         }
-        router.replace(`${pathname}?${params.toString()}`);
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
       }}
     >
       <Image
