@@ -18,9 +18,10 @@ import { ProductReqPayload, TProduct } from '@lib/types/api';
 import ProductDetailSection from '@components/Admin/ProductDetailSection';
 import toast from 'react-hot-toast';
 import { multiImagesUpload } from '@actions/imageUpload';
-import { admin } from '@lib/api/admin';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import Spinner from '@components/ui/Spinner';
+import { admin } from '@lib/api/admin';
+import getQueryClient from '@lib/getQueryClient';
 
 type AdminProductDetailsForm = {
   categories: Category[];
@@ -32,6 +33,7 @@ export default function AdminProductDetailsForm({
   selectedProduct,
 }: AdminProductDetailsForm) {
   const axiosWithAuth = useAxiosWithAuth();
+  const queryClient = getQueryClient();
   const methods = useForm<ProductDetailsFormSchema>({
     resolver: yupResolver(defaultProductDetailsFromSchema),
     defaultValues: {
@@ -56,7 +58,7 @@ export default function AdminProductDetailsForm({
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isSubmitting },
     watch,
     control,
     setValue,
@@ -103,9 +105,18 @@ export default function AdminProductDetailsForm({
   }, [selectedProduct, setValue]);
 
   const onSubmit = async (data: ProductDetailsFormSchema) => {
-    // Fine tune submitting updates -> add feedback
     try {
-      const { images } = data;
+      const {
+        images,
+        name,
+        description,
+        price,
+        inStock,
+        categories,
+        units,
+        leadTime,
+        productDetail,
+      } = data;
       const reqPayload: ProductReqPayload = {
         ...data,
         images: {
@@ -113,10 +124,44 @@ export default function AdminProductDetailsForm({
           newImages: [],
         },
       };
+
+      const isCategoriesMatching = categories.every((category) => {
+        return selectedProduct?.categories
+          .map((category) => category.name)
+          .includes(category.name);
+      });
+
+      const isProductDetailMatching = productDetail.productDetailItems.every(
+        (productDetail, idx) => {
+          if (
+            productDetail.productDetailItemName ===
+            selectedProduct?.productDetail.productDetailItems[idx]
+              .productDetailItemName
+          ) {
+            return productDetail.items.every((item, subIdx) => {
+              return (
+                item ===
+                selectedProduct?.productDetail?.productDetailItems[idx].items[
+                  subIdx
+                ]
+              );
+            });
+          }
+          return false;
+        }
+      );
+
       if (
-        !isDirty &&
+        name === selectedProduct?.name &&
+        description === selectedProduct?.description &&
+        price === selectedProduct?.price &&
+        inStock === selectedProduct?.inStock &&
+        units === selectedProduct?.units &&
+        leadTime === selectedProduct?.leadTime &&
         images.newImages.length === 0 &&
-        selectedProduct?.images.length === data.images.existingImages.length
+        selectedProduct?.images.length === data.images.existingImages.length &&
+        isCategoriesMatching &&
+        isProductDetailMatching
       ) {
         toast.error('No changes to current product. Cannot be saved.');
         return;
@@ -150,10 +195,12 @@ export default function AdminProductDetailsForm({
         (item) => item !== null
       ) as { imageFile: string | ArrayBuffer }[];
 
-      const result = await multiImagesUpload(newImagesFiles);
+      if (newImagesFiles.length > 0) {
+        const result = await multiImagesUpload(newImagesFiles);
 
-      if (result && result?.length > 0) {
-        reqPayload.images.newImages = result.filter((item) => item !== null);
+        if (result && result?.length > 0) {
+          reqPayload.images.newImages = result.filter((item) => item !== null);
+        }
       }
 
       if (selectedProduct?.id && reqPayload) {
@@ -164,13 +211,18 @@ export default function AdminProductDetailsForm({
         );
 
         if (response.status === 200) {
-          return toast.success('Product is updated successfully');
+          toast.success('Product is updated successfully');
+          await queryClient.invalidateQueries({ queryKey: ['query'] });
+          if (typeof window !== undefined) {
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
+          }
+          return;
         } else {
           return toast.error('Something went wrong while updating product');
         }
       }
-
-      console.log(data);
     } catch (err: any) {
       console.error('Error during saving product info: ', err.message);
       return toast.error('Something went wrong while updating product');
