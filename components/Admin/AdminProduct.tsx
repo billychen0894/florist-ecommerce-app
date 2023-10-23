@@ -32,7 +32,7 @@ export default function AdminProduct({
         const response = await fetchProducts(
           pageParam,
           12,
-          undefined,
+          'newest',
           undefined,
           keyword
         );
