@@ -6,6 +6,7 @@ import { Dispatch, Fragment, SetStateAction } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
 import { Input } from '@components/ui';
 import AdminProductListItem from '@components/Admin/AdminProductListItem';
+import { useRouter } from 'next/navigation';
 
 interface ProductListProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -22,9 +23,21 @@ export default function AdminProductList({
   fetchNextPage,
   hasNextPage,
 }: ProductListProps) {
+  const router = useRouter();
+
   return (
     <nav className="scroll-smooth px-2" aria-label="ProductsList">
-      <h2 className="text-lg font-medium text-gray-900">Product List</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-medium text-gray-900">Product List</h2>
+        <Button
+          type="button"
+          onClick={() => {
+            router.push('/admin/products/new-product');
+          }}
+        >
+          Add Product
+        </Button>
+      </div>
       <form className="my-6 py-px flex gap-x-4 sticky top-1" action="#">
         <div className="min-w-0 flex-1">
           <label htmlFor="search" className="sr-only">
