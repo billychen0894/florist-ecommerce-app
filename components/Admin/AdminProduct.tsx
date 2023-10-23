@@ -24,6 +24,9 @@ export default function AdminProduct({
 }: AdminProductProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<TProduct>();
+  const sortedProducts = [...products].sort(
+    (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
+  );
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
@@ -36,7 +39,10 @@ export default function AdminProduct({
           undefined,
           keyword
         );
-        return response;
+        const sortedProducts = [...response].sort(
+          (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
+        );
+        return sortedProducts;
       },
       getNextPageParam: (lastPage, allPages) => {
         const limit = 12;
@@ -45,7 +51,7 @@ export default function AdminProduct({
         return nextPage;
       },
       initialData: {
-        pages: [products],
+        pages: [sortedProducts],
         pageParams: [1],
       },
     });
