@@ -29,11 +29,12 @@ async function deleteUserById(
 }
 
 async function createProduct(
+  data: ProductReqPayload,
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
-  const response = (await axiosWithAuth.post(
-    '/api/admin/products'
-  )) as ApiResponse<null>;
+  const response = (await axiosWithAuth.post('/api/admin/products', {
+    ...data,
+  })) as ApiResponse<null>;
   return response;
 }
 
