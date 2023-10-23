@@ -39,11 +39,14 @@ export const multiImagesUpload = async (
             const response = await cloudinary.v2.uploader.upload(
               imageFile as string,
               {
-                publicId,
+                public_id: publicId,
                 overwrite: true,
               }
             );
-            resolve({ url: response.url, publicId: response.public_id });
+            resolve({
+              url: response.url,
+              publicId: response.public_id,
+            });
           } catch (err) {
             console.error('Upload Error:', err);
             resolve(null);

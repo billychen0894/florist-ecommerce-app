@@ -28,6 +28,7 @@ type AdminProductDetailsForm = {
   selectedProduct: TProduct | undefined;
 };
 
+// TODO: think about cloudinary storage management
 export default function AdminProductDetailsForm({
   categories,
   selectedProduct,
@@ -167,33 +168,50 @@ export default function AdminProductDetailsForm({
         return;
       }
 
-      const newImageFilesPromises = images.newImages.map((image) => {
-        return new Promise<{ imageFile: string | ArrayBuffer } | null>(
-          async (resolve) => {
-            try {
-              const reader = new FileReader();
+      // if there's prevImages, meaning that there's deleted existing images
+      const prevImages = selectedProduct?.images.filter((image) => {
+        return !images.existingImages.includes(image.url);
+      });
 
-              reader.onload = (event) => {
-                if (event.target && event.target.result) {
-                  resolve({ imageFile: event.target.result });
-                } else {
-                  resolve(null);
-                }
-              };
+      const newImageFilesPromises = images.newImages.map((image, idx) => {
+        return new Promise<{
+          imageFile: string | ArrayBuffer;
+          publicId?: string;
+        } | null>(async (resolve) => {
+          try {
+            const reader = new FileReader();
 
-              reader.readAsDataURL(image);
-            } catch (err: any) {
-              console.error('Something went wrong', err.message);
-              resolve(null);
-            }
+            reader.onload = (event) => {
+              if (
+                event.target &&
+                event.target.result &&
+                prevImages &&
+                prevImages.length > 0 &&
+                prevImages[idx]?.publicId
+              ) {
+                resolve({
+                  imageFile: event.target.result,
+                  publicId: prevImages[idx]?.publicId!,
+                });
+              } else if (event.target && event.target.result) {
+                resolve({ imageFile: event.target.result });
+              } else {
+                resolve(null);
+              }
+            };
+
+            reader.readAsDataURL(image);
+          } catch (err: any) {
+            console.error('Something went wrong', err.message);
+            resolve(null);
           }
-        );
+        });
       });
 
       const newImagesFilesResult = await Promise.all(newImageFilesPromises);
       const newImagesFiles = newImagesFilesResult.filter(
         (item) => item !== null
-      ) as { imageFile: string | ArrayBuffer }[];
+      ) as { imageFile: string | ArrayBuffer; publicId?: string }[];
 
       if (newImagesFiles.length > 0) {
         const result = await multiImagesUpload(newImagesFiles);
