@@ -7,7 +7,11 @@ import { useSession } from '@node_modules/next-auth/react';
 import { redirect } from '@node_modules/next/navigation';
 import { useEffect } from 'react';
 import { fetchUserById } from '@store/features/userSlice';
-import { fetchAccountUsers, fetchOrders } from '@store/features/adminSlice';
+import {
+  fetchAccountUsers,
+  fetchCategories,
+  fetchOrders,
+} from '@store/features/adminSlice';
 
 export default function AdminLayout({
   children,
@@ -27,6 +31,7 @@ export default function AdminLayout({
       dispatch(fetchUserById({ userId: session.user.id, axiosWithAuth }));
       dispatch(fetchAccountUsers(axiosWithAuth));
       dispatch(fetchOrders(axiosWithAuth));
+      dispatch(fetchCategories());
     }
   }, [dispatch, session, axiosWithAuth]);
   return (
