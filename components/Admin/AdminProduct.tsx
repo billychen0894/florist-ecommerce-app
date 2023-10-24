@@ -1,13 +1,15 @@
 'use client';
 
-import AdminProductList from '@components/Admin/AdminProductList';
+import AdminProductList from '@components/Admin/AdminList';
 import AdminProductDetailsForm from '@components/Admin/AdminProductDetailsForm';
 import { TProduct } from '@lib/types/api';
 import { Category } from '@node_modules/@prisma/client';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import SlideOver from '@components/ui/SlideOver';
 import { fetchProducts } from '@actions/fetch-products';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import AdminProductListItem from '@components/Admin/AdminProductListItem';
+import { useRouter } from 'next/navigation';
 
 type AdminProductProps = {
   products: TProduct[];
@@ -22,6 +24,7 @@ export default function AdminProduct({
   categories,
   productId,
 }: AdminProductProps) {
+  const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<TProduct>();
   const sortedProducts = [...products].sort(
@@ -70,11 +73,26 @@ export default function AdminProduct({
   return (
     <div className="grid grid-cols-1 gap-x-8 gap-y-8">
       <AdminProductList
-        setOpen={setOpen}
-        data={data}
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage}
+        list={data?.pages.map((productsPage, idx) => (
+          <Fragment key={idx}>
+            {productsPage.map((product) => (
+              <AdminProductListItem
+                product={product}
+                key={product.id}
+                setOpen={setOpen}
+              />
+            ))}
+          </Fragment>
+        ))}
+        btnOnClick={() => {
+          router.push('/admin/products/new-product');
+        }}
+        btnLabel="Add Product"
+        pageHeading="Product List"
+        isSearch
       />
       <SlideOver open={open} setOpen={setOpen}>
         <AdminProductDetailsForm
