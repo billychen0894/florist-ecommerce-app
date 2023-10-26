@@ -56,7 +56,7 @@ export default function AdminList({
           </div>
         </form>
       )}
-      <ul role="list" className="divide-y divide-gray-100">
+      <ul role="list" className="divide-y divide-gray-100 mt-2">
         {list}
       </ul>
       <Button
