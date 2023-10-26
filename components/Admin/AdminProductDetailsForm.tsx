@@ -28,7 +28,6 @@ type AdminProductDetailsForm = {
   selectedProduct: TProduct | undefined;
 };
 
-// TODO: think about cloudinary storage management
 export default function AdminProductDetailsForm({
   categories,
   selectedProduct,
