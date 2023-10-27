@@ -14,11 +14,11 @@ type AdminProductProps = {
 };
 
 export default function AdminCategories({ categoryId }: AdminProductProps) {
-  const [open, setOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const categoriesList = useAppSelector(
     (state) => state.adminReducer.categories
   );
+  const firstCategoriesPage = categoriesList.slice(0, 12);
   const router = useRouter();
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
@@ -29,7 +29,7 @@ export default function AdminCategories({ categoryId }: AdminProductProps) {
         const limit = 12;
         const skip = (pageParam - 1) * limit;
         if (response?.data && response?.data?.data) {
-          return response.data.data.slice(skip, pageParam * limit - 1);
+          return response.data.data.slice(skip, pageParam * limit);
         }
       },
       getNextPageParam: (lastPage, allPages) => {
@@ -39,7 +39,7 @@ export default function AdminCategories({ categoryId }: AdminProductProps) {
         return nextPage;
       },
       initialData: {
-        pages: [categoriesList],
+        pages: [firstCategoriesPage],
         pageParams: [1],
       },
     });
@@ -66,11 +66,7 @@ export default function AdminCategories({ categoryId }: AdminProductProps) {
         list={data?.pages.map((categoriesPage, idx) => (
           <Fragment key={idx}>
             {categoriesPage?.map((category) => (
-              <AdminCategoryListItem
-                key={category.id}
-                category={category}
-                setOpen={setOpen}
-              />
+              <AdminCategoryListItem key={category.id} category={category} />
             ))}
           </Fragment>
         ))}
