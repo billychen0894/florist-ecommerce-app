@@ -74,10 +74,12 @@ export async function POST(req: Request, res: Response) {
       );
     }
 
+    const formattedName =
+      name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     // check if category already exists
     const existedCategory = await prisma.category.findUnique({
       where: {
-        name: name,
+        name: formattedName,
       },
     });
 
@@ -95,7 +97,7 @@ export async function POST(req: Request, res: Response) {
 
     await prisma.category.create({
       data: {
-        name: name,
+        name: formattedName,
       },
     });
 
