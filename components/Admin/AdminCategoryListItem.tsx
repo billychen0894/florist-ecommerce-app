@@ -1,18 +1,15 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dispatch, SetStateAction } from 'react';
 import { Category } from '@prisma/client';
 import { TrashIcon } from '@heroicons/react/20/solid';
 
-interface AdminProductListItem {
+interface AdminCategoryListItem {
   category: Category;
-  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 export default function AdminCategoryListItem({
   category,
-  setOpen,
-}: AdminProductListItem) {
+}: AdminCategoryListItem) {
   const router = useRouter();
   const pathname = usePathname();
   const categoryId = useSearchParams().get('categoryId');
@@ -24,7 +21,6 @@ export default function AdminCategoryListItem({
       }`}
       data-categoryid={category.id}
       onClick={(e) => {
-        setOpen(true);
         const params = new URLSearchParams(window.location.search);
         if (params.has('categoryId') && e.currentTarget.dataset.categoryid) {
           params.delete('categoryId');
