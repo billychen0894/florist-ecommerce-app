@@ -15,7 +15,7 @@ export default async function Products({
   const productsResult = await fetchProducts(
     1,
     12,
-    undefined,
+    'newest',
     undefined,
     keyword
   );
