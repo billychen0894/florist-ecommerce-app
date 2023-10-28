@@ -66,7 +66,11 @@ export default function AdminCategories({ categoryId }: AdminProductProps) {
         list={data?.pages.map((categoriesPage, idx) => (
           <Fragment key={idx}>
             {categoriesPage?.map((category) => (
-              <AdminCategoryListItem key={category.id} category={category} />
+              <AdminCategoryListItem
+                key={category.id}
+                category={category}
+                selectedCategory={selectedCategory}
+              />
             ))}
           </Fragment>
         ))}
