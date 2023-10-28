@@ -88,11 +88,11 @@ export default function CategoriesSection({ categories }: CategoriesSection) {
               <ContextMenu>No categories</ContextMenu>
             )}
             {currentCategories.length > 0 && (
-              <div className="mt-2 flex items-center rounded-lg border border-dashed border-gray-900/25 p-2 gap-2">
+              <div className="mt-2 flex items-center rounded-lg border border-dashed border-gray-900/25 p-2 gap-2 flex-wrap">
                 {currentCategories.map((category, idx) => (
                   <div
                     key={idx}
-                    className="group w-24 h-8 inline-flex justify-center items-center rounded-full bg-green-50 hover:bg-red-100 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20 hover:ring-red-600/20 cursor-pointer transition"
+                    className="group w-[8rem] h-10 inline-flex justify-center items-center rounded-full bg-green-50 hover:bg-red-100 py-2 px-3 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20 hover:ring-red-600/20 cursor-pointer transition"
                     onClick={() => {
                       const updatedSelectedCategories =
                         currentCategories.filter((_, i) => idx !== i);
@@ -102,7 +102,7 @@ export default function CategoriesSection({ categories }: CategoriesSection) {
                       field.onChange(updatedSelectedCategories);
                     }}
                   >
-                    <span className="group-hover:text-red-500 group-hover:hidden">
+                    <span className="group-hover:text-red-500 group-hover:hidden text-center">
                       {category.name}
                     </span>
                     <TrashIcon className="w-6 hidden group-hover:inline-block fill-red-500" />
