@@ -186,7 +186,8 @@ export default function AdminProductDetailsForm({
                 event.target.result &&
                 prevImages &&
                 prevImages.length > 0 &&
-                prevImages[idx]?.publicId
+                prevImages[idx]?.publicId &&
+                prevImages[idx]?.url.startsWith('http')
               ) {
                 resolve({
                   imageFile: event.target.result,

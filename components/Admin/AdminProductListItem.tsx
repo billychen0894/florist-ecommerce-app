@@ -40,17 +40,17 @@ export default function AdminProductListItem({
     >
       <Image
         className="h-12 w-12 flex-none rounded-full bg-gray-50"
-        src={product.images[0].url}
-        alt={product.images[0].alt}
+        src={product?.images[0]?.url || ''}
+        alt={product?.images[0]?.alt || ''}
         width={500}
         height={500}
       />
       <div className="min-w-0">
         <p className="text-sm font-semibold leading-6 text-gray-900">
-          {product.name}
+          {product?.name}
         </p>
         <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-          {product.categories.map((category) => category.name).join(' ')}
+          {product?.categories.map((category) => category?.name).join(' ')}
         </p>
       </div>
     </li>

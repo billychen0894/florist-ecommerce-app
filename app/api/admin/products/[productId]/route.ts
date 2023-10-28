@@ -5,6 +5,7 @@ import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
 import { ProductReqPayload } from '@lib/types/api';
 import { productsPayloadSchema } from '../productsPayloadValidation';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function PUT(req: Request, res: Response) {
   try {
@@ -112,10 +113,13 @@ export async function PUT(req: Request, res: Response) {
     }
 
     const existingImages = images.existingImages.map((image) => {
-      const publicId = image.slice(
+      const partPublicId = image.slice(
         image.lastIndexOf('/') + 1,
         image.lastIndexOf('.')
       );
+      const publicId = image?.startsWith('http')
+        ? partPublicId
+        : partPublicId + '-' + uuidv4();
       return {
         url: image,
         publicId,
@@ -127,7 +131,8 @@ export async function PUT(req: Request, res: Response) {
     const newImages = images.newImages.map((image) => {
       if (image) {
         return {
-          ...image,
+          url: image.url,
+          publicId: image.publicId,
           name: `image-${image.publicId}`,
           alt: `image-${image.publicId}`,
         };
