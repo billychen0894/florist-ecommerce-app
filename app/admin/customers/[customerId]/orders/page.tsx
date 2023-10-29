@@ -25,15 +25,15 @@ export default function CustomerOrders({ params }: CustomerOrdersProps) {
           <dl className="flex-auto space-y-6 divide-y divide-gray-200 text-sm text-gray-600 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:space-y-0 sm:divide-y-0 lg:w-1/2 lg:flex-none lg:gap-x-8">
             <div className="flex justify-between sm:block">
               <dt className="font-medium text-gray-900">Customer name</dt>
-              <dd className="sm:mt-1">{customer?.name}</dd>
+              <dd className="sm:mt-1">{customer?.name || 'unspecified'}</dd>
             </div>
             <div className="flex justify-between pt-6 sm:block sm:pt-0">
               <dt className="font-medium text-gray-900">Email</dt>
-              <dd className="sm:mt-1">{customer?.email}</dd>
+              <dd className="sm:mt-1">{customer?.email || 'unspecified'}</dd>
             </div>
             <div className="flex justify-between pt-6 sm:block sm:pt-0">
               <dt className="font-medium text-gray-900">Phone</dt>
-              <dd className="sm:mt-1">{customer?.phone}</dd>
+              <dd className="sm:mt-1">{customer?.phone || 'unspecified'}</dd>
             </div>
             <div className="flex justify-between pt-6 sm:block sm:pt-0">
               <dt className="font-medium text-gray-900">Join</dt>
@@ -41,7 +41,8 @@ export default function CustomerOrders({ params }: CustomerOrdersProps) {
                 <time
                   dateTime={new Date(customer?.createdAt).toLocaleDateString()}
                 >
-                  {new Date(customer?.createdAt).toLocaleDateString()}
+                  {new Date(customer?.createdAt).toLocaleDateString() ||
+                    'unspecified'}
                 </time>
               </dd>
             </div>
