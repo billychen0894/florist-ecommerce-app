@@ -34,8 +34,13 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
         ) : (
           defualtAvatar
         )}
-        <div className="text-sm font-medium leading-6 text-gray-900">
-          {customer?.name}
+        <div>
+          <div className="text-sm font-medium leading-6 text-gray-900">
+            {customer?.name}
+          </div>
+          <div className="text-xs font-normal leading-6 text-gray-500">
+            {customer?.email}
+          </div>
         </div>
         <Menu as="div" className="relative ml-auto">
           <Menu.Button className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
@@ -55,13 +60,14 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
               <Menu.Item>
                 {({ active }) => (
                   <Link
-                    href={`/admin/customers/${customer?.id}`}
+                    href={`/admin/customers/${customer?.id}/orders`}
                     className={cn(
                       active ? 'bg-gray-50' : '',
                       'block px-3 py-1 text-sm leading-6 text-gray-900'
                     )}
                   >
-                    View<span className="sr-only">, {customer.name}</span>
+                    Order history
+                    <span className="sr-only">, {customer.name}</span>
                   </Link>
                 )}
               </Menu.Item>
@@ -84,12 +90,18 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
           </Transition>
         </Menu>
       </div>
-      <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
+      <dl className="-my-3 divide-y divide-gray-100 px-6 py-3 text-sm leading-6">
+        <div className="flex justify-between gap-x-4 py-3">
+          <dt className="text-gray-500">Phone</dt>
+          <dd className="text-gray-700">
+            <span>{customer?.phone || 'unspecified'}</span>
+          </dd>
+        </div>
         <div className="flex justify-between gap-x-4 py-3">
           <dt className="text-gray-500">Join</dt>
           <dd className="text-gray-700">
-            <time dateTime={new Date(customer.createdAt).toLocaleDateString()}>
-              {new Date(customer.createdAt).toLocaleDateString()}
+            <time dateTime={new Date(customer?.createdAt).toLocaleDateString()}>
+              {new Date(customer?.createdAt).toLocaleDateString()}
             </time>
           </dd>
         </div>
