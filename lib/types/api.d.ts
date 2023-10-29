@@ -60,6 +60,7 @@ export interface User {
   emailVerifyToken: string | null;
   image: string | null;
   role: string;
+  phone: string;
   createdAt: Date;
   updatedAt: Date;
 }
