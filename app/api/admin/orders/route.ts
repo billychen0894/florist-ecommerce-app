@@ -107,6 +107,7 @@ export async function GET(req: Request, res: Response) {
             },
           },
         },
+        userId: true,
       },
     });
 
