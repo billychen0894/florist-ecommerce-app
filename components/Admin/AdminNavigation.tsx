@@ -19,7 +19,6 @@ const navigation = [
   { name: 'Products', href: '/admin/products' },
   { name: 'Categories', href: '/admin/categories' },
   { name: 'Customers', href: '/admin/customers' },
-  { name: 'Store Management', href: '/admin/store-management' },
 ];
 
 export const adminMenuItems = [{ label: 'Account', href: '/admin/account' }];
