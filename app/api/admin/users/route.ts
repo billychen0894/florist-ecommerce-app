@@ -85,7 +85,7 @@ export async function GET(req: Request, res: Response) {
     return NextResponse.json(
       {
         success: true,
-        users: usersWithoutPassword,
+        data: usersWithoutPassword,
         message: 'Users found',
       },
       {

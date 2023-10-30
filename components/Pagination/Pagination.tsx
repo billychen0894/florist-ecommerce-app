@@ -11,13 +11,16 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
   const currentPage =
     typeof searchParams.page === 'string' ? searchParams.page : '1';
   const sort = typeof searchParams.sort === 'string' ? searchParams.sort : '';
+  const search =
+    typeof searchParams.keyword === 'string' ? searchParams.keyword : undefined;
   const categoryFilters = searchParams.category;
 
   const productsResult = await fetchProducts(
     undefined,
     undefined,
     sort,
-    categoryFilters
+    categoryFilters,
+    search
   );
   const totalPages = Math.ceil(productsResult.length / pageCount);
   const pagination = generatePagination(parseInt(currentPage), totalPages);
@@ -42,7 +45,9 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
               ? '#'
               : `/products?page=${String(Number(currentPage) - 1)}${
                   sort ? '&sort=' + sort : ''
-                }${categoryFiltersURLParams}`
+                }${categoryFiltersURLParams}${
+                  search ? '&keyword=' + search : ''
+                }`
           }
           disabled={currentPage === '1'}
         >
@@ -63,7 +68,9 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
               key={idx}
               href={`/products?page=${page}${
                 sort ? '&sort=' + sort : ''
-              }${categoryFiltersURLParams}`}
+              }${categoryFiltersURLParams}${
+                search ? '&keyword=' + search : ''
+              }`}
               current={page === currentPage}
             >
               {page}
@@ -78,7 +85,9 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
               ? '#'
               : `/products?page=${String(Number(currentPage) + 1)}${
                   sort ? '&sort=' + sort : ''
-                }${categoryFiltersURLParams}`
+                }${categoryFiltersURLParams}${
+                  search ? '&keyword=' + search : ''
+                }`
           }
           disabled={currentPage === pagination[pagination.length - 1]}
         >

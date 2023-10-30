@@ -1,26 +1,55 @@
+'use client';
+
 import { formatCurrency } from '@lib/formatCurrency';
-import { $Enums } from '@prisma/client';
+import { $Enums, Order } from '@prisma/client';
 import Link from 'next/link';
-import Stripe from 'stripe';
 import RowData from './RowData';
+import { DocumentTextIcon } from '@node_modules/@heroicons/react/24/outline';
+import Stripe from 'stripe';
 
 interface RowProps {
   rowIndex: number;
-  invoice: Stripe.Invoice & { orderStatus: $Enums.OrderStatus };
+  invoice:
+    | (Stripe.Invoice & { orderStatus: $Enums.OrderStatus })
+    | (Order & { paymentStatus: $Enums.PaymentStatus });
   invoicesLength: number;
+  additionalRows?: React.ReactElement;
 }
-export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
+export default function Row({
+  rowIndex,
+  invoice,
+  invoicesLength,
+  additionalRows,
+}: RowProps) {
+  const invoiceNumber =
+    'number' in invoice ? invoice.number : invoice.orderNumber;
+  const paymentStatus =
+    'status' in invoice
+      ? invoice.status
+      : 'paymentStatus' in invoice
+      ? invoice.paymentStatus
+      : 'Error';
+  const invoiceUrl =
+    'hosted_invoice_url' in invoice
+      ? invoice.hosted_invoice_url
+      : 'orderNumber' in invoice
+      ? invoice.invoiceUrl
+      : '#';
+
+  const invoiceTotal =
+    'number' in invoice ? Number(invoice.total) / 100 : invoice.total;
+
   return (
     <tr>
       <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
-        {invoice.number}
+        {invoiceNumber}
       </RowData>
       <RowData
         rowIndex={rowIndex}
         invoiceLength={invoicesLength}
         className="hidden sm:table-cell"
       >
-        {formatCurrency(Number(invoice.total / 100), 'en-CA', 'CAD')}
+        {formatCurrency(invoiceTotal, 'en-CA', 'CAD')}
       </RowData>
       <RowData
         rowIndex={rowIndex}
@@ -38,23 +67,27 @@ export default function Row({ rowIndex, invoice, invoicesLength }: RowProps) {
           </span>
         )}
       </RowData>
-      <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
+      <RowData
+        rowIndex={rowIndex}
+        invoiceLength={invoicesLength}
+        className="hidden sm:table-cell"
+      >
         <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-          {invoice.status === 'paid' ? 'Paid' : 'Unpaid'}
+          {paymentStatus?.charAt(0).toUpperCase()! +
+            paymentStatus?.slice(1).toLowerCase()!}
         </span>
       </RowData>
       <RowData rowIndex={rowIndex} invoiceLength={invoicesLength}>
         <Link
-          href={
-            typeof invoice.hosted_invoice_url === 'string'
-              ? invoice.hosted_invoice_url
-              : '#'
-          }
-          className="text-secondary-500 hover:text-secondary-300"
+          href={invoiceUrl as string}
+          className="text-secondary-500 hover:text-secondary-300 flex justify-center items-center gap-1"
         >
-          View invoice<span className="sr-only">, {''}</span>
+          <DocumentTextIcon className="h-6 w-6 hidden sm:inline-block" />
+          <span>View invoice</span>
+          <span className="sr-only">, {''}</span>
         </Link>
       </RowData>
+      {additionalRows}
     </tr>
   );
 }

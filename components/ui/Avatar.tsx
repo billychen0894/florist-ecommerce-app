@@ -1,11 +1,17 @@
 import Image from 'next/image';
+import { cn } from '@lib/classNames';
 
 interface AvatarProps {
   avatarImageUrl: string;
   avatarImageAlt: string;
+  className?: string;
 }
 
-export function Avatar({ avatarImageUrl, avatarImageAlt }: AvatarProps) {
+export function Avatar({
+  className,
+  avatarImageUrl,
+  avatarImageAlt,
+}: AvatarProps) {
   let avatarImage = (
     <Image
       src={avatarImageUrl}
@@ -29,7 +35,7 @@ export function Avatar({ avatarImageUrl, avatarImageAlt }: AvatarProps) {
   }
 
   return (
-    <div className="group relative h-6 w-6 sm:h-7 sm:w-7">
+    <div className={cn('group relative h-6 w-6 sm:h-7 sm:w-7', className)}>
       <div className="absolute top-0 left-0 w-full h-full rounded-full group-hover:bg-gray-500/20 transition" />
       {avatarImage}
     </div>

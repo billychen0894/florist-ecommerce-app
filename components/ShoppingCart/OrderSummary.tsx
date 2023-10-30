@@ -3,11 +3,12 @@
 import { checkout } from '@actions/checkout';
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/OrderInfo';
 import { formatCurrency } from '@lib/formatCurrency';
 import { useAppSelector } from '@store/hooks';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export function OrderSummary() {
   const subtotal = useAppSelector((state) => state.cartReducer.subtotal);
@@ -17,6 +18,10 @@ export function OrderSummary() {
   const { data: session } = useSession();
 
   const handleCheckout = async () => {
+    if (session && session?.user.role === 'admin') {
+      toast.error('Admin cannot proceed to checkout session');
+      return;
+    }
     if (cartItemsArr.length === 0) {
       return;
     }

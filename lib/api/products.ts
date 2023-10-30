@@ -10,7 +10,8 @@ const getAllProducts = cache(
     page?: number,
     limit?: number,
     sort?: 'popular' | 'newest' | 'price-high-to-low' | 'price-low-to-high',
-    filters?: string | string[] | undefined
+    filters?: string | string[] | undefined,
+    search?: string | undefined
   ) => {
     const params = new URLSearchParams();
     page ? params.append('page', page.toString()) : undefined;
@@ -21,6 +22,7 @@ const getAllProducts = cache(
       : typeof filters === 'string' && filters
       ? params.append('filter', filters)
       : undefined;
+    search ? params.append('keyword', search) : undefined;
 
     const response = (await axios.get(`/api/products`, {
       params: params,

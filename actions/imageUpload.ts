@@ -23,3 +23,41 @@ export const imageUpload = async (file: any, public_id?: string) => {
     console.error('Upload Error: ', err);
   }
 };
+
+export const multiImagesUpload = async (
+  files: { imageFile: string | ArrayBuffer; publicId?: string }[]
+) => {
+  try {
+    if (files.length === 0) throw new Error('No files');
+
+    const imagesPromises = files.map(async (file) => {
+      const { imageFile, publicId } = file;
+
+      return new Promise<{ url: string; publicId: string } | null>(
+        async (resolve) => {
+          try {
+            const response = await cloudinary.v2.uploader.upload(
+              imageFile as string,
+              {
+                public_id: publicId,
+                overwrite: true,
+              }
+            );
+            resolve({
+              url: response.url,
+              publicId: response.public_id,
+            });
+          } catch (err) {
+            console.error('Upload Error:', err);
+            resolve(null);
+          }
+        }
+      );
+    });
+
+    const resultObj = await Promise.all(imagesPromises);
+    return resultObj.filter((item) => item !== null);
+  } catch (err: any) {
+    console.error('upload Error:', err);
+  }
+};

@@ -1,31 +1,51 @@
-import { ApiResponse, DiscountCoupon, Order, User } from '@lib/types/api';
-import { AxiosInstance } from 'axios';
+import {
+  ApiResponse,
+  DiscountCoupon,
+  ProductReqPayload,
+  User,
+} from '@lib/types/api';
+import { AxiosInstance, AxiosResponse } from 'axios';
+import { Order, OrderStatus } from '@prisma/client';
 
 async function getAllUsers(
   axiosWithAuth: AxiosInstance
-): Promise<ApiResponse<User[]>> {
-  const response = (await axiosWithAuth.get('/api/admin/users')) as ApiResponse<
-    User[]
-  >;
+): Promise<AxiosResponse<ApiResponse<User[]>>> {
+  const response = (await axiosWithAuth.get(
+    '/api/admin/users'
+  )) as AxiosResponse<ApiResponse<User[]>>;
+
+  return response;
+}
+
+async function deleteUserById(
+  userId: string,
+  axiosWithAuth: AxiosInstance
+): Promise<ApiResponse<null>> {
+  const response = (await axiosWithAuth.delete(
+    `/api/admin/users/${userId}`
+  )) as ApiResponse<null>;
 
   return response;
 }
 
 async function createProduct(
+  data: ProductReqPayload,
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
-  const response = (await axiosWithAuth.post(
-    '/api/admin/products'
-  )) as ApiResponse<null>;
+  const response = (await axiosWithAuth.post('/api/admin/products', {
+    ...data,
+  })) as ApiResponse<null>;
   return response;
 }
 
 async function updateProductById(
   productId: string,
+  data: ProductReqPayload,
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
   const response = (await axiosWithAuth.put(
-    `/api/admin/products/${productId}`
+    `/api/admin/products/${productId}`,
+    { ...data }
   )) as ApiResponse<null>;
   return response;
 }
@@ -77,10 +97,10 @@ async function deleteCategoryById(
 
 async function getOrders(
   axiosWithAuth: AxiosInstance
-): Promise<ApiResponse<Order[]>> {
+): Promise<AxiosResponse<ApiResponse<Order[]>>> {
   const response = (await axiosWithAuth.get(
     '/api/admin/orders'
-  )) as ApiResponse<Order[]>;
+  )) as AxiosResponse<ApiResponse<Order[]>>;
 
   return response;
 }
@@ -96,13 +116,16 @@ async function deleteOrderById(
   return response;
 }
 
-async function updateOrderById(
+async function updateOrderByStripeId(
   orderId: string,
+  data: {
+    orderStatus: OrderStatus;
+  },
   axiosWithAuth: AxiosInstance
 ): Promise<ApiResponse<null>> {
-  const response = (await axiosWithAuth.put(
-    `/api/admin/orders/${orderId}`
-  )) as ApiResponse<null>;
+  const response = (await axiosWithAuth.put(`/api/admin/orders/${orderId}`, {
+    ...data,
+  })) as ApiResponse<null>;
 
   return response;
 }
@@ -147,8 +170,9 @@ export const admin = {
   deleteCategoryById,
   getOrders,
   deleteOrderById,
-  updateOrderById,
+  updateOrderByStripeId,
   createCoupons,
   getCoupons,
   deleteCouponByCouponNumber,
+  deleteUserById,
 };

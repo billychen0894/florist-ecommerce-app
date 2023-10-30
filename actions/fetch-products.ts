@@ -7,7 +7,8 @@ export const fetchProducts = async (
   page?: number,
   limit?: number,
   sortOption?: string,
-  filters?: string | string[] | undefined
+  filters?: string | string[] | undefined,
+  search?: string | undefined
 ) => {
   let sort: 'popular' | 'newest' | 'price-high-to-low' | 'price-low-to-high' =
     'popular';
@@ -21,7 +22,13 @@ export const fetchProducts = async (
     sort = 'price-low-to-high';
   }
 
-  const response = await products.getAllProducts(page, limit, sort, filters);
+  const response = await products.getAllProducts(
+    page,
+    limit,
+    sort,
+    filters,
+    search
+  );
   const allProducts = response.data.data
     ? (response.data.data as TProduct[])
     : [];

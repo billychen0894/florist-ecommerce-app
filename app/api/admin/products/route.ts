@@ -1,21 +1,22 @@
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
-import { ProductPayload } from '@lib/types/api';
+import { ProductReqPayload } from '@lib/types/api';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 import { productsPayloadSchema } from './productsPayloadValidation';
 
 export async function POST(req: Request, res: Response) {
   try {
-    const body: ProductPayload = await req.json();
+    const body: ProductReqPayload = await req.json();
     const {
       name,
       description,
       price,
       images,
+      categories,
+      units,
       inStock,
       leadTime,
-      categories,
       productDetail,
     } = body;
 
@@ -89,27 +90,68 @@ export async function POST(req: Request, res: Response) {
       );
     }
 
-    const product = await prisma.product.create({
+    const existingImages = images.existingImages.map((image) => {
+      const publicId = image.slice(
+        image.lastIndexOf('/') + 1,
+        image.lastIndexOf('.')
+      );
+      return {
+        url: image,
+        publicId,
+        name: `image-${publicId}`,
+        alt: `image-${publicId}`,
+      };
+    });
+
+    const newImages = images.newImages.map((image) => {
+      if (image) {
+        return {
+          ...image,
+          name: `image-${image.publicId}`,
+          alt: `image-${image.publicId}`,
+        };
+      }
+    });
+
+    const updatedImages = [...existingImages, ...newImages] as {
+      url: string;
+      publicId: string;
+      name: string;
+      alt: string;
+    }[];
+
+    const updatedProductDetailItems = productDetail.productDetailItems.map(
+      (item) => {
+        const productItems = item.items.filter((i) => i !== '');
+        return {
+          ...item,
+          items: productItems as string[],
+        };
+      }
+    );
+
+    await prisma.product.create({
       data: {
         name,
         description,
         price,
         images: {
           createMany: {
-            data: images,
+            data: updatedImages,
             skipDuplicates: true,
           },
         },
-        inStock,
-        leadTime,
         categories: {
           connect: categories.map((category) => ({ name: category.name })),
         },
+        units,
+        inStock,
+        leadTime,
         productDetail: {
           create: {
             productDetailItems: {
               createMany: {
-                data: productDetail.productDetailItems,
+                data: updatedProductDetailItems,
                 skipDuplicates: true,
               },
             },

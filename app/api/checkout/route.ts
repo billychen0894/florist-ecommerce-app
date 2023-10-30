@@ -33,9 +33,15 @@ export async function POST(req: Request, res: Response) {
         currency: 'CAD',
         product_data: {
           name: orderItem.product.name,
-          images: orderItem.product.images.map(
-            (image) => `${process.env.APP_BASE_URL}${image.url}`
-          ),
+          images: orderItem.product.images.map((image) => {
+            if (image.url.startsWith('http')) {
+              // if it's public url path
+              return image.url;
+            } else {
+              // if it's local file path
+              return `${process.env.APP_BASE_URL}${image.url}`;
+            }
+          }) as string[],
           metadata: {
             productId: orderItem.product.id,
           },

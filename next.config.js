@@ -6,10 +6,12 @@ const nextConfig = {
       'tailwindui.com',
       'lh3.googleusercontent.com',
       'res.cloudinary.com',
+      'images.unsplash.com',
     ],
   },
   experimental: {
     serverActions: true,
+    serverActionsBodySizeLimit: '10mb',
   },
 };
 

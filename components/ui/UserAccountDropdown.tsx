@@ -5,21 +5,21 @@ import React, { Fragment } from 'react';
 import Button from './Button';
 import Link from 'next/link';
 
+interface MenuItem {
+  href: string;
+  label: string;
+}
+
 interface UserAcccountDropdownProps {
   email: string;
   avatar: React.ReactElement | null;
+  menuItems: MenuItem[];
 }
-
-const menuItems: { href: string; label: string }[] = [
-  { href: '/user/profile', label: 'Profile' },
-  { href: '/user/orders', label: 'Orders' },
-  { href: '/user/wishlist', label: 'Wishlist' },
-  { href: '/user/settings', label: 'Settings' },
-];
 
 export default function UserAcccountDropdown({
   avatar,
   email,
+  menuItems,
 }: UserAcccountDropdownProps) {
   return (
     <Menu as="span" className="hidden relative sm:inline-block text-left">
@@ -38,7 +38,7 @@ export default function UserAcccountDropdown({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-20 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="px-4 py-3">
             <p className="text-sm">Signed in as</p>
             <p className="truncate text-sm font-medium text-gray-900">

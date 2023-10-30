@@ -26,13 +26,11 @@ export const headerNavigation: Navigation<Page[]> = {
 
 export const footerNavigation: Navigation<PageWithIcon[] | Page[]> = {
   services: [
-    { name: 'Product Maintenence & Care', href: '/product-maintenence-care' },
-    { name: 'After-sales Service', href: '/after-sales-service' },
+    { name: 'Contact Us', href: '/contact-us' },
     { name: 'FAQ', href: '/faq' },
   ],
   company: [
-    { name: 'About Us', href: '/about-us' },
-    { name: 'Order Process', href: '/order-process' },
+    { name: 'About Us', href: '/company' },
     { name: 'Terms of Use', href: '/terms-of-use' },
     { name: 'Privacy Policy', href: '/privacy-policy' },
   ],

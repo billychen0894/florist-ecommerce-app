@@ -9,11 +9,19 @@ import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { fetchUserById } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useEffect } from 'react';
+import { adminMenuItems } from '@components/Admin/AdminNavigation';
 
 interface AuthenticationButtonsProps {
   isMobile?: boolean;
   onOpen?: (open: boolean) => void;
 }
+
+export const userMenuItems = [
+  { href: '/user/profile', label: 'Profile' },
+  { href: '/user/orders', label: 'Orders' },
+  { href: '/user/wishlist', label: 'Wishlist' },
+  { href: '/user/settings', label: 'Settings' },
+];
 
 function AuthenticationButtons({
   isMobile,
@@ -41,6 +49,9 @@ function AuthenticationButtons({
             avatarImageUrl={user?.image!}
             avatarImageAlt={session?.user.name || 'user avatar'}
           />
+        }
+        menuItems={
+          session?.user.role === 'user' ? userMenuItems : adminMenuItems
         }
       />
     );

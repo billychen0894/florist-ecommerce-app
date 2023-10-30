@@ -64,19 +64,13 @@ export async function GET(req: Request, res: Response) {
       select: {
         id: true,
         orderNumber: true,
+        stripeInvoiceId: true,
+        invoiceUrl: true,
         contactEmail: true,
         contactPhone: true,
         total: true,
         orderStatus: true,
-        paymentMethod: true,
-        shippingMethod: {
-          select: {
-            name: true,
-            turnAround: true,
-            location: true,
-            location_operation_hours: true,
-          },
-        },
+        paymentStatus: true,
         shippingAddress: {
           select: {
             addressLine1: true,
@@ -113,7 +107,7 @@ export async function GET(req: Request, res: Response) {
             },
           },
         },
-        discountCoupon: {},
+        userId: true,
       },
     });
 
@@ -121,7 +115,7 @@ export async function GET(req: Request, res: Response) {
       return NextResponse.json(
         {
           success: true,
-          orders: [],
+          data: [],
           message: 'Currently no orders to retrieve.',
         },
         {
@@ -133,7 +127,7 @@ export async function GET(req: Request, res: Response) {
     return NextResponse.json(
       {
         success: true,
-        orders: orders,
+        data: orders,
         message: 'Successfully retrieved orders.',
       },
       {

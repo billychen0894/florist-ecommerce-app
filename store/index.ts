@@ -1,12 +1,14 @@
-import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import cartReducer, { localStorageMiddleware } from './features/cartSlice';
 import userReducer from './features/userSlice';
+import adminReducer from './features/adminSlice';
 
 export function makeStore() {
   return configureStore({
     reducer: {
       cartReducer,
       userReducer,
+      adminReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(localStorageMiddleware),

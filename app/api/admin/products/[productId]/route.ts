@@ -3,21 +3,23 @@ import { NextResponse } from 'next/server';
 
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
-import { ProductPayload } from '@lib/types/api';
+import { ProductReqPayload } from '@lib/types/api';
 import { productsPayloadSchema } from '../productsPayloadValidation';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function PUT(req: Request, res: Response) {
   try {
     const productId = req.url.slice(req.url.lastIndexOf('/') + 1);
-    const body: ProductPayload = await req.json();
+    const body: ProductReqPayload = await req.json();
     const {
       name,
       description,
       price,
       images,
+      categories,
+      units,
       inStock,
       leadTime,
-      categories,
       productDetail,
     } = body;
 
@@ -110,7 +112,51 @@ export async function PUT(req: Request, res: Response) {
       );
     }
 
-    const updatedProduct = await prisma.product.update({
+    const existingImages = images.existingImages.map((image) => {
+      const partPublicId = image.slice(
+        image.lastIndexOf('/') + 1,
+        image.lastIndexOf('.')
+      );
+      const publicId = image?.startsWith('http')
+        ? partPublicId
+        : partPublicId + '-' + uuidv4();
+      return {
+        url: image,
+        publicId,
+        name: `image-${publicId}`,
+        alt: `image-${publicId}`,
+      };
+    });
+
+    const newImages = images.newImages.map((image) => {
+      if (image) {
+        return {
+          url: image.url,
+          publicId: image.publicId,
+          name: `image-${image.publicId}`,
+          alt: `image-${image.publicId}`,
+        };
+      }
+    });
+
+    const updatedImages = [...existingImages, ...newImages] as {
+      url: string;
+      publicId: string;
+      name: string;
+      alt: string;
+    }[];
+
+    const updatedProductDetailItems = productDetail.productDetailItems.map(
+      (item) => {
+        const productItems = item.items.filter((i) => i !== '');
+        return {
+          ...item,
+          items: productItems as string[],
+        };
+      }
+    );
+
+    await prisma.product.update({
       where: {
         id: productId,
       },
@@ -121,22 +167,23 @@ export async function PUT(req: Request, res: Response) {
         images: {
           deleteMany: {},
           createMany: {
-            data: images,
+            data: updatedImages,
             skipDuplicates: true,
           },
         },
-        inStock,
-        leadTime,
         categories: {
           set: [],
           connect: categories.map((category) => ({ name: category.name })),
         },
+        units,
+        inStock,
+        leadTime,
         productDetail: {
           update: {
             productDetailItems: {
               deleteMany: {},
               createMany: {
-                data: productDetail.productDetailItems,
+                data: updatedProductDetailItems,
                 skipDuplicates: true,
               },
             },

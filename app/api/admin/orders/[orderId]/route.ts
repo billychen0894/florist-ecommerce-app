@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
-import { OrderFullInfo } from '@lib/types/api';
 import { Prisma } from '@prisma/client';
 import { ordersPayloadSchema } from './ordersPayloadValidation';
+import { OrderStatus } from '@node_modules/@prisma/client';
 
 export async function DELETE(req: Request, res: Response) {
   try {
@@ -120,8 +120,10 @@ export async function DELETE(req: Request, res: Response) {
 
 export async function PUT(req: Request, res: Response) {
   try {
-    const body: OrderFullInfo = await req.json();
-    const { contactEmail, contactPhone, orderStatus, shippingAddress } = body;
+    const body: {
+      orderStatus: OrderStatus;
+    } = await req.json();
+    const { orderStatus } = body;
     const orderId = req.url.slice(req.url.lastIndexOf('/') + 1);
     const bearerToken = req.headers.get('authorization')?.split(' ')[1];
 
@@ -207,23 +209,10 @@ export async function PUT(req: Request, res: Response) {
 
     await prisma.order.update({
       where: {
-        id: orderId,
+        stripeInvoiceId: orderId,
       },
       data: {
-        contactEmail,
-        contactPhone,
         orderStatus,
-        shippingAddress: {
-          update: {
-            addressLine1: shippingAddress.addressLine1,
-            addressLine2: shippingAddress.addressLine2,
-            company: shippingAddress.company,
-            city: shippingAddress.city,
-            stateOrProvince: shippingAddress.stateOrProvince,
-            country: shippingAddress.country,
-            postalCode: shippingAddress.postalCode,
-          },
-        },
       },
     });
 
@@ -242,7 +231,7 @@ export async function PUT(req: Request, res: Response) {
         {
           success: false,
           error: error && error.meta && error.meta.cause,
-          message: 'Something went wrong while deleting orders.',
+          message: 'Something went wrong while updating orders.',
         },
         {
           status: 500,
@@ -254,7 +243,7 @@ export async function PUT(req: Request, res: Response) {
       {
         success: false,
         error: error,
-        message: 'Something went wrong while deleting orders.',
+        message: 'Something went wrong while updating orders.',
       },
       {
         status: 500,

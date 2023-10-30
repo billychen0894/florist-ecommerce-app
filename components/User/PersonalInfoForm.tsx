@@ -141,7 +141,7 @@ export default function PersonalInfoForm({
           name: `${firstName} ${lastName}`,
           phone,
         });
-      } else {
+      } else if (!stripeCustomerId && user && user?.role !== 'admin') {
         const stripeCustomerId = await createStripeCustomer({
           name: `${firstName} ${lastName}`,
           phone,
