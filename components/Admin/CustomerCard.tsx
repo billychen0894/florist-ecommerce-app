@@ -30,6 +30,8 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
             src={customer?.image || ''}
             alt="customer avatar"
             className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
+            width={50}
+            height={50}
           />
         ) : (
           defualtAvatar
