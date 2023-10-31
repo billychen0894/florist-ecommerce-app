@@ -73,7 +73,7 @@ export function Sort() {
                       );
                       const sortParam = searchParams.get('sort');
                       if (sortParam) {
-                        searchParams.delete('sort', sortParam);
+                        searchParams.delete('sort');
                         searchParams.append('sort', option.href);
                       } else {
                         searchParams.append('sort', option.href);
