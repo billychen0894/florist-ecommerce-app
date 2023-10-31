@@ -18,14 +18,12 @@ import Spinner from '@components/ui/Spinner';
 import { useAppSelector } from '@store/hooks';
 import { ProductReqPayload } from '@lib/types/api';
 import { multiImagesUpload } from '@actions/imageUpload';
-import getQueryClient from '@lib/getQueryClient';
 import { admin } from '@lib/api/admin';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { useRouter } from 'next/navigation';
 
 export default function New() {
   const categories = useAppSelector((state) => state.adminReducer.categories);
-  const queryClient = getQueryClient();
   const axiosWithAuth = useAxiosWithAuth();
   const router = useRouter();
   const methods = useForm<ProductDetailsFormSchema>({
@@ -105,7 +103,6 @@ export default function New() {
 
         if (response.status === 201) {
           toast.success('Product is created successfully');
-          await queryClient.invalidateQueries({ queryKey: ['query'] });
           router.push('/admin/products');
           return;
         } else {

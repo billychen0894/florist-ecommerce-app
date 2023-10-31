@@ -5,6 +5,8 @@ import { PaymentStatus, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   // due to it's webhook it has to be text not json
   const body = await req.text();

@@ -10,7 +10,7 @@ interface EmailPayload {
   emailVerifyToken: string | null;
 }
 
-export async function PUT(req: Request, res: Response) {
+export async function PUT(req: Request) {
   try {
     const body: EmailPayload = await req.json();
     const { email, emailVerified, emailVerifyToken } = body;

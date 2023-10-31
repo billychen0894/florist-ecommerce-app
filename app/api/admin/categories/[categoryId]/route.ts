@@ -5,7 +5,9 @@ import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
 import { Prisma } from '@prisma/client';
 
-export async function DELETE(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function DELETE(req: Request) {
   try {
     const categoryId = req.url.slice(req.url.lastIndexOf('/') + 1);
     const bearerToken = req.headers.get('authorization')?.split(' ')[1];

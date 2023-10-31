@@ -5,7 +5,9 @@ import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 import { productsPayloadSchema } from './productsPayloadValidation';
 
-export async function POST(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
   try {
     const body: ProductReqPayload = await req.json();
     const {

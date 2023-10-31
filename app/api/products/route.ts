@@ -1,9 +1,11 @@
 import { prisma } from '@lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: Request) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const sort = searchParams.get('sort');
     const filters = searchParams.getAll('filter');
     const limit: number | undefined =

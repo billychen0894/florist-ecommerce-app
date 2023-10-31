@@ -4,6 +4,8 @@ import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
 import { products } from '@lib/api/products';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const response = await products.getAllProducts(1, 9, 'popular');
   const allProducts = await response.data.data;

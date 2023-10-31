@@ -2,6 +2,9 @@ import { fetchProducts } from '@actions/fetch-products';
 import { fetchCategories } from '@actions/fetch-categories';
 import AdminProduct from '@components/Admin/AdminProduct';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Products({
   searchParams,
 }: {

@@ -3,8 +3,10 @@ import { prisma } from '@lib/prisma';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // Remove product from wishlist for user
-export async function DELETE(req: Request, res: Response) {
+export async function DELETE(req: Request) {
   try {
     const userIdStart = req.url.lastIndexOf('/users/') + '/users/'.length;
     const userIdEnd = req.url.indexOf('/wishlist');

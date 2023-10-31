@@ -7,7 +7,7 @@ import { transporter } from '@lib/emailTransporter';
 import { signJwtAccessToken } from '@lib/jwt';
 
 // POST: Create new user
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const body: SignUpFormData = await req.json();
     const { email, password, confirmPassword, firstName, lastName } = body;

@@ -3,8 +3,10 @@ import { prisma } from '@lib/prisma';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // Add product to wishlist for user
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const body: {
       productId: string;
@@ -197,7 +199,7 @@ export async function POST(req: Request, res: Response) {
   }
 }
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   try {
     const userIdStart = req.url.lastIndexOf('/users/') + '/users/'.length;
     const userIdEnd = req.url.indexOf('/wishlist');

@@ -4,7 +4,9 @@ import { NextResponse } from 'next/server';
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
 
-export async function POST(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
   try {
     const body: { name: string } = await req.json();
     const { name } = body;
