@@ -1,5 +1,5 @@
 import axios from '@lib/axios';
-import { ApiResponse, Filter, Sort, TProduct } from '@lib/types/api';
+import { ApiResponse, TProduct } from '@lib/types/api';
 import { AxiosResponse } from 'axios';
 import { cache } from 'react';
 
@@ -40,32 +40,7 @@ const getProductById = cache(async (productId: string) => {
   return response;
 });
 
-const searchProductsByKeyword = cache(async (keyword: string) => {
-  const response = (await axios.get(
-    `/api/products/search?keyword=${keyword}`
-  )) as AxiosResponse<ApiResponse<TProduct[]>>;
-
-  return response;
-});
-
-const filterAndSortProducts = cache(async (sort: Sort, filters: Filter[]) => {
-  const sortQuery = sort ? `sort=${sort}` : '';
-  let filterQuery: string = '';
-
-  if (filters.length > 0) {
-    filterQuery = filters.map((filter) => `filter=${filter}`).join('&');
-  }
-
-  const response = (await axios.get(
-    `/api/products/filter-and-sort?${sortQuery}&${filterQuery}`
-  )) as AxiosResponse<ApiResponse<TProduct[]>>;
-
-  return response;
-});
-
 export const products = {
   getAllProducts,
   getProductById,
-  searchProductsByKeyword,
-  filterAndSortProducts,
 };
