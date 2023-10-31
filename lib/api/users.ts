@@ -41,17 +41,6 @@ async function getUser(
   return response;
 }
 
-async function deleteUser(
-  userId: string,
-  axiosWithAuth: AxiosInstance
-): Promise<AxiosResponse<ApiResponse<null>>> {
-  const response = (await axiosWithAuth.delete(
-    `/api/users/${userId}`
-  )) as AxiosResponse<ApiResponse<null>>;
-
-  return response;
-}
-
 async function addToUserWishlist(
   productId: string,
   userId: string,
@@ -91,7 +80,6 @@ export const users = {
   createUser,
   getUser,
   updateUser,
-  deleteUser,
   addToUserWishlist,
   getUserWishlist,
   deleteProductFromWishlist,
