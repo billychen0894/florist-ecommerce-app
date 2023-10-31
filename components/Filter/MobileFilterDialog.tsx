@@ -119,7 +119,14 @@ export function MobileFilterDialog({
                                       if (isChecked) {
                                         params.append('category', optionName);
                                       } else {
-                                        params.delete('category', optionName);
+                                        const categories =
+                                          params.getAll('category');
+                                        params.delete('category');
+                                        categories.forEach((category) => {
+                                          if (category !== optionName) {
+                                            params.append('category', category);
+                                          }
+                                        });
                                       }
                                       router.replace(
                                         `${pathname}?${params.toString()}`
