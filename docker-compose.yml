@@ -17,6 +17,6 @@ services:
   stripe-cli:
     image: stripe/stripe-cli
     container_name: stripe-cli
-    command: 'listen --api-key ${STRIPE_SECRET_KEY} --forward-to localhost:3000/api/webhook'
+    command: 'listen --api-key ${STRIPE_SECRET_KEY} --forward-to https://florist-ecommerce-app.vercel.app/api/webhook'
     env_file:
       - .env
