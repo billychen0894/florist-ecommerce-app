@@ -160,7 +160,7 @@ export default function PersonalInfoForm({
 
       toast.success('Personal Info successfully updated!');
     },
-    [axiosWithAuth, dispatch, user?.id, user?.image]
+    [axiosWithAuth, dispatch, user]
   );
 
   const onSubmit = async (data: PersonalInfoFormSchema) => {
