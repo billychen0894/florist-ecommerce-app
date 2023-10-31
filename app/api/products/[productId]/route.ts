@@ -1,7 +1,7 @@
 import { prisma } from '@lib/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   try {
     const productId = req.url.slice(req.url.lastIndexOf('/') + 1);
 

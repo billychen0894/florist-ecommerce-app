@@ -7,7 +7,7 @@ interface emailPayload {
   emailVerificationToken: string;
 }
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const body: emailPayload = await req.json();
     const { firstName, email, emailVerificationToken } = body;

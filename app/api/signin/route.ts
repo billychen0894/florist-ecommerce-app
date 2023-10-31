@@ -9,7 +9,7 @@ interface RequestBody {
 }
 
 // POST: Sign in user with credentials
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const body: RequestBody = await req.json();
     const { email, password } = body;

@@ -4,7 +4,9 @@ import { NextResponse } from 'next/server';
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
 
-export async function GET(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: Request) {
   try {
     const bearerToken = req.headers.get('authorization')?.split(' ')[1];
 

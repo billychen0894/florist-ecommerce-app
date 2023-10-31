@@ -7,7 +7,9 @@ import { ProductReqPayload } from '@lib/types/api';
 import { productsPayloadSchema } from '../productsPayloadValidation';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function PUT(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function PUT(req: Request) {
   try {
     const productId = req.url.slice(req.url.lastIndexOf('/') + 1);
     const body: ProductReqPayload = await req.json();
@@ -215,7 +217,7 @@ export async function PUT(req: Request, res: Response) {
   }
 }
 
-export async function DELETE(req: Request, res: Response) {
+export async function DELETE(req: Request) {
   try {
     const productId = req.url.slice(req.url.lastIndexOf('/') + 1);
 

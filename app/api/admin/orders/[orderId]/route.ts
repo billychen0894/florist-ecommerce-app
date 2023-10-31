@@ -1,5 +1,5 @@
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { verifyJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
@@ -7,7 +7,9 @@ import { Prisma } from '@prisma/client';
 import { ordersPayloadSchema } from './ordersPayloadValidation';
 import { OrderStatus } from '@node_modules/@prisma/client';
 
-export async function PUT(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function PUT(req: NextRequest) {
   try {
     const body: {
       orderStatus: OrderStatus;

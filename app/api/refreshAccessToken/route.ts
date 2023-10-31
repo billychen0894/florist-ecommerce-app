@@ -1,7 +1,7 @@
 import { signJwtAccessToken, verifyJwtRefreshToken } from '@lib/jwt';
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const body: { refreshToken: string } = await req.json();
     const { refreshToken } = body;

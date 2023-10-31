@@ -5,8 +5,10 @@ import * as bcrypt from 'bcrypt';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // Get user data
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   try {
     const userId = req.url.slice(req.url.lastIndexOf('/') + 1);
 
@@ -142,7 +144,7 @@ export async function GET(req: Request, res: Response) {
 }
 
 // Update user data
-export async function PUT(req: Request, res: Response) {
+export async function PUT(req: Request) {
   try {
     const body: {
       name?: string;

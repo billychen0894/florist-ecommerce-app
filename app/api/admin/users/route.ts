@@ -4,7 +4,9 @@ import { prisma } from '@lib/prisma';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: Request) {
   try {
     const bearerToken = req.headers.get('authorization')?.split(' ')[1];
 

@@ -3,7 +3,9 @@ import { verifyJwtAccessToken } from '@lib/jwt';
 import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import { prisma } from '@lib/prisma';
 
-export async function DELETE(req: Request, res: Response) {
+export const dynamic = 'force-dynamic';
+
+export async function DELETE(req: Request) {
   try {
     const bearerToken = req.headers.get('authorization')?.split(' ')[1];
     const userId = req.url.slice(req.url.lastIndexOf('/') + 1);

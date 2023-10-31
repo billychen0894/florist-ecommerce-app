@@ -4,7 +4,7 @@ import { TCartItem } from '@lib/types/api';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const body: {
     orders: TCartItem[];
     userId?: string;
