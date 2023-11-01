@@ -84,7 +84,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     if (!session) {
       setIsModalOpen(true);
     } else {
-      if (session?.user.role)
+      if (session?.user.role && session?.user.role !== 'user')
         return toast.error('Admin cannot add products to wishlist');
 
       setIsModalOpen(false);
