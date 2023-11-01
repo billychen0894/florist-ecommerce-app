@@ -30,7 +30,7 @@ export default withAuth(
     img-src 'self' blob: data: res.cloudinary.com;
     font-src 'self';
     frame-src 'self';
-    connect-src 'self' https://vitals.vercel-insights.com/v1/vitals;
+    connect-src 'self' https://vitals.vercel-insights.com/v1/vitals https://api.stripe.com;
 `;
 
     const requestHeaders = new Headers(req.headers);
