@@ -22,6 +22,7 @@ import {
   removeProductsFromWishlist,
 } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { cn } from '@lib/classNames';
 
 interface ProductActionsProps {
   productId: string;
@@ -55,6 +56,11 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   };
 
   const handleAddToCart = () => {
+    if (product && product?.units === 0) {
+      return toast.error(
+        'Oops! This product is out of stock. Please check back later.'
+      );
+    }
     const dispatchPayload = {
       id: productId,
       quantity: quantityRef.current?.value
@@ -143,10 +149,15 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
           </div>
           <Button
             type="button"
-            className="flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+            className={cn(
+              'flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full',
+              product?.units === 0
+                ? 'bg-gray-200 focus:ring-gray-200 hover:bg-gray-200 cursor-not-allowed'
+                : ''
+            )}
             onClick={handleAddToCart}
           >
-            Add to cart
+            {product?.units === 0 ? 'Out of stock' : 'Add to cart'}
           </Button>
 
           <Button

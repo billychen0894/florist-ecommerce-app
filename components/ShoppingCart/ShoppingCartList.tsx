@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckIcon, ClockIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -79,16 +79,14 @@ export function ShoppingCartList() {
                       aria-hidden="true"
                     />
                   ) : (
-                    <ClockIcon
-                      className="h-5 w-5 flex-shrink-0 text-gray-300"
+                    <XMarkIcon
+                      className="h-5 w-5 flex-shrink-0 text-red-300"
                       aria-hidden="true"
                     />
                   )}
 
                   <span>
-                    {orderItem.product.inStock
-                      ? 'In stock'
-                      : `Ships in ${orderItem.product.leadTime}`}
+                    {orderItem.product.inStock ? 'In stock' : 'Restocking soon'}
                   </span>
                 </p>
               </div>
