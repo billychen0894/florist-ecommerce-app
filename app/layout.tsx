@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
+import { headers } from 'next/headers';
+import Script from 'next/script';
 
 import { Footer } from '@components/Footer';
 import { Navigation } from '@components/Navigation';
@@ -21,6 +23,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = headers().get('x-nonce');
+
   return (
     <html lang="en" className="h-full">
       <body className={`${inter.className} h-full`}>
@@ -43,6 +47,7 @@ export default function RootLayout({
           </ReduxProvider>
         </QueryProvider>
       </body>
+      <Script strategy="afterInteractive" nonce={nonce ? nonce : undefined} />
     </html>
   );
 }
