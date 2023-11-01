@@ -16,9 +16,9 @@ export function Hero() {
       <Image
         src={heroUrl}
         alt={heroUrlAlt}
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-        width={1920}
-        height={1080}
+        className="absolute inset-0 -z-10 w-full h-full object-cover"
+        width={500}
+        height={500}
         priority
       />
       {/* Backdrop */}

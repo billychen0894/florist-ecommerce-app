@@ -73,8 +73,8 @@ export default function DesktopMenu({
                     className="h-16 w-auto"
                     src="/images/logo.png"
                     alt="logo"
-                    width={500}
-                    height={500}
+                    width={100}
+                    height={100}
                   />
                 </Link>
               </div>
