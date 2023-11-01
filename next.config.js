@@ -1,16 +1,30 @@
 /** @type {import('next').NextConfig} */
+const securityHeaders = [
+  {
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN',
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+];
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      'tailwindui.com',
-      'lh3.googleusercontent.com',
-      'res.cloudinary.com',
-      'images.unsplash.com',
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: 'res.cloudinary.com' }],
   },
   experimental: {
     serverActionsBodySizeLimit: '10mb',
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
+    ];
   },
 };
 

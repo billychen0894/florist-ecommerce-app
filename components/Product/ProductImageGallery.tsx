@@ -31,6 +31,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
                       className="h-full w-full object-cover object-center"
                       width={500}
                       height={500}
+                      priority
                     />
                   </span>
                   <span
@@ -56,6 +57,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
               className="h-full w-full object-cover object-center sm:rounded-lg"
               width={500}
               height={500}
+              priority
             />
           </Tab.Panel>
         ))}

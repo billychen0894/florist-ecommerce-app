@@ -2,7 +2,7 @@ import { ArrowSmallLeftIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Denied() {
+export default function NotFound() {
   return (
     <main className="relative isolate min-h-full">
       <Image
@@ -14,13 +14,12 @@ export default function Denied() {
         priority
       />
       <div className="mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">
-        <p className="text-base font-semibold leading-8 text-white">Oh no...</p>
+        <p className="text-base font-semibold leading-8 text-white">404</p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
-          Access Denied
+          Page not found
         </h1>
         <p className="mt-4 text-base text-white/95 sm:mt-6">
-          Sorry, you don&apos;t have access to this page even though you are
-          currently signed in.
+          Sorry, we couldn&apos;t find the page you&apos;re looking for.
         </p>
         <Link
           href="/"

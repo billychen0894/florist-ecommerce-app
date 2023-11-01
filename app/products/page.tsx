@@ -48,6 +48,7 @@ export default async function Products({
               className="absolute inset-0 -z-10 h-full max-h-40 w-full object-cover object-center"
               width={1920}
               height={1080}
+              priority
             />
             {/* Backdrop */}
             <div
