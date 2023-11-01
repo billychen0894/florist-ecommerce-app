@@ -33,11 +33,16 @@ const getAllProducts = cache(
 );
 
 const getProductById = cache(async (productId: string) => {
-  const response = (await axios.get(
-    `/api/products/${productId}`
-  )) as AxiosResponse<ApiResponse<TProduct>>;
+  try {
+    const response = (await axios.get(
+      `/api/products/${productId}`
+    )) as AxiosResponse<ApiResponse<TProduct>>;
 
-  return response;
+    return response;
+  } catch (err: any) {
+    console.error('Error:', err.message);
+    return null;
+  }
 });
 
 export const products = {

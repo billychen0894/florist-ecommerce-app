@@ -6,6 +6,7 @@ import {
   ProductsRecommendation,
 } from '@components/Product';
 import { products } from '@lib/api/products';
+import { notFound } from '@node_modules/next/dist/client/components/not-found';
 
 export default async function Product({
   params,
@@ -13,7 +14,11 @@ export default async function Product({
   params: { product: string };
 }) {
   const productResult = await products.getProductById(params.product);
-  const product = productResult.data.data;
+  if (!productResult) {
+    notFound();
+    return;
+  }
+  const product = productResult && productResult?.data?.data;
 
   return (
     <>
