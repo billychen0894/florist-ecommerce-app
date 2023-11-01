@@ -13,7 +13,7 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [{ protocol: 'https', hostname: 'res.cloudinary.com' }],
+    remotePatterns: [{ protocol: 'http', hostname: 'res.cloudinary.com' }],
   },
   experimental: {
     serverActionsBodySizeLimit: '10mb',
