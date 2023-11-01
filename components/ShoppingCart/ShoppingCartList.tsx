@@ -35,6 +35,7 @@ export function ShoppingCartList() {
                   className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
                   width={200}
                   height={200}
+                  priority
                 />
               </div>
 

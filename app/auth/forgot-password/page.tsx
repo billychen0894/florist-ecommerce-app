@@ -24,6 +24,7 @@ export default async function ForgotPassword() {
             alt="Background Image"
             width={1600}
             height={900}
+            priority
           />
           <div className="absolute inset-0 bg-gray-500 opacity-25" />
         </div>
@@ -35,6 +36,7 @@ export default async function ForgotPassword() {
           alt="Company Logo"
           width={120}
           height={120}
+          priority
         />
         <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Forgot Password?

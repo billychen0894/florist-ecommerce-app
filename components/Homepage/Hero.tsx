@@ -19,6 +19,7 @@ export function Hero() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
         width={1920}
         height={1080}
+        priority
       />
       {/* Backdrop */}
       <div

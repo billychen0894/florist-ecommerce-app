@@ -26,6 +26,7 @@ export default function RootError({
         className="absolute inset-0 -z-10 h-full w-full object-cover object-top"
         width={500}
         height={500}
+        priority
       />
       <div className="mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">
         <p className="text-base font-semibold leading-8 text-white">Oh no...</p>
