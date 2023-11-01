@@ -2,11 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      'tailwindui.com',
-      'lh3.googleusercontent.com',
-      'res.cloudinary.com',
-      'images.unsplash.com',
+    remotePatterns: [
+      { protocol: 'https', hostname: 'tailwindui.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },
   experimental: {
