@@ -1,4 +1,3 @@
-import { generateUniqueNumber } from '@lib/generateUniqueNumber';
 import { prisma } from '@lib/prisma';
 import { stripe } from '@lib/stripe';
 import { PaymentStatus, Prisma } from '@prisma/client';
@@ -8,18 +7,19 @@ import Stripe from 'stripe';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
-  // due to it's webhook it has to be text not json
+  // due to its webhook it has to be text not json
   const body = await req.text();
   const signature = req.headers.get('Stripe-Signature') as string;
 
   let event: Stripe.Event;
 
+  const webhookSecret =
+    process.env.NODE_ENV === 'development'
+      ? process.env.STRIPE_WEBHOOK_SECRET_LOCAL!
+      : process.env.STRIPE_WEBHOOK_SECRET!;
+
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (e: any) {
     return new NextResponse(`Webhook Error: ${e.message}`, { status: 400 });
   }
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     session?.shipping_details?.phone || session?.customer_details?.phone;
 
   const orderData: Prisma.OrderCreateInput = {
-    orderNumber: generateUniqueNumber('BL'),
+    orderNumber: '',
     total: session?.amount_total! / 100,
     contactEmail: email,
     paymentStatus: PaymentStatus.PAID,
@@ -110,9 +110,64 @@ export async function POST(req: Request) {
         }
       );
 
+      const lineItems = lineItemsObj?.data.map((item) => item);
+
+      const promises = lineItems.map(async (item) => {
+        return new Promise<boolean>(async (resolve) => {
+          try {
+            const productId = (item.price?.product as Stripe.Product).metadata
+              .productId;
+            const product = await prisma.product.findUnique({
+              where: {
+                id: productId,
+              },
+            });
+
+            if (product) {
+              if (item?.quantity && product.units - item?.quantity < 0)
+                throw new Error(
+                  'Checkout Failed: current stocks cannot satisfy orders'
+                );
+
+              const updatedUnits = Math.max(
+                product.units - (item?.quantity || 0),
+                0
+              );
+              const updatedIsStock = updatedUnits > 0;
+
+              await prisma.product.update({
+                where: {
+                  id: productId,
+                },
+                data: {
+                  units: {
+                    decrement: item?.quantity as number,
+                  },
+                  inStock: updatedIsStock,
+                },
+              });
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          } catch (error) {
+            console.error(error);
+            resolve(false);
+          }
+        });
+      });
+
+      const promisesResult = await Promise.all(promises);
+      const isPromisesFailed = promisesResult.includes(false);
+      if (isPromisesFailed)
+        throw new Error(
+          'Checkout Failed: current stocks cannot satisfy orders'
+        );
+
       const invoiceObj = await stripe.invoices.retrieve(
         session?.invoice as string
       );
+
       // Replace orderNumber with Invoice number issued by Stripe
       orderData.orderNumber = invoiceObj.number!;
       orderData.stripeInvoiceId = invoiceObj.id;
@@ -123,7 +178,7 @@ export async function POST(req: Request) {
           data: lineItemsObj?.data.map((item) => ({
             productId: (item.price?.product as Stripe.Product).metadata
               .productId,
-            quantity: item.quantity!,
+            quantity: item?.quantity!,
           }))!,
         },
       };
@@ -131,6 +186,7 @@ export async function POST(req: Request) {
       await prisma.order.create({
         data: orderData,
       });
+      console.log('end - orderData number', orderData.orderNumber);
     }
     return new NextResponse(null, { status: 200 });
   } catch (e: any) {
