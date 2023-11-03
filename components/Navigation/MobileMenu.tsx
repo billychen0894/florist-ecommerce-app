@@ -4,23 +4,14 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Fragment } from 'react';
-
-import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
 import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
 import { signOut, useSession } from 'next-auth/react';
+import useNavMenuCtx from '@hooks/useNavMenuCtx';
+import { signIn } from '@node_modules/next-auth/react';
 
-interface MobileMenuProps {
-  isOpen: boolean;
-  onOpen: (open: boolean) => void;
-  isMobile?: boolean;
-}
-
-export default function MobileMenu({
-  isOpen,
-  onOpen,
-  isMobile,
-}: MobileMenuProps) {
+export default function MobileMenu() {
+  const navMenuCtx = useNavMenuCtx();
   const { data: session, status } = useSession();
   const MobileUserAccountMenu = (
     <>
@@ -28,7 +19,7 @@ export default function MobileMenu({
         <Link
           href="/user/profile"
           className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => onOpen(false)}
+          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
         >
           Profile
         </Link>
@@ -37,7 +28,7 @@ export default function MobileMenu({
         <Link
           href="/user/orders"
           className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => onOpen(false)}
+          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
         >
           Manage Orders
         </Link>
@@ -46,7 +37,7 @@ export default function MobileMenu({
         <Link
           href="/user/settings"
           className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => onOpen(false)}
+          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
         >
           Settings
         </Link>
@@ -54,7 +45,7 @@ export default function MobileMenu({
       <div className="flow-root">
         <span
           onClick={() => {
-            onOpen && onOpen(false);
+            navMenuCtx.setIsMobileMenuOpen(false);
             signOut();
           }}
           className="-m-2 block p-2 font-medium text-red-500 hover:text-red-600 cursor-pointer"
@@ -66,8 +57,12 @@ export default function MobileMenu({
   );
 
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-40 lg:hidden" onClose={onOpen}>
+    <Transition.Root show={navMenuCtx.isMobileMenuOpen} as={Fragment}>
+      <Dialog
+        as="div"
+        className="relative z-40 lg:hidden"
+        onClose={navMenuCtx.setIsMobileMenuOpen}
+      >
         <Transition.Child
           as={Fragment}
           enter="transition-opacity ease-linear duration-300"
@@ -95,7 +90,7 @@ export default function MobileMenu({
                 <Button
                   type="button"
                   className="-m-2 inline-flex items-center justify-center p-2 text-gray-400 bg-transparent hover:bg-transparent shadow-none"
-                  onClick={() => onOpen(false)}
+                  onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
                   <XMarkIcon className="h-6 w-6" aria-hidden="true" />
@@ -108,7 +103,7 @@ export default function MobileMenu({
                     <Link
                       href={page.href}
                       className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-                      onClick={() => onOpen(false)}
+                      onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
                     >
                       {page.name}
                     </Link>
@@ -117,9 +112,25 @@ export default function MobileMenu({
               </div>
 
               <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                {isMobile && (
-                  <AuthenticationButtons isMobile={isMobile} onOpen={onOpen} />
-                )}
+                {/*<AuthenticationButtons />*/}
+                <div className="flow-root">
+                  <span
+                    onClick={() => {
+                      signIn();
+                    }}
+                    className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
+                  >
+                    Sign in
+                  </span>
+                </div>
+                <div className="flow-root">
+                  <Link
+                    href={{ href: '/auth/signup' }}
+                    className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+                  >
+                    Create account
+                  </Link>
+                </div>
                 {session && status === 'authenticated' && MobileUserAccountMenu}
               </div>
             </Dialog.Panel>

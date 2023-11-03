@@ -11,11 +11,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useEffect } from 'react';
 import { adminMenuItems } from '@components/Admin/AdminNavigation';
 
-interface AuthenticationButtonsProps {
-  isMobile?: boolean;
-  onOpen?: (open: boolean) => void;
-}
-
 export const userMenuItems = [
   { href: '/user/profile', label: 'Profile' },
   { href: '/user/orders', label: 'Orders' },
@@ -23,10 +18,7 @@ export const userMenuItems = [
   { href: '/user/settings', label: 'Settings' },
 ];
 
-function AuthenticationButtons({
-  isMobile,
-  onOpen,
-}: AuthenticationButtonsProps) {
+function AuthenticationButtons() {
   const { data: session, status } = useSession();
   const user = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
@@ -41,7 +33,7 @@ function AuthenticationButtons({
   }, [axiosWithAuth, dispatch, session, status]);
 
   if (session && status === 'authenticated') {
-    const userAccountDropdownMenu = isMobile ? null : (
+    return (
       <UserAcccountDropdown
         email={session?.user.email as string}
         avatar={
@@ -55,8 +47,6 @@ function AuthenticationButtons({
         }
       />
     );
-
-    return userAccountDropdownMenu;
   }
 
   if (status === 'loading') {
@@ -64,54 +54,25 @@ function AuthenticationButtons({
   }
 
   return (
-    <>
-      {isMobile && (
-        <>
-          <div className="flow-root">
-            <span
-              onClick={() => {
-                onOpen && onOpen(false);
-                signIn();
-              }}
-              className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
-            >
-              Sign in
-            </span>
-          </div>
-          <div className="flow-root">
-            <Link
-              href="/auth/signup"
-              className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-              onClick={() => onOpen && onOpen(false)}
-            >
-              Create account
-            </Link>
-          </div>
-        </>
-      )}
-
-      {!isMobile && (
-        <div
-          className={
-            'hidden sm:flex sm:flex-1 sm:items-center sm:justify-end sm:space-x-6'
-          }
-        >
-          <span
-            onClick={() => signIn()}
-            className="text-sm font-medium text-gray-700 hover:text-secondary-500 cursor-pointer"
-          >
-            Sign in
-          </span>
-          <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-          <Link
-            href="/auth/signup"
-            className="text-sm font-medium text-gray-700 hover:text-secondary-500"
-          >
-            Create account
-          </Link>
-        </div>
-      )}
-    </>
+    <div
+      className={
+        'hidden sm:flex sm:flex-1 sm:items-center sm:justify-end sm:space-x-6'
+      }
+    >
+      <span
+        onClick={() => signIn()}
+        className="text-sm font-medium text-gray-700 hover:text-secondary-500 cursor-pointer"
+      >
+        Sign in
+      </span>
+      <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+      <Link
+        href={{ href: '/auth/signup' }}
+        className="text-sm font-medium text-gray-700 hover:text-secondary-500"
+      >
+        Create account
+      </Link>
+    </div>
   );
 }
 
