@@ -71,35 +71,37 @@ export default function AdminProduct({
   }, [data, productId]);
 
   return (
-    <div className="grid grid-cols-1 gap-x-8 gap-y-8">
-      <AdminProductList
-        isFetchingNextPage={isFetchingNextPage}
-        fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage}
-        list={data?.pages.map((productsPage, idx) => (
-          <Fragment key={idx}>
-            {productsPage.map((product) => (
-              <AdminProductListItem
-                product={product}
-                key={product.id}
-                setOpen={setOpen}
-              />
-            ))}
-          </Fragment>
-        ))}
-        btnOnClick={() => {
-          router.push('/admin/products/new-product');
-        }}
-        btnLabel="Add Product"
-        pageHeading="Product List"
-        isSearch
-      />
-      <SlideOver open={open} setOpen={setOpen}>
-        <AdminProductDetailsForm
-          categories={categories}
-          selectedProduct={selectedProduct}
+    <>
+      <div className="grid grid-cols-1 gap-x-8 gap-y-8">
+        <AdminProductList
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          list={data?.pages.map((productsPage, idx) => (
+            <Fragment key={idx}>
+              {productsPage.map((product) => (
+                <AdminProductListItem
+                  product={product}
+                  key={product.id}
+                  setOpen={setOpen}
+                />
+              ))}
+            </Fragment>
+          ))}
+          btnOnClick={() => {
+            router.push('/admin/products/new-product');
+          }}
+          btnLabel="Add Product"
+          pageHeading="Product List"
+          isSearch
         />
-      </SlideOver>
-    </div>
+        <SlideOver open={open} setOpen={setOpen}>
+          <AdminProductDetailsForm
+            categories={categories}
+            selectedProduct={selectedProduct}
+          />
+        </SlideOver>
+      </div>
+    </>
   );
 }
