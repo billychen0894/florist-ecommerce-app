@@ -71,7 +71,7 @@ export function Navigation() {
                   status === 'authenticated' && (
                     <div className="ml-4 flow-root lg:ml-6 relative">
                       <Link
-                        href={{ href: '/admin/dashboard' }}
+                        href={{ pathname: '/admin/dashboard' }}
                         className="group -m-2 flex items-center p-2"
                       >
                         <PencilSquareIcon

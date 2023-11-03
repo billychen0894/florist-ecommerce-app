@@ -24,7 +24,7 @@ export default function NavCart() {
   return (
     <div className="ml-4 flow-root lg:ml-6 relative">
       <Link
-        href={{ href: '/cart' }}
+        href={{ pathname: '/cart' }}
         className="group -m-2 flex items-center p-2"
       >
         <ShoppingBagIcon

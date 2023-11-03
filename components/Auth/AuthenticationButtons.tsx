@@ -67,7 +67,7 @@ function AuthenticationButtons() {
       </span>
       <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
       <Link
-        href={{ href: '/auth/signup' }}
+        href={{ pathname: '/auth/signup' }}
         className="text-sm font-medium text-gray-700 hover:text-secondary-500"
       >
         Create account
