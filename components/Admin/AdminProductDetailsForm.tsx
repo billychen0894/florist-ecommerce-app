@@ -234,7 +234,6 @@ export default function AdminProductDetailsForm({
 
         if (response.status === 200) {
           toast.success('Product is updated successfully');
-          await queryClient.invalidateQueries({ queryKey: ['query'] });
           if (typeof window !== undefined) {
             setTimeout(() => {
               window.location.reload();

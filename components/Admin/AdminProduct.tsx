@@ -6,10 +6,10 @@ import { TProduct } from '@lib/types/api';
 import { Category } from '@node_modules/@prisma/client';
 import { Fragment, useEffect, useState } from 'react';
 import SlideOver from '@components/ui/SlideOver';
-import { fetchProducts } from '@actions/fetch-products';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import AdminProductListItem from '@components/Admin/AdminProductListItem';
 import { useRouter } from 'next/navigation';
+import { products as fetchProducts } from '@lib/api/products';
 
 type AdminProductProps = {
   products: TProduct[];
@@ -35,23 +35,26 @@ export default function AdminProduct({
     useInfiniteQuery({
       queryKey: ['query', keyword],
       queryFn: async ({ pageParam = 1 }) => {
-        const response = await fetchProducts(
+        const responseData = await fetchProducts.getAllProducts(
           pageParam,
           12,
           'newest',
           undefined,
           keyword
         );
-        const sortedProducts = [...response].sort(
-          (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
+        const response = responseData.data.data;
+        return (
+          response &&
+          [...response]?.sort(
+            (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
+          )
         );
-        return sortedProducts;
       },
       getNextPageParam: (lastPage, allPages) => {
         const limit = 12;
-        const nextPage =
-          lastPage.length === limit ? allPages.length + 1 : undefined;
-        return nextPage;
+        return lastPage && lastPage?.length === limit
+          ? allPages.length + 1
+          : undefined;
       },
       initialData: {
         pages: [sortedProducts],
@@ -62,7 +65,7 @@ export default function AdminProduct({
   useEffect(() => {
     if (data && productId) {
       const products = data.pages.flat();
-      const product = products.find((product) => product.id === productId);
+      const product = products.find((product) => product?.id === productId);
 
       if (product) {
         setSelectedProduct(product);
@@ -79,13 +82,14 @@ export default function AdminProduct({
           hasNextPage={hasNextPage}
           list={data?.pages.map((productsPage, idx) => (
             <Fragment key={idx}>
-              {productsPage.map((product) => (
-                <AdminProductListItem
-                  product={product}
-                  key={product.id}
-                  setOpen={setOpen}
-                />
-              ))}
+              {productsPage &&
+                productsPage?.map((product) => (
+                  <AdminProductListItem
+                    product={product}
+                    key={product.id}
+                    setOpen={setOpen}
+                  />
+                ))}
             </Fragment>
           ))}
           btnOnClick={() => {

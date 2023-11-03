@@ -1,5 +1,3 @@
-'use client';
-
 import Image from '@node_modules/next/image';
 import { TProduct } from '@lib/types/api';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
