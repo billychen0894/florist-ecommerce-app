@@ -6,7 +6,7 @@ import { ProductList } from '@components/Product';
 import { fetchCategories } from '@actions/fetch-categories';
 import { Pagination } from '@components/Pagination';
 import { generateBase64 } from '@actions/generateBase64';
-import BannerImage from '@components/ui/BannerImage';
+import BannerImage from '@components/Images/BannerImage';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';

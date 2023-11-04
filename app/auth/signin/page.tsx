@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 
 import { options } from '@app/api/auth/[...nextauth]/options';
 import SignInForm from '@components/Auth/SignInForm';
+import { generateBase64 } from '@actions/generateBase64';
+import AuthBackgroundImage from '@components/Images/AuthBackgroundImage';
 
 export default async function SignIn() {
   const session = await getServerSession(options);
@@ -14,23 +16,17 @@ export default async function SignIn() {
     redirect('/');
   }
 
+  const backgroundImageBase64Url = await generateBase64(
+    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/asskzvhh4k2mbijtqopo`
+  );
+
   return (
     <>
       <div className="relative flex h-screen min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
-        {/* Background Image with backdrop to fill in the container */}
-        <div className="absolute inset-0 -z-10">
-          <div className="w-full h-full" aria-hidden="true">
-            <Image
-              className="h-full w-full object-cover object-top"
-              src="/images/cover2.jpg"
-              alt="Background Image"
-              width={1600}
-              height={900}
-              priority
-            />
-            <div className="absolute inset-0 bg-gray-500 opacity-25" />
-          </div>
-        </div>
+        <AuthBackgroundImage
+          cloudImagePublicId="asskzvhh4k2mbijtqopo"
+          base64Url={backgroundImageBase64Url}
+        />
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <Image
             className="mx-auto max-h-[6rem] w-auto"
