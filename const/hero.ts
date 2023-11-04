@@ -5,5 +5,5 @@ export const heroSubtitle: string =
 
 export const heroCTALabel: string = 'Shop Now';
 
-export const heroUrl: string = '/images/cover1.jpg';
-export const heroUrlAlt: string = 'Blossom Lane';
+export const heroUrl: string = 'uh4uugkjpvljfwq8q4x5';
+export const heroUrlAlt: string = 'Blossom Lane hero image';
