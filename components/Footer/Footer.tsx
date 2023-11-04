@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { IconWrapper, footerNavigation, hasIcon } from '@const/navigation';
+import { footerNavigation, hasIcon, IconWrapper } from '@const/navigation';
 import { FooterItem } from './FooterItem';
 
 export function Footer() {
@@ -14,11 +14,11 @@ export function Footer() {
         <div className="md:grid md:grid-cols-2 md:gap-8">
           <div className="space-y-4">
             <Image
-              className="h-24"
+              className="max-h-[6rem] w-auto"
               src="/images/logo.png"
               alt="Company Logo"
-              width={100}
-              height={100}
+              width={75}
+              height={75}
             />
             <p className="text-sm leading-6 text-gray-800">
               Blossom Lane is dedicated to spreading joy and celebrating

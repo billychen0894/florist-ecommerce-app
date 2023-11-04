@@ -36,11 +36,11 @@ export function Navigation() {
                 <Link href="/">
                   <span className="sr-only">Your Company</span>
                   <Image
-                    className="h-16 w-auto"
+                    className="max-h-[4rem] w-auto"
                     src="/images/logo.png"
                     alt="logo"
-                    width={100}
-                    height={100}
+                    width={75}
+                    height={75}
                   />
                 </Link>
               </div>

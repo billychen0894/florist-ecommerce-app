@@ -33,12 +33,11 @@ export default async function SignIn() {
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <Image
-            className="mx-auto h-24 w-auto"
+            className="mx-auto max-h-[6rem] w-auto"
             src="/images/logo.png"
             alt="Company Logo"
-            width={120}
-            height={120}
-            priority
+            width={75}
+            height={75}
           />
           <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign in to your account

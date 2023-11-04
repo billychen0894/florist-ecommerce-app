@@ -44,11 +44,11 @@ export default function AdminNavigation() {
                     <div className="flex-shrink-0">
                       {/*Logo*/}
                       <Image
-                        className="h-16 w-auto"
+                        className="max-h-[4rem] w-auto"
                         src="/images/logo.png"
                         alt="logo"
-                        width={500}
-                        height={500}
+                        width={75}
+                        height={75}
                       />
                     </div>
                     <div className="hidden md:block">
