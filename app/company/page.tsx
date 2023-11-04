@@ -99,8 +99,9 @@ export default function Company() {
                         src={heroSection.images[0].src}
                         alt={heroSection.images[0].alt}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                        width={500}
-                        height={500}
+                        width={176}
+                        height={264}
+                        sizes="176px"
                       />
                       <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                     </div>
@@ -111,8 +112,9 @@ export default function Company() {
                         src={heroSection.images[1].src}
                         alt={heroSection.images[1].alt}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                        width={500}
-                        height={500}
+                        width={176}
+                        height={264}
+                        sizes="176px"
                       />
                       <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                     </div>
@@ -121,8 +123,9 @@ export default function Company() {
                         src={heroSection.images[2].src}
                         alt={heroSection.images[2].alt}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                        width={500}
-                        height={500}
+                        width={176}
+                        height={264}
+                        sizes="176px"
                       />
                       <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                     </div>
@@ -133,8 +136,9 @@ export default function Company() {
                         src={heroSection.images[3].src}
                         alt={heroSection.images[3].alt}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                        width={500}
-                        height={500}
+                        width={176}
+                        height={264}
+                        sizes="176px"
                       />
                       <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                     </div>
@@ -143,8 +147,9 @@ export default function Company() {
                         src={heroSection.images[4].src}
                         alt={heroSection.images[4].alt}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                        width={500}
-                        height={500}
+                        width={176}
+                        height={264}
+                        sizes="176px"
                       />
                       <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                     </div>
