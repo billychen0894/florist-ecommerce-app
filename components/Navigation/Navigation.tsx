@@ -39,8 +39,9 @@ export function Navigation() {
                     className="max-h-[4rem] w-auto"
                     src="/images/logo.png"
                     alt="logo"
-                    width={75}
-                    height={75}
+                    width={64}
+                    height={64}
+                    sizes="64px"
                   />
                 </Link>
               </div>

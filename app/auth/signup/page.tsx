@@ -36,8 +36,9 @@ export default async function SignUp() {
             className="mx-auto max-h-[6rem] w-auto"
             src="/images/logo.png"
             alt="Company Logo"
-            width={75}
-            height={75}
+            width={96}
+            height={96}
+            sizes="96px"
           />
           <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Create Account

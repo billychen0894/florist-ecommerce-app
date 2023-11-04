@@ -17,8 +17,9 @@ export function Footer() {
               className="max-h-[6rem] w-auto"
               src="/images/logo.png"
               alt="Company Logo"
-              width={75}
-              height={75}
+              width={96}
+              height={96}
+              sizes="96px"
             />
             <p className="text-sm leading-6 text-gray-800">
               Blossom Lane is dedicated to spreading joy and celebrating
