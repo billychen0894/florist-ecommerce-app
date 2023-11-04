@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 import { fetchProducts } from '@actions/fetch-products';
 import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
@@ -7,6 +5,8 @@ import { ProductList } from '@components/Product';
 
 import { fetchCategories } from '@actions/fetch-categories';
 import { Pagination } from '@components/Pagination';
+import { generateBase64 } from '@actions/generateBase64';
+import BannerImage from '@components/ui/BannerImage';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
@@ -34,31 +34,20 @@ export default async function Products({
     search
   );
   const categoriesResult = await fetchCategories();
+  const bannerBase64Url = await generateBase64(
+    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/vjuw8dkm6btwiuow82xa`
+  );
 
   return (
     <div className="bg-white">
       <div>
         <Breadcrumb />
         <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-          {/* Product Header Image */}
-          <div className="h-40 w-full relative isolate flex items-end">
-            <Image
-              src="/images/cover3.jpg"
-              alt="Sea of flowers"
-              className="absolute inset-0 -z-10 h-full max-h-40 w-full object-cover object-center"
-              width={1920}
-              height={1080}
-              priority
-            />
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-gray-800 bg-opacity-20 -z-10"
-              aria-hidden="true"
-            />
-            <p className="text-base md:text-xl text-white mb-10 px-8">
-              {bannerText}
-            </p>
-          </div>
+          <BannerImage
+            cloudImagePublicId="vjuw8dkm6btwiuow82xa"
+            base64Url={bannerBase64Url}
+            bannerText={bannerText}
+          />
 
           {/* Filters */}
           <section
