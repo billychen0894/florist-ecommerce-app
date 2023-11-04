@@ -237,8 +237,9 @@ export default function PersonalInfoForm({
               src={previewImage! || user?.image!}
               alt="user avatar"
               className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
-              width={250}
-              height={250}
+              width={96}
+              height={96}
+              sizes="96px"
             />
           ) : (
             defaultAvatarImage
