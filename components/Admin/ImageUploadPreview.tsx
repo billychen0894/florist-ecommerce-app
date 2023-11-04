@@ -18,8 +18,9 @@ export default function ImageUploadPreview({
         src={imageUrl}
         alt={`ImageUpload-${index}`}
         className="h-24 w-24 rounded-lg bg-gray-800 object-cover"
-        width={250}
-        height={250}
+        width={96}
+        height={96}
+        sizes="96px"
       />
       <XCircleIcon
         className="h-6 w-6 cursor-pointer fill-gray-400 hover:fill-red-600 absolute -top-2 -right-2"
