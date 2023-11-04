@@ -7,6 +7,24 @@ import {
 } from '@components/Product';
 import { products } from '@lib/api/products';
 import { notFound } from '@node_modules/next/dist/client/components/not-found';
+import { Metadata } from 'next';
+import React from 'react';
+
+type Props = {
+  params: { product: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const productId = params.product;
+  const productResult = await products.getProductById(productId);
+  const product = productResult?.data.data;
+
+  return {
+    title: product?.name,
+    description: product?.description,
+    keywords: product?.categories.map((category) => category.name),
+  };
+}
 
 export default async function Product({
   params,
