@@ -33,8 +33,9 @@ export function ShoppingCartList() {
                   src={orderItem.product.images[0].url}
                   alt={orderItem.product.images[0].alt}
                   className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
-                  width={200}
-                  height={200}
+                  width={192}
+                  height={192}
+                  sizes="192"
                   priority
                 />
               </div>
