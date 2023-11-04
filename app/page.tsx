@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
 import { products } from '@lib/api/products';
+import { generateBase64 } from '@actions/generateBase64';
+import { heroUrl } from '@const/hero';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,9 +12,13 @@ export default async function Home() {
   const response = await products.getAllProducts(1, 9, 'popular');
   const allProducts = await response.data.data;
   const top9PopularProducts = allProducts ? allProducts : [];
+  const heroBase64Url = await generateBase64(
+    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
+  );
+
   return (
     <div className="bg-white">
-      <Hero />
+      <Hero heroBase64Url={heroBase64Url} />
       <main>
         {/* Popular section */}
         <section aria-labelledby="popular-heading">
