@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   title: 'Blossom Lane',
   description: 'Florist eCommerce website',
   keywords: ['eCommerce', 'Florist', 'Bouquets', 'Flowers', 'Plants'],
+  openGraph: {
+    title: 'Blossom Lane',
+    description: 'Florist eCommerce website',
+    images: [
+      `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/uh4uugkjpvljfwq8q4x5`,
+    ],
+  },
 };
 
 export default function RootLayout({
