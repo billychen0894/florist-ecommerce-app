@@ -6,7 +6,8 @@ export const productData: Prisma.ProductCreateInput[] = [
     name: 'Signature Seasonal Bouquet',
     description:
       'Discover the beauty of our exquisite bouquet, a captivating blend of vibrant and fragrant flowers. Handcrafted with care, this stunning arrangement is designed to bring joy and elegance to any occasion.',
-    price: 1100,
+    price: 150,
+    units: 50,
     images: {
       create: [
         {
@@ -71,7 +72,8 @@ export const productData: Prisma.ProductCreateInput[] = [
     name: 'Classic Bouquet',
     description:
       'Discover the beauty of our exquisite bouquet, a captivating blend of vibrant and fragrant flowers. Handcrafted with care, this stunning arrangement is designed to bring joy and elegance to any occasion.',
-    price: 1200,
+    price: 200,
+    units: 0,
     images: {
       create: [
         {
@@ -97,7 +99,7 @@ export const productData: Prisma.ProductCreateInput[] = [
       ],
     },
     leadTime: '1-2 weeks',
-    inStock: true,
+    inStock: false,
     productDetail: {
       create: {
         productDetailItems: {
@@ -136,7 +138,8 @@ export const productData: Prisma.ProductCreateInput[] = [
     name: 'Tuplip Bunch',
     description:
       'Discover the beauty of our exquisite bouquet, a captivating blend of vibrant and fragrant flowers. Handcrafted with care, this stunning arrangement is designed to bring joy and elegance to any occasion.',
-    price: 1300,
+    price: 250,
+    units: 50,
     images: {
       create: [
         {
@@ -201,7 +204,8 @@ export const productData: Prisma.ProductCreateInput[] = [
     name: 'Signature Seasonal Bouquet',
     description:
       'Discover the beauty of our exquisite bouquet, a captivating blend of vibrant and fragrant flowers. Handcrafted with care, this stunning arrangement is designed to bring joy and elegance to any occasion.',
-    price: 1400,
+    price: 300,
+    units: 10,
     images: {
       create: [
         {
@@ -227,7 +231,7 @@ export const productData: Prisma.ProductCreateInput[] = [
       ],
     },
     leadTime: '1-2 weeks',
-    inStock: false,
+    inStock: true,
     productDetail: {
       create: {
         productDetailItems: {
@@ -269,8 +273,8 @@ export async function seedProducts(prisma: PrismaClient): Promise<void> {
   try {
     console.log('Seeding products...');
 
-    // Seed each product 20 times from productData array
-    for (let i = 0; i < 20; i++) {
+    // Seed each product 10 times from productData array
+    for (let i = 0; i < 10; i++) {
       for (const product of productData) {
         const createdProduct = await prisma.product.create({
           data: {

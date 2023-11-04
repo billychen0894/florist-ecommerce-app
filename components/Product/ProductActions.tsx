@@ -22,6 +22,7 @@ import {
   removeProductsFromWishlist,
 } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { cn } from '@lib/classNames';
 
 interface ProductActionsProps {
   productId: string;
@@ -37,6 +38,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   const userWishlistProductIdArr = userWishlist.map((product) => product.id);
   const axiosWithAuth = useAxiosWithAuth();
   const router = useRouter();
+  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
 
   useEffect(() => {
     if (session?.user.id) {
@@ -55,6 +57,22 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   };
 
   const handleAddToCart = () => {
+    if (product && product?.units === 0) {
+      return toast.error(
+        'Oops! This product is out of stock. Please check back later.'
+      );
+    }
+    const currProductInCart = cartItems[productId];
+    if (
+      currProductInCart &&
+      quantityRef.current &&
+      product &&
+      currProductInCart?.quantity + +quantityRef.current?.value > product?.units
+    ) {
+      return toast.error(
+        "Sorry, you can't add more of this product to your cart. It exceeds the available stock."
+      );
+    }
     const dispatchPayload = {
       id: productId,
       quantity: quantityRef.current?.value
@@ -84,7 +102,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     if (!session) {
       setIsModalOpen(true);
     } else {
-      if (session?.user.role)
+      if (session?.user.role && session?.user.role !== 'user')
         return toast.error('Admin cannot add products to wishlist');
 
       setIsModalOpen(false);
@@ -134,19 +152,32 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
               ref={quantityRef}
               className="max-w-full rounded-md border border-gray-300 py-1.5 text-center text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
             >
-              {[...Array(10)].map((_, i) => (
-                <option key={i} value={i + 1}>
-                  {i + 1}
-                </option>
-              ))}
+              {[...Array(10)].map((_, i) => {
+                const isProductUnitsLessThanSelectUnit =
+                  product !== null && product?.units < i + 1;
+                return (
+                  <option
+                    key={i}
+                    value={i + 1}
+                    disabled={isProductUnitsLessThanSelectUnit}
+                  >
+                    {i + 1}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <Button
             type="button"
-            className="flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+            className={cn(
+              'flex max-w-xs flex-1 items-center justify-center border border-transparent px-8 py-3 text-base font-medium focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full',
+              product?.units === 0
+                ? 'bg-gray-200 focus:ring-gray-200 hover:bg-gray-200 cursor-not-allowed'
+                : ''
+            )}
             onClick={handleAddToCart}
           >
-            Add to cart
+            {product?.units === 0 ? 'Out of stock' : 'Add to cart'}
           </Button>
 
           <Button

@@ -237,8 +237,9 @@ export default function PersonalInfoForm({
               src={previewImage! || user?.image!}
               alt="user avatar"
               className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
-              width={250}
-              height={250}
+              width={96}
+              height={96}
+              sizes="96px"
             />
           ) : (
             defaultAvatarImage
@@ -373,22 +374,24 @@ export default function PersonalInfoForm({
             as="p"
             className="text-sm font-medium text-red-500 mt-1 ml-1"
           />
-          <div className="mt-8 flex">
-            <Button
-              type="submit"
-              className={
-                isSubmitting
-                  ? 'bg-secondary-200 text-secondary-400 cursor-not-allowed border-secondary-300 hover:bg-secondary-200'
-                  : 'bg-secondary-500 hover:bg-secondary-400'
-              }
-              disabled={isSubmitting}
-            >
-              <div className="flex">
-                {isSubmitting && <Spinner />}
-                <span className="block">Save</span>
-              </div>
-            </Button>
-          </div>
+          {!isInputsDisabled && (
+            <div className="mt-8 flex">
+              <Button
+                type="submit"
+                className={
+                  isSubmitting
+                    ? 'bg-secondary-200 text-secondary-400 cursor-not-allowed border-secondary-300 hover:bg-secondary-200'
+                    : 'bg-secondary-500 hover:bg-secondary-400'
+                }
+                disabled={isSubmitting}
+              >
+                <div className="flex">
+                  {isSubmitting && <Spinner />}
+                  <span className="block">Save</span>
+                </div>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </form>

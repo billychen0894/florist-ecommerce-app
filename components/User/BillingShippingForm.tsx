@@ -508,22 +508,24 @@ export default function BillingShippingForm({
           />
         </div>
       </div>
-      <div className="mt-8 flex">
-        <Button
-          type="submit"
-          className={
-            isSubmitting
-              ? 'bg-secondary-200 text-secondary-400 cursor-not-allowed border-secondary-300 hover:bg-secondary-200'
-              : 'bg-secondary-500 hover:bg-secondary-400'
-          }
-          disabled={isSubmitting}
-        >
-          <div className="flex">
-            {isSubmitting && <Spinner />}
-            <span className="block">Save</span>
-          </div>
-        </Button>
-      </div>
+      {!isInputsDisabled && (
+        <div className="mt-8 flex">
+          <Button
+            type="submit"
+            className={
+              isSubmitting
+                ? 'bg-secondary-200 text-secondary-400 cursor-not-allowed border-secondary-300 hover:bg-secondary-200'
+                : 'bg-secondary-500 hover:bg-secondary-400'
+            }
+            disabled={isSubmitting}
+          >
+            <div className="flex">
+              {isSubmitting && <Spinner />}
+              <span className="block">Save</span>
+            </div>
+          </Button>
+        </div>
+      )}
     </form>
   );
 }

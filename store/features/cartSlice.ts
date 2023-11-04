@@ -32,14 +32,8 @@ const cartSlice = createSlice({
     },
     addItemToCart(state, action: PayloadAction<TCartItem>) {
       const orderItem = action.payload;
-      // If the item is already in the cart, update its quantity
-      if (state.cartItems[orderItem.id]) {
-        state.cartItems[orderItem.id].quantity += orderItem.quantity;
-        state.subtotal += orderItem.quantity * orderItem.product.price;
-      } else {
-        state.cartItems[orderItem.id] = orderItem;
-        state.subtotal += orderItem.quantity * orderItem.product.price;
-      }
+      state.cartItems[orderItem.id] = orderItem;
+      state.subtotal += orderItem.quantity * orderItem.product.price;
     },
     removeItemFromCart(state, action: PayloadAction<{ itemId: string }>) {
       if (state.cartItems.hasOwnProperty(action.payload.itemId)) {

@@ -1,4 +1,5 @@
-import Image from 'next/image';
+'use client';
+
 import Link from 'next/link';
 
 import {
@@ -8,20 +9,21 @@ import {
   heroUrl,
   heroUrlAlt,
 } from '@const/hero';
+import { CldImage } from '@node_modules/next-cloudinary';
 
-export function Hero() {
+export function Hero({ heroBase64Url }: { heroBase64Url: string | undefined }) {
   return (
     <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40 relative isolate overflow-hidden">
-      {/* Background image */}
-      <Image
-        src={heroUrl}
+      <CldImage
         alt={heroUrlAlt}
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-        width={1920}
-        height={1080}
+        src={heroUrl}
+        fill
         priority
+        sizes="100vw"
+        className="absolute inset-0 -z-10 w-full h-full object-cover"
+        blurDataURL={heroBase64Url}
+        placeholder="blur"
       />
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-gray-800 bg-opacity-75 -z-10"
         aria-hidden="true"

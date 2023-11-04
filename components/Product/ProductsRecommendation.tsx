@@ -44,8 +44,9 @@ export async function ProductsRecommendation({
                 src={product.images[0].url}
                 alt={product.images[0].alt}
                 className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                width={500}
-                height={500}
+                width={280}
+                height={320}
+                sizes="(min-width: 1360px) 592px, (min-width: 1040px) calc(40vw + 56px), (min-width: 780px) 672px, (min-width: 640px) calc(66.67vw + 165px), 100vw"
               />
             </div>
             <div className="mt-4 flex justify-between">

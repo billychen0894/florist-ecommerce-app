@@ -19,11 +19,26 @@ export function OrderSummary() {
 
   const handleCheckout = async () => {
     if (session && session?.user.role === 'admin') {
-      toast.error('Admin cannot proceed to checkout session');
-      return;
+      return toast.error('Admin cannot proceed to checkout session');
     }
+
+    const outOfStockCartItems = cartItemsArr.filter(
+      (cartItem) => cartItem.product.inStock === false
+    );
+
+    if (outOfStockCartItems.length > 0) {
+      const cartItemsNames = outOfStockCartItems
+        .map((item) => item.product.name)
+        .join(', ');
+      return toast.error(
+        `${cartItemsNames} are currently out of stock. Please remove them before proceeding to checkout`
+      );
+    }
+
     if (cartItemsArr.length === 0) {
-      return;
+      return toast.error(
+        'Your cart is empty. Please add products before proceeding to checkout'
+      );
     }
 
     const data = await checkout(cartItemsArr, session?.user.id);

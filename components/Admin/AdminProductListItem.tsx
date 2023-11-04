@@ -1,5 +1,3 @@
-'use client';
-
 import Image from '@node_modules/next/image';
 import { TProduct } from '@lib/types/api';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -42,8 +40,9 @@ export default function AdminProductListItem({
         className="h-12 w-12 flex-none rounded-full bg-gray-50"
         src={product?.images[0]?.url || ''}
         alt={product?.images[0]?.alt || ''}
-        width={500}
-        height={500}
+        width={48}
+        height={48}
+        sizes="48px"
       />
       <div className="min-w-0">
         <p className="text-sm font-semibold leading-6 text-gray-900">

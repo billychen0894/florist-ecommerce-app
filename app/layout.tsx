@@ -14,8 +14,10 @@ import QueryProvider from '@components/Providers/QueryProvider';
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_BASE_URL),
   title: 'Blossom Lane',
   description: 'Florist eCommerce website',
+  keywords: ['eCommerce', 'Florist', 'Bouquets', 'Flowers', 'Plants'],
 };
 
 export default function RootLayout({

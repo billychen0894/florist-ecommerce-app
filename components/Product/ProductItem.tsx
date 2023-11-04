@@ -36,8 +36,9 @@ export function ProductItem({
             src={product.images[0].url}
             alt={product.images[0].alt}
             className="object-cover object-center"
-            width={200}
-            height={400}
+            width={384}
+            height={512}
+            sizes="(min-width: 1340px) 384px, (min-width: 640px) calc(29.85vw - 10px), calc(100vw - 32px)"
           />
           {isWishlistBtnToggle && (
             <div className="relative z-10">
