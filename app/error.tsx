@@ -24,8 +24,9 @@ export default function RootError({
         src="/images/cover4.jpg"
         alt="Red flowers background image"
         className="absolute inset-0 -z-10 h-full w-full object-cover object-top"
-        width={500}
-        height={500}
+        fill
+        sizes="100vw"
+        quality={60}
         priority
       />
       <div className="mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">
