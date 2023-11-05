@@ -1,6 +1,8 @@
 import BillingShippingForm from '@components/User/BillingShippingForm';
 import PersonalInfoForm from '@components/User/PersonalInfoForm';
 
+export const dynamic = 'force-static';
+
 export default function Settings() {
   return (
     <div className="divide-y divide-white/5">

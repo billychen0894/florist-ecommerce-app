@@ -7,6 +7,8 @@ import RowData from '@components/Table/RowData';
 import Link from 'next/link';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
+export const dynamic = 'force-dynamic';
+
 export default function Orders() {
   const orders = useAppSelector((state) => state.adminReducer.orders);
 

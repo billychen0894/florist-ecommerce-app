@@ -5,6 +5,8 @@ import { options } from '@app/api/auth/[...nextauth]/options';
 import { fetchProducts } from '@actions/fetch-products';
 import { fetchCategories } from '@actions/fetch-categories';
 
+export const dynamic = 'force-static';
+
 export default async function Dashboard() {
   const session = await getServerSession(options);
 

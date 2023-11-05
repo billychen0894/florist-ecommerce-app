@@ -4,6 +4,8 @@ import StickyHeader from '@components/Table/StickyHeader';
 import { useAppSelector } from '@store/hooks';
 import Row from '@components/Table/Row';
 
+export const dynamic = 'force-dynamic';
+
 export default function Orders() {
   const userOrders = useAppSelector((state) => state.userReducer.userOrders);
 

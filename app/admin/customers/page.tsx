@@ -3,6 +3,8 @@
 import { useAppSelector } from '@store/hooks';
 import CustomerCard from '@components/Admin/CustomerCard';
 
+export const dynamic = 'force-dynamic';
+
 export default function Customers() {
   const customers = useAppSelector((state) => state.adminReducer.accountUsers);
 

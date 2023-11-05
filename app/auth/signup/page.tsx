@@ -8,6 +8,8 @@ import SignUpForm from '@components/Auth/SignUpForm';
 import { generateBase64 } from '@actions/generateBase64';
 import AuthBackgroundImage from '@components/Images/AuthBackgroundImage';
 
+export const dynamic = 'force-static';
+
 export default async function SignUp() {
   const session = await getServerSession(options);
 

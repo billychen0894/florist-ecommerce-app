@@ -7,9 +7,12 @@ import RowData from '@components/Table/RowData';
 import Link from 'next/link';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
+export const dynamic = 'force-dynamic';
+
 type CustomerOrdersProps = {
   params: { customerId: string };
 };
+
 export default function CustomerOrders({ params }: CustomerOrdersProps) {
   const [customer] = useAppSelector(
     (state) => state.adminReducer.accountUsers

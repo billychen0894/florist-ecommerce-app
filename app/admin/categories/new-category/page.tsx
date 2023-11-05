@@ -22,6 +22,8 @@ const defaultCategoryFormSchema = yup.object().shape({
 
 type CategoryFormSchema = yup.InferType<typeof defaultCategoryFormSchema>;
 
+export const dynamic = 'force-dynamic';
+
 export default function NewCategory() {
   const axiosWithAuth = useAxiosWithAuth();
   const router = useRouter();

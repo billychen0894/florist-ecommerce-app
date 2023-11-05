@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { options } from '@app/api/auth/[...nextauth]/options';
 import ForgotPasswordForm from '@components/Auth/ForgotPasswordForm';
 
+export const dynamic = 'force-static';
+
 export default async function ForgotPassword() {
   const session = await getServerSession(options);
 

@@ -45,6 +45,8 @@ const TermsOfUseList = [
 const companyName = 'Blossom Lane';
 const companyUrl = 'www.blossomLane.com';
 
+export const dynamic = 'force-static';
+
 export default function TermsOfUse() {
   return (
     <div className="mx-auto max-w-7xl my-16 sm:px-6 lg:px-8 flex flex-col justify-center items-center">

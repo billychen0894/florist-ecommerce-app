@@ -11,6 +11,8 @@ import { signOut, useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { redirect } from '@node_modules/next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default function Account() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const axiosWithAuth = useAxiosWithAuth();

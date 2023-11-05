@@ -7,6 +7,8 @@ import { fetchUserWishlistById } from '@store/features/userSlice';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import Button from '@components/ui/Button';
 
+export const dynamic = 'force-dynamic';
+
 export default function Wishlist() {
   const { data: session } = useSession();
   const dispatch = useAppDispatch();

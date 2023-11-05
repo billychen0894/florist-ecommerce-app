@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation';
 type ResetProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
+
+export const dynamic = 'force-dynamic';
+
 export default function Reset({ searchParams }: ResetProps) {
   const token =
     typeof searchParams.token === 'string' ? searchParams.token : null;

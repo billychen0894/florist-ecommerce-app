@@ -10,6 +10,8 @@ import Modal from '@components/ui/Modal';
 import { emails } from '@lib/api/email';
 import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
 
+export const dynamic = 'force-static';
+
 export default function VerifyEmailPage() {
   const searchParam = useSearchParams();
   const router = useRouter();

@@ -2,6 +2,8 @@ import { ArrowSmallLeftIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import Image from 'next/image';
 
+export const dynamic = 'force-static';
+
 export default function NotFound() {
   return (
     <main className="relative isolate min-h-full">
@@ -11,6 +13,7 @@ export default function NotFound() {
         className="absolute inset-0 -z-10 h-full w-full object-cover object-top"
         width={500}
         height={500}
+        sizes="100vw"
         priority
       />
       <div className="mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">

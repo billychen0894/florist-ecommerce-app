@@ -11,6 +11,8 @@ import BannerImage from '@components/Images/BannerImage';
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Products({
   searchParams,
 }: {

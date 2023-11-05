@@ -21,6 +21,8 @@ const faqs = [
   },
 ];
 
+export const dynamic = 'force-static';
+
 export default function Faq() {
   return (
     <div className="bg-white">

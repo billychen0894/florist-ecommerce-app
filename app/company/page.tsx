@@ -34,6 +34,8 @@ const missionSection = {
     "We are on a mission to redefine the way you experience flowers. Our commitment goes beyond mere bouquets; it's about celebrating the artistry of nature. We believe that flowers have the ability to convey emotions, tell stories, and connect people in meaningful ways. That's why we pour our heart and soul into every arrangement we create. From selecting the finest blossoms to delivering smiles to your doorstep, our mission is clear: to be the trusted guardian of nature's beauty and the bearer of your sentiments, making life's moments more beautiful, one petal at a time.",
 };
 
+export const dynamic = 'force-static';
+
 export default function Company() {
   return (
     <div className="bg-white">

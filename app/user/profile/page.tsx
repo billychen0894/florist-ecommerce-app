@@ -3,6 +3,8 @@
 import BillingShippingForm from '@components/User/BillingShippingForm';
 import PersonalInfoForm from '@components/User/PersonalInfoForm';
 
+export const dynamic = 'force-dynamic';
+
 export default function Profile() {
   return (
     <div className="divide-y divide-white/5">

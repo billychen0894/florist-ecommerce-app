@@ -17,6 +17,8 @@ const locationsSection = [
   // add more...
 ];
 
+export const dynamic = 'force-static';
+
 export default function ContactUs() {
   return (
     <div className="bg-white py-24 sm:py-32">

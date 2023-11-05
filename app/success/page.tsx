@@ -1,6 +1,8 @@
 import CheckoutSession from '@components/Checkout/CheckoutSession';
 import { stripe } from '@lib/stripe';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Success({
   searchParams,
 }: {

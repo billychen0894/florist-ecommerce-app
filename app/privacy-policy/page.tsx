@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+export const dynamic = 'force-static';
+
 export default function PrivacyPolicy() {
   const companyName = 'Blossom Lane';
   const companyUrl = 'www.blossomLane.com';

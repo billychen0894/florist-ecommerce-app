@@ -22,6 +22,8 @@ import { admin } from '@lib/api/admin';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { useRouter } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default function New() {
   const categories = useAppSelector((state) => state.adminReducer.categories);
   const axiosWithAuth = useAxiosWithAuth();

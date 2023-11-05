@@ -2,6 +2,8 @@ import { ArrowSmallLeftIcon } from '@heroicons/react/20/solid';
 import Link from 'next/link';
 import Image from 'next/image';
 
+export const dynamic = 'force-static';
+
 export default function Denied() {
   return (
     <main className="relative isolate min-h-full">
