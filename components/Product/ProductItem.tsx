@@ -35,9 +35,10 @@ export function ProductItem({
           <Image
             src={product.images[0].url}
             alt={product.images[0].alt}
-            className="object-cover object-center"
-            width={384}
-            height={512}
+            className="w-full h-full object-cover object-center"
+            fill
+            priority
+            quality={60}
             sizes="(min-width: 1340px) 384px, (min-width: 640px) calc(29.85vw - 10px), calc(100vw - 32px)"
           />
           {isWishlistBtnToggle && (
