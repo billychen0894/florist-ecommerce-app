@@ -77,7 +77,10 @@ export function ProductItem({
         </div>
         <div className="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-black">
           <h3 className="shrink">
-            <Link href={`/products/${product.id}`}>
+            <Link
+              href={`/products/${product.id}`}
+              as={`/products/${product.id}`}
+            >
               <span aria-hidden="true" className="absolute inset-0" />
               {product.name}
             </Link>
