@@ -6,14 +6,11 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useAppSelector } from '@store/hooks';
 import { categories } from '@lib/api/categories';
 import { Category } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AdminCategoryListItem from '@components/Admin/AdminCategoryListItem';
 
-type AdminProductProps = {
-  categoryId: string | null;
-};
-
-export default function AdminCategories({ categoryId }: AdminProductProps) {
+export default function AdminCategories() {
+  const categoryId = useSearchParams().get('categoryId');
   const [selectedCategory, setSelectedCategory] = useState<Category>();
   const categoriesList = useAppSelector(
     (state) => state.adminReducer.categories
