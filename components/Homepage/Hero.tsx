@@ -32,8 +32,6 @@ export function Hero({ heroBase64Url }: { heroBase64Url: string | undefined }) {
             publicId: `${heroUrl}`,
             effect: {
               aspectRatio: '16:9',
-              // width: 1920,
-              // height: 1080,
             },
           },
         ]}
