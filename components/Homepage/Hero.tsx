@@ -17,12 +17,26 @@ export function Hero({ heroBase64Url }: { heroBase64Url: string | undefined }) {
       <CldImage
         alt={heroUrlAlt}
         src={heroUrl}
-        fill
+        width="1920"
+        height="1080"
         priority
         sizes="100vw"
         className="absolute inset-0 -z-10 w-full h-full object-cover"
         blurDataURL={heroBase64Url}
         placeholder="blur"
+        dpr="auto"
+        format="webp"
+        quality={50}
+        overlays={[
+          {
+            publicId: `${heroUrl}`,
+            effect: {
+              aspectRatio: '16:9',
+              // width: 1920,
+              // height: 1080,
+            },
+          },
+        ]}
       />
       <div
         className="absolute inset-0 bg-gray-800 bg-opacity-75 -z-10"
