@@ -32,7 +32,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
                       width={130}
                       height={112}
                       sizes="(min-width: 1360px) 130px, (min-width: 1040px) 10vw, (min-width: 780px) 150px, calc(16.67vw + 23px)"
-                      priority
+                      quality={60}
                     />
                   </span>
                   <span
@@ -56,9 +56,10 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
               src={image.url}
               alt={image.alt}
               className="h-full w-full object-cover object-center sm:rounded-lg"
-              width={592}
-              height={592}
+              width={672}
+              height={672}
               sizes="(min-width: 1360px) 592px, (min-width: 1040px) calc(40vw + 56px), (min-width: 780px) 672px, (min-width: 640px) calc(66.67vw + 165px), 100vw"
+              quality={60}
               priority
             />
           </Tab.Panel>
