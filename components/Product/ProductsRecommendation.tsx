@@ -46,13 +46,16 @@ export async function ProductsRecommendation({
                 className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 width={280}
                 height={320}
-                sizes="(min-width: 1360px) 592px, (min-width: 1040px) calc(40vw + 56px), (min-width: 780px) 672px, (min-width: 640px) calc(66.67vw + 165px), 100vw"
+                sizes="(min-width: 1340px) 280px, (min-width: 1040px) calc(19.29vw + 25px), (min-width: 780px) 324px, (min-width: 640px) calc(33.33vw + 71px), calc(100vw - 32px)"
               />
             </div>
             <div className="mt-4 flex justify-between">
               <div>
                 <h3 className="text-sm text-gray-900">
-                  <Link href={`/products/${product.id}`}>
+                  <Link
+                    href={`/products/${product.id}`}
+                    as={`/products/${product.id}`}
+                  >
                     <span aria-hidden="true" className="absolute inset-0" />
                     {product.name}
                   </Link>

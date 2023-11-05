@@ -35,7 +35,7 @@ export default async function Products({
   );
   const categoriesResult = await fetchCategories();
   const bannerBase64Url = await generateBase64(
-    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/vjuw8dkm6btwiuow82xa`
+    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/a_hflip.vflip,c_scale,dpr_auto,h_1080,q_60,w_1920/a_90/v1699079061/vjuw8dkm6btwiuow82xa.webp`
   );
 
   return (
