@@ -1,17 +1,9 @@
-'use client';
-
 import { formatCurrency } from '@lib/formatCurrency';
 import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import React from 'react';
-import Button from '@components/ui/Button';
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import { useAppDispatch } from '@store/hooks';
-import { useSession } from 'next-auth/react';
-import { removeProductsFromWishlist } from '@store/features/userSlice';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { users } from '@lib/api/users';
 
 interface ProductItemProps {
   product: TProduct;
@@ -24,9 +16,10 @@ export function ProductItem({
   showCategory = false,
   isWishlistBtnToggle,
 }: ProductItemProps) {
-  const dispatch = useAppDispatch();
-  const { data: session } = useSession();
-  const axiosWithAuth = useAxiosWithAuth();
+  const ProductWishlistButton = dynamic(
+    () => import('@components/Product/ProductWishlistButton'),
+    { ssr: false }
+  );
 
   return (
     <>
@@ -41,31 +34,7 @@ export function ProductItem({
             quality={60}
             sizes="(min-width: 1340px) 384px, (min-width: 640px) calc(29.85vw - 10px), calc(100vw - 32px)"
           />
-          {isWishlistBtnToggle && (
-            <div className="relative z-10">
-              <Button
-                type="button"
-                className="absolute top-0 right-0 ml-4 flex items-center justify-center px-3 py-3 text-secondary-400 bg-transparent hover:bg-transparent shadow-none hover:text-secondary-500 transition-transform transform hover:scale-90"
-                title="Add Products to Wishlist"
-                onClick={() => {
-                  if (session?.user) {
-                    users.deleteProductFromWishlist(
-                      product.id,
-                      session?.user.id,
-                      axiosWithAuth
-                    );
-                    dispatch(removeProductsFromWishlist(product));
-                  }
-                }}
-              >
-                <HeartIconSolid
-                  className="h-8 w-8 flex-shrink-0"
-                  aria-hidden="true"
-                />
-                <span className="sr-only">Add to Wishlist</span>
-              </Button>
-            </div>
-          )}
+          {isWishlistBtnToggle && <ProductWishlistButton product={product} />}
           <div
             className="flex items-end p-4 opacity-0 group-hover:opacity-100"
             aria-hidden="true"
