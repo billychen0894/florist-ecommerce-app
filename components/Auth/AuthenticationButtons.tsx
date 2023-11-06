@@ -2,9 +2,9 @@
 
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 import { Avatar } from '@components/ui';
-import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { fetchUserById } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -19,6 +19,11 @@ export const userMenuItems = [
 ];
 
 function AuthenticationButtons() {
+  const UserAccountDropdown = dynamic(
+    () => import('@components/ui/UserAccountDropdown'),
+    { ssr: false }
+  );
+
   const { data: session, status } = useSession();
   const user = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
@@ -34,7 +39,7 @@ function AuthenticationButtons() {
 
   if (session && status === 'authenticated') {
     return (
-      <UserAcccountDropdown
+      <UserAccountDropdown
         email={session?.user.email as string}
         avatar={
           <Avatar
