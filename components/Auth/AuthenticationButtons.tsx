@@ -54,10 +54,6 @@ function AuthenticationButtons() {
     );
   }
 
-  if (status === 'loading') {
-    return null;
-  }
-
   return (
     <div
       className={

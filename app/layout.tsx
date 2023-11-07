@@ -35,7 +35,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.className} h-full`}>
+      <body className={`${inter.className} h-full antialiased`}>
         <QueryProvider>
           <ReduxProvider>
             <AuthProvider>

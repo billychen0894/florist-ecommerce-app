@@ -6,8 +6,6 @@ import { products } from '@lib/api/products';
 import { generateBase64 } from '@actions/generateBase64';
 import { heroUrl } from '@const/hero';
 
-export const dynamic = 'force-static';
-
 export default async function Home() {
   const response = await products.getAllProducts(1, 9, 'popular');
   const allProducts = await response.data.data;

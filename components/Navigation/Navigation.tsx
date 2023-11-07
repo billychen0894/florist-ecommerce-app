@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation';
 import Link from '@node_modules/next/link';
-import Image from '@node_modules/next/image';
 import { headerNavigation } from '@const/navigation';
 import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
 import NavCart from '@components/Navigation/NavCart';
@@ -12,6 +11,7 @@ import { useSession } from 'next-auth/react';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import MobileMenu from './MobileMenu';
 import { NavMenuContextProvider } from '@contexts/NavMenu';
+import { CldImage } from '@node_modules/next-cloudinary';
 
 export function Navigation() {
   const { data: session, status } = useSession();
@@ -32,16 +32,27 @@ export function Navigation() {
               <HamburgerMenu />
 
               {/* Logo */}
-              <div className="ml-4 flex lg:ml-0">
-                <Link href="/">
+              <div className="ml-4 lg:ml-0">
+                <Link href="/" className="relative">
                   <span className="sr-only">Your Company</span>
-                  <Image
+                  <CldImage
                     className="max-h-[4rem] w-auto"
-                    src="/images/logo.png"
+                    src="i5dwgxzxvl9hksqhew2s"
                     alt="logo"
-                    width={64}
-                    height={64}
+                    width="500"
+                    height="500"
                     sizes="64px"
+                    dpr="auto"
+                    format="webp"
+                    quality={70}
+                    overlays={[
+                      {
+                        publicId: 'i5dwgxzxvl9hksqhew2s',
+                        effect: {
+                          aspectRatio: '1:1',
+                        },
+                      },
+                    ]}
                   />
                 </Link>
               </div>
