@@ -7,11 +7,10 @@ import { fetchCategories } from '@actions/fetch-categories';
 import { Pagination } from '@components/Pagination';
 import { generateBase64 } from '@actions/generateBase64';
 import BannerImage from '@components/Images/BannerImage';
+import { TProduct } from '@lib/types/api';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
-
-export const dynamic = 'force-dynamic';
 
 export default async function Products({
   searchParams,
@@ -28,17 +27,19 @@ export default async function Products({
     typeof searchParams.keyword === 'string' ? searchParams.keyword : undefined;
   const categoryFilters = searchParams.category;
 
-  const productsResult = await fetchProducts(
-    page,
-    limit,
-    sort,
-    categoryFilters,
-    search
-  );
-  const categoriesResult = await fetchCategories();
-  const bannerBase64Url = await generateBase64(
-    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/a_hflip.vflip,c_scale,dpr_auto,h_1080,q_60,w_1920/a_90/v1699079061/vjuw8dkm6btwiuow82xa.webp`
-  );
+  const fetchPromises = [
+    await fetchProducts(page, limit, sort, categoryFilters, search),
+    await fetchCategories(),
+    await generateBase64(
+      `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/a_hflip.vflip,c_scale,dpr_auto,h_1080,q_60,w_1920/a_90/v1699079061/vjuw8dkm6btwiuow82xa.webp`
+    ),
+  ];
+  const data = (await Promise.all(fetchPromises)) as [
+    TProduct[],
+    { id: string; name: string; createdAt: Date; updatedAt: Date }[],
+    string
+  ];
+  const [productsResult, categoriesResult, bannerBase64Url] = data;
 
   return (
     <div className="bg-white">
