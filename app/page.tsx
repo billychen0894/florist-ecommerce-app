@@ -5,14 +5,23 @@ import { ProductList } from '@components/Product';
 import { products } from '@lib/api/products';
 import { generateBase64 } from '@actions/generateBase64';
 import { heroUrl } from '@const/hero';
+import { ApiResponse, TProduct } from '@lib/types/api';
+import { AxiosResponse } from 'axios';
 
 export default async function Home() {
-  const response = await products.getAllProducts(1, 9, 'popular');
-  const allProducts = await response.data.data;
-  const top9PopularProducts = allProducts ? allProducts : [];
-  const heroBase64Url = await generateBase64(
-    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
-  );
+  const promises = [
+    await products.getAllProducts(1, 9, 'popular'),
+    await generateBase64(
+      `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
+    ),
+  ];
+  const [productsRes, heroBase64Url] = (await Promise.all(promises)) as [
+    AxiosResponse<ApiResponse<TProduct[]>, any>,
+    string
+  ];
+  const top9PopularProducts = productsRes?.data?.data
+    ? productsRes?.data?.data
+    : [];
 
   return (
     <div className="bg-white">
