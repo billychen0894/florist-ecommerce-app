@@ -1,6 +1,7 @@
 import { fetchProducts } from '@actions/fetch-products';
 import { generatePagination } from '@lib/generatePagination';
 import { PaginationLink } from './PaginationLink';
+import { useMemo } from 'react';
 
 interface PaginationProps {
   pageCount: number;
@@ -23,7 +24,10 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
     search
   );
   const totalPages = Math.ceil(productsResult.length / pageCount);
-  const pagination = generatePagination(parseInt(currentPage), totalPages);
+  const pagination = useMemo(
+    () => generatePagination(parseInt(currentPage), totalPages),
+    [currentPage, totalPages]
+  );
 
   const categoryFiltersURLParams = Array.isArray(categoryFilters)
     ? categoryFilters.length > 1
