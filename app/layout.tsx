@@ -6,10 +6,7 @@ import Script from 'next/script';
 
 import { Footer } from '@components/Footer';
 import { Navigation } from '@components/Navigation';
-import AuthProvider from '@components/Providers/AuthProvider';
-import ReduxProvider from '@store/ReduxProvider';
 import '@styles/globals.css';
-import QueryProvider from '@components/Providers/QueryProvider';
 import dynamic from 'next/dynamic';
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
