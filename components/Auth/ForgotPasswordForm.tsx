@@ -5,8 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import * as yup from 'yup';
-import toast from 'react-hot-toast';
-import { debounce } from 'lodash';
 
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
@@ -87,6 +85,7 @@ function ForgotPassword() {
 
   const onSubmit = async (data: ForgotPasswordData) => {
     try {
+      const { toast } = await import('react-hot-toast');
       const result = await sendForgotPasswordEmail(data.email);
 
       if (result) {
@@ -113,7 +112,10 @@ function ForgotPassword() {
             autoComplete="email"
             name={emailName}
             ref={emailRef}
-            onChange={debounce(emailOnChange, 1000)}
+            onChange={async () => {
+              const { debounce } = await import('lodash');
+              debounce(emailOnChange, 1000);
+            }}
             onBlur={emailOnBlur}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
           />

@@ -5,9 +5,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { asyncCacheTest } from '@lib/asyncCacheTest';
 import * as yup from 'yup';
-import { debounce } from 'lodash';
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
+import dynamic from 'next/dynamic';
 
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
@@ -19,7 +19,6 @@ import { updateUserPasswordByEmail } from '@actions/updateUserByEmail';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import { verifyJwtAccessToken } from '@lib/jwt';
-import Modal from '@components/ui/Modal';
 import { FaceFrownIcon } from '@node_modules/@heroicons/react/20/solid';
 import { sendForgotPasswordEmail } from '@actions/sendForgotPasswordEmail';
 
@@ -104,6 +103,7 @@ function ResetForm() {
   const [isTokenExpired, setIsTokenExpired] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const router = useRouter();
+  const Modal = dynamic(() => import('@components/ui/Modal'));
 
   useEffect(() => {
     if (token && token !== '') {
@@ -147,6 +147,7 @@ function ResetForm() {
 
       const updateResult = await updateUserPasswordByEmail(email, newPassword);
 
+      const { toast } = await import('react-hot-toast');
       if (updateResult) {
         toast.success('Successfully reset your password');
         router.push('/');
@@ -176,6 +177,7 @@ function ResetForm() {
           }
           iconBgColor="bg-red-100"
           buttonAction={async () => {
+            const { toast } = await import('react-hot-toast');
             const loadingToastId = toast.loading(
               'Sending new reset password link.'
             );
@@ -208,7 +210,10 @@ function ResetForm() {
               autoComplete="email"
               name={emailName}
               ref={emailRef}
-              onChange={debounce(emailOnChange, 1000)}
+              onChange={async () => {
+                const { debounce } = await import('lodash');
+                debounce(emailOnChange, 1000);
+              }}
               onBlur={emailOnBlur}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
             />
