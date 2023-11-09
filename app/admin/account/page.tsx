@@ -7,7 +7,7 @@ import Button from '@components/ui/Button';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { admin } from '@lib/api/admin';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { redirect } from '@node_modules/next/navigation';
 
@@ -38,7 +38,8 @@ export default function Account() {
             toast.dismiss(loadingToastId);
             toast.success('Account is removed. Redirecting...');
             setTimeout(async () => {
-              await signOut();
+              const { signOut } = await import('next-auth/react');
+              signOut();
             }, 2000);
           }
         }

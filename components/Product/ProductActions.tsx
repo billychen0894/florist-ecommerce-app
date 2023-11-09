@@ -135,7 +135,8 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
             />
           }
           iconBgColor="bg-yellow-100"
-          buttonAction={() => {
+          buttonAction={async () => {
+            const { signIn } = await import('next-auth/react');
             signIn();
           }}
         />

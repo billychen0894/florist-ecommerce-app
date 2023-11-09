@@ -1,6 +1,5 @@
 import { Menu, Transition } from '@headlessui/react';
 import { cn } from '@lib/classNames';
-import { signOut } from 'next-auth/react';
 import React, { Fragment } from 'react';
 import Button from './Button';
 import Link from 'next/link';
@@ -71,7 +70,10 @@ export default function UserAcccountDropdown({
                     active ? 'bg-gray-100 text-red-500' : 'text-red-600',
                     'block w-full px-4 py-2 text-left bg-transparent hover:bg-transparent shadow-none font-normal'
                   )}
-                  onClick={() => signOut()}
+                  onClick={async () => {
+                    const { signOut } = await import('next-auth/react');
+                    signOut();
+                  }}
                 >
                   Sign out
                 </Button>

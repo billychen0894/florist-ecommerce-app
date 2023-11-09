@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -61,7 +61,10 @@ function AuthenticationButtons() {
       }
     >
       <span
-        onClick={() => signIn()}
+        onClick={async () => {
+          const { signIn } = await import('next-auth/react');
+          signIn();
+        }}
         className="text-sm font-medium text-gray-700 hover:text-secondary-500 cursor-pointer"
       >
         Sign in

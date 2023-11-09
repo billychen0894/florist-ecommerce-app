@@ -6,9 +6,8 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import useNavMenuCtx from '@hooks/useNavMenuCtx';
-import { signIn } from '@node_modules/next-auth/react';
 
 export default function MobileMenu() {
   const navMenuCtx = useNavMenuCtx();
@@ -44,8 +43,9 @@ export default function MobileMenu() {
       </div>
       <div className="flow-root">
         <span
-          onClick={() => {
+          onClick={async () => {
             navMenuCtx.setIsMobileMenuOpen(false);
+            const { signOut } = await import('next-auth/react');
             signOut();
           }}
           className="-m-2 block p-2 font-medium text-red-500 hover:text-red-600 cursor-pointer"
@@ -115,7 +115,8 @@ export default function MobileMenu() {
                 {/*<AuthenticationButtons />*/}
                 <div className="flow-root">
                   <span
-                    onClick={() => {
+                    onClick={async () => {
+                      const { signIn } = await import('next-auth/react');
                       signIn();
                     }}
                     className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
