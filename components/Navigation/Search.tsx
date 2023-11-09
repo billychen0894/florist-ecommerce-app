@@ -2,11 +2,12 @@
 
 import Link from '@node_modules/next/link';
 import { MagnifyingGlassIcon } from '@node_modules/@heroicons/react/24/outline';
-import SearchWindow from '@components/ui/SearchWindow';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 
 export default function Search() {
   const [open, setOpen] = useState<boolean>(false);
+  const SearchWindow = dynamic(() => import('@components/ui/SearchWindow'));
 
   return (
     <>

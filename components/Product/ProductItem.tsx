@@ -17,8 +17,7 @@ export function ProductItem({
   isWishlistBtnToggle,
 }: ProductItemProps) {
   const ProductWishlistButton = dynamic(
-    () => import('@components/Product/ProductWishlistButton'),
-    { ssr: false }
+    () => import('@components/Product/ProductWishlistButton')
   );
 
   return (

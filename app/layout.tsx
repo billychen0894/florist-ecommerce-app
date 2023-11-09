@@ -10,6 +10,7 @@ import AuthProvider from '@components/Providers/AuthProvider';
 import ReduxProvider from '@store/ReduxProvider';
 import '@styles/globals.css';
 import QueryProvider from '@components/Providers/QueryProvider';
+import dynamic from 'next/dynamic';
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
@@ -32,6 +33,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const nonce = headers().get('x-nonce');
+  const QueryProvider = dynamic(
+    () => import('@components/Providers/QueryProvider')
+  );
+  const ReduxProvider = dynamic(() => import('@store/ReduxProvider'));
+  const AuthProvider = dynamic(
+    () => import('@components/Providers/AuthProvider')
+  );
 
   return (
     <html lang="en" className="h-full">

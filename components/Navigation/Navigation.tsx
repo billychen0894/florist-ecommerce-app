@@ -12,10 +12,15 @@ import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import MobileMenu from './MobileMenu';
 import { NavMenuContextProvider } from '@contexts/NavMenu';
 import { CldImage } from '@node_modules/next-cloudinary';
+import dynamic from 'next/dynamic';
 
 export function Navigation() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const MobileMenu = dynamic(() => import('./MobileMenu'));
+  const HamburgerMenu = dynamic(
+    () => import('@components/Navigation/HamburgerMenu')
+  );
 
   if (pathname.startsWith('/admin')) return null;
 
