@@ -3,8 +3,6 @@
 import { FaceFrownIcon, FaceSmileIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { debounce } from 'lodash';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -120,6 +118,7 @@ function SignUpForm() {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
+      const { toast } = await import('react-hot-toast');
       toast.loading('Creating your account...');
       setIsAccountCreated(false);
 
@@ -136,6 +135,7 @@ function SignUpForm() {
       }
 
       // SignIn the user after successful registration
+      const { signIn } = await import('next-auth/react');
       const userSignInResult = await signIn('credentials', {
         redirect: false,
         email: data.email,
@@ -261,7 +261,10 @@ function SignUpForm() {
               autoComplete="email"
               name={emailName}
               ref={emailRef}
-              onChange={debounce(emailOnChange, 1000)}
+              onChange={async () => {
+                const { debounce } = await import('lodash');
+                debounce(emailOnChange, 1000);
+              }}
               onBlur={emailOnBlur}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
             />

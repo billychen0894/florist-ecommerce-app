@@ -2,7 +2,6 @@
 
 import { ErrorMessage } from '@hookform/error-message';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -59,6 +58,8 @@ function SignInForm() {
 
   const onSubmit = async (data: SignInFormData) => {
     try {
+      const { signIn } = await import('next-auth/react');
+
       const signInRes = await signIn('credentials', {
         email: data.email,
         password: data.password,
