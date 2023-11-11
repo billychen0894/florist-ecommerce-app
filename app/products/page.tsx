@@ -16,7 +16,7 @@ import PaginationSkeleton from '@components/Product/PaginationSkeleton';
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
 
-export async function fetchProducts({
+async function fetchProducts({
   page,
   limit,
   sort,
@@ -69,18 +69,18 @@ export default async function Products({
 
   const fetchPromises = [
     await fetchProducts({ page, limit, sort, queryFilters }),
-    await fetchCategories(),
     await generateBase64(
       `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/a_hflip.vflip,c_scale,dpr_auto,h_1080,q_60,w_1920/a_90/v1699079061/vjuw8dkm6btwiuow82xa.webp`
     ),
   ];
   const data = (await Promise.all(fetchPromises)) as [
     TProduct[],
-    { id: string; name: string; createdAt: Date; updatedAt: Date }[],
+    // { id: string; name: string; createdAt: Date; updatedAt: Date }[],
     string
   ];
-  const [productsResult, categoriesResult, bannerBase64Url] = data;
+  const [productsResult, bannerBase64Url] = data;
 
+  const categoriesResult = await fetchCategories();
   return (
     <div className="bg-white">
       <div>
@@ -107,15 +107,13 @@ export default async function Products({
           </section>
           {/* Products */}
           <section className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            <Suspense fallback={<div>Loading Products</div>}>
-              {productsResult.length > 0 ? (
-                <ProductList productsList={productsResult} showCategory />
-              ) : (
-                <p className="text-sm text-gray-400 col-span-full text-center">
-                  No products found.
-                </p>
-              )}
-            </Suspense>
+            {productsResult.length > 0 ? (
+              <ProductList productsList={productsResult} showCategory />
+            ) : (
+              <p className="text-sm text-gray-400 col-span-full text-center">
+                No products found.
+              </p>
+            )}
           </section>
           <Suspense fallback={<PaginationSkeleton />}>
             <Pagination pageCount={12} searchParams={searchParams} />
