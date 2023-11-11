@@ -8,7 +8,8 @@ import {
 import { products } from '@lib/api/products';
 import { notFound } from '@node_modules/next/dist/client/components/not-found';
 import { Metadata } from 'next';
-import React from 'react';
+import React, { Suspense } from 'react';
+import SkeletonProductsRecommend from '@components/Product/SkeletonProductsRecommend';
 
 type Props = {
   params: { product: string };
@@ -56,10 +57,12 @@ export default async function Product({
               </div>
             </div>
 
-            <ProductsRecommendation
-              product={product}
-              currProductId={params.product}
-            />
+            <Suspense fallback={<SkeletonProductsRecommend />}>
+              <ProductsRecommendation
+                product={product}
+                currProductId={params.product}
+              />
+            </Suspense>
           </div>
         </main>
       </div>
