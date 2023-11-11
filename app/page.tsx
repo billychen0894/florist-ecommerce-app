@@ -1,27 +1,38 @@
 import Link from 'next/link';
-
-import { Hero } from '@components/Homepage';
 import { ProductList } from '@components/Product';
-import { products } from '@lib/api/products';
 import { generateBase64 } from '@actions/generateBase64';
 import { heroUrl } from '@const/hero';
-import { ApiResponse, TProduct } from '@lib/types/api';
-import { AxiosResponse } from 'axios';
+import { prisma } from '@lib/prisma';
+import { Hero } from '@components/Homepage/Hero';
+import { TProduct } from '@lib/types/api';
 
 export default async function Home() {
   const promises = [
-    await products.getAllProducts(1, 9, 'popular'),
+    await prisma.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        images: true,
+        categories: true,
+      },
+      take: 9,
+      orderBy: [
+        {
+          orderItems: {
+            _count: 'desc',
+          },
+        },
+      ],
+    }),
     await generateBase64(
       `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
     ),
   ];
-  const [productsRes, heroBase64Url] = (await Promise.all(promises)) as [
-    AxiosResponse<ApiResponse<TProduct[]>, any>,
+  const [products, heroBase64Url] = (await Promise.all(promises)) as [
+    TProduct[],
     string
   ];
-  const top9PopularProducts = productsRes?.data?.data
-    ? productsRes?.data?.data
-    : [];
 
   return (
     <div className="bg-white">
@@ -48,9 +59,8 @@ export default async function Home() {
             </div>
             {/* Product Grid List */}
             <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
-              <ProductList productsList={top9PopularProducts || []} />
+              <ProductList productsList={products || []} />
             </div>
-
             <div className="mt-6 sm:hidden">
               <Link
                 href="/products"
