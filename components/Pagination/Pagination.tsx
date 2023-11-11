@@ -1,6 +1,6 @@
-import { fetchProducts } from '@actions/fetch-products';
 import { generatePagination } from '@lib/generatePagination';
 import { PaginationLink } from './PaginationLink';
+import { fetchProducts } from '@actions/fetch-products';
 
 interface PaginationProps {
   pageCount: number;
@@ -15,14 +15,15 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
     typeof searchParams.keyword === 'string' ? searchParams.keyword : undefined;
   const categoryFilters = searchParams.category;
 
-  const productsResult = await fetchProducts(
+  const products = await fetchProducts(
     undefined,
     undefined,
     sort,
     categoryFilters,
     search
   );
-  const totalPages = Math.ceil(productsResult.length / pageCount);
+
+  const totalPages = Math.ceil(products.length / pageCount);
   const pagination = generatePagination(parseInt(currentPage), totalPages);
 
   const categoryFiltersURLParams = Array.isArray(categoryFilters)
