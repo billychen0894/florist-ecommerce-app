@@ -29,7 +29,9 @@ const getAllProducts = async (
   }
 
   search ? params.append('keyword', search) : undefined;
-  const endpointUrl = new URL(`${process.env.APP_BASE_URL}/api/products`);
+  const domain =
+    process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_BASE_URL;
+  const endpointUrl = new URL(`${domain}/api/products`);
   endpointUrl.search = params.toString();
 
   try {
