@@ -1,4 +1,3 @@
-import { fetchProducts } from '@actions/fetch-products';
 import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
 import { ProductList } from '@components/Product';
@@ -8,27 +7,68 @@ import { Pagination } from '@components/Pagination';
 import { generateBase64 } from '@actions/generateBase64';
 import BannerImage from '@components/Images/BannerImage';
 import { TProduct } from '@lib/types/api';
+import { prisma } from '@lib/prisma';
+import { parseSearchParams } from '@lib/parseSearchParams';
+import { buildQueryFilters } from '@lib/buildQueryFilters';
+import { Suspense } from 'react';
+import PaginationSkeleton from '@components/Product/PaginationSkeleton';
 
 const bannerText =
   'Drifting in a sea of flowers, I am lost in the fragrance and beauty.';
+
+export async function fetchProducts({
+  page,
+  limit,
+  sort,
+  queryFilters,
+}: {
+  page: number;
+  limit: number;
+  sort: string;
+  queryFilters: any;
+}) {
+  const price = sort === 'price-high-to-low' ? 'desc' : 'asc';
+  const newest = sort === 'newest' ? 'desc' : 'asc';
+  const popular = sort === 'popular' ? 'desc' : 'asc';
+  try {
+    const products = await prisma.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        images: true,
+        categories: true,
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: [
+        { price: price },
+        {
+          orderItems: {
+            _count: popular,
+          },
+        },
+        { createdAt: newest },
+      ],
+      where: queryFilters,
+    });
+    return products;
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 export default async function Products({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const page =
-    typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
-  const limit =
-    typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 12;
-  const sort =
-    typeof searchParams.sort === 'string' ? searchParams.sort : 'popular';
-  const search =
-    typeof searchParams.keyword === 'string' ? searchParams.keyword : undefined;
-  const categoryFilters = searchParams.category;
+  const { page, limit, sort, keyword, category } =
+    parseSearchParams(searchParams);
+  const queryFilters = buildQueryFilters(category, keyword);
 
   const fetchPromises = [
-    await fetchProducts(page, limit, sort, categoryFilters, search),
+    await fetchProducts({ page, limit, sort, queryFilters }),
     await fetchCategories(),
     await generateBase64(
       `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/a_hflip.vflip,c_scale,dpr_auto,h_1080,q_60,w_1920/a_90/v1699079061/vjuw8dkm6btwiuow82xa.webp`
@@ -67,15 +107,19 @@ export default async function Products({
           </section>
           {/* Products */}
           <section className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-            {productsResult.length > 0 ? (
-              <ProductList productsList={productsResult} showCategory />
-            ) : (
-              <p className="text-sm text-gray-400 col-span-full text-center">
-                No products found.
-              </p>
-            )}
+            <Suspense fallback={<div>Loading Products</div>}>
+              {productsResult.length > 0 ? (
+                <ProductList productsList={productsResult} showCategory />
+              ) : (
+                <p className="text-sm text-gray-400 col-span-full text-center">
+                  No products found.
+                </p>
+              )}
+            </Suspense>
           </section>
-          <Pagination pageCount={12} searchParams={searchParams} />
+          <Suspense fallback={<PaginationSkeleton />}>
+            <Pagination pageCount={12} searchParams={searchParams} />
+          </Suspense>
         </main>
       </div>
     </div>
