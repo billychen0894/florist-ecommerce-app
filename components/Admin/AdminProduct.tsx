@@ -42,7 +42,7 @@ export default function AdminProduct({
           undefined,
           keyword
         );
-        const response = responseData.data.data;
+        const response = responseData.data as TProduct[];
         return (
           response &&
           [...response]?.sort(
@@ -72,7 +72,6 @@ export default function AdminProduct({
       }
     }
   }, [data, productId]);
-
   return (
     <>
       <div className="grid grid-cols-1 gap-x-8 gap-y-8">

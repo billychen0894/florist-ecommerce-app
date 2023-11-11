@@ -24,7 +24,7 @@ export async function ProductsRecommendation({
     productCategories
   );
   const recommendedFourProducts = products
-    .filter((product) => product.id !== currProductId)
+    .filter((product: TProduct) => product.id !== currProductId)
     .slice(0, 4);
 
   return (
@@ -37,7 +37,7 @@ export async function ProductsRecommendation({
       </h2>
 
       <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-        {recommendedFourProducts.map((product) => (
+        {recommendedFourProducts.map((product: TProduct) => (
           <div key={product.id} className="group relative">
             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md lg:aspect-none group-hover:opacity-75 lg:h-80">
               <Image
