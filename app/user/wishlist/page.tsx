@@ -1,13 +1,11 @@
 'use client';
-import { ProductList } from '@components/Product';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useSession } from '@node_modules/next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { fetchUserWishlistById } from '@store/features/userSlice';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import Button from '@components/ui/Button';
-
-export const dynamic = 'force-dynamic';
+import WishlistItems from '@components/User/WishlistItems';
 
 export default function Wishlist() {
   const { data: session } = useSession();
@@ -48,7 +46,7 @@ export default function Wishlist() {
       </div>
       <section className="my-6 min-h-screen grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
         {wishlist.length > 0 ? (
-          <ProductList
+          <WishlistItems
             productsList={wishlist}
             showCategory
             isWishlistBtnToggle={isEditToggle}
