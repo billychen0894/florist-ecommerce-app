@@ -2,37 +2,14 @@ import Link from 'next/link';
 import { ProductList } from '@components/Product';
 import { generateBase64 } from '@actions/generateBase64';
 import { heroUrl } from '@const/hero';
-import { prisma } from '@lib/prisma';
 import { Hero } from '@components/Homepage/Hero';
-import { TProduct } from '@lib/types/api';
+import { Suspense } from 'react';
+import ProductListSkeleton from '@components/Product/ProductListSkeleton';
 
 export default async function Home() {
-  const promises = [
-    await prisma.product.findMany({
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        images: true,
-        categories: true,
-      },
-      take: 9,
-      orderBy: [
-        {
-          orderItems: {
-            _count: 'desc',
-          },
-        },
-      ],
-    }),
-    await generateBase64(
-      `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
-    ),
-  ];
-  const [products, heroBase64Url] = (await Promise.all(promises)) as [
-    TProduct[],
-    string
-  ];
+  const heroBase64Url = await generateBase64(
+    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
+  );
 
   return (
     <div className="bg-white">
@@ -58,9 +35,17 @@ export default async function Home() {
               </Link>
             </div>
             {/* Product Grid List */}
-            <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
-              <ProductList productsList={products || []} />
-            </div>
+            <Suspense
+              fallback={
+                <ProductListSkeleton length={9} className="lg:grid-cols-3" />
+              }
+            >
+              <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
+                <ProductList
+                  searchParams={{ page: '1', limit: '9', sort: 'popular' }}
+                />
+              </div>
+            </Suspense>
             <div className="mt-6 sm:hidden">
               <Link
                 href="/products"
