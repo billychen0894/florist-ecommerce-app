@@ -20,8 +20,7 @@ export const userMenuItems = [
 
 function AuthenticationButtons() {
   const UserAccountDropdown = dynamic(
-    () => import('@components/ui/UserAccountDropdown'),
-    { ssr: false }
+    () => import('@components/ui/UserAccountDropdown')
   );
 
   const { data: session, status } = useSession();
@@ -36,6 +35,10 @@ function AuthenticationButtons() {
       );
     }
   }, [axiosWithAuth, dispatch, session, status]);
+
+  if (status === 'loading') {
+    return null;
+  }
 
   if (session && status === 'authenticated') {
     return (
