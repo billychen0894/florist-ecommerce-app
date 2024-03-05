@@ -16,7 +16,9 @@ const nextConfig = {
     remotePatterns: [{ protocol: 'http', hostname: 'res.cloudinary.com' }],
   },
   experimental: {
-    serverActionsBodySizeLimit: '10mb',
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
   async headers() {
     return [
