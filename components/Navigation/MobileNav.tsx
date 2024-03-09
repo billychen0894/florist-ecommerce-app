@@ -3,44 +3,61 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
 import { useSession } from 'next-auth/react';
 import useNavMenuCtx from '@hooks/useNavMenuCtx';
+import { Bars3Icon } from '@node_modules/@heroicons/react/24/outline';
+import { createContext, Dispatch, SetStateAction, useState } from 'react';
 
-export default function MobileMenu() {
-  const navMenuCtx = useNavMenuCtx();
+const mobileUserAccountMenu = [
+  { href: '/user/profile', label: 'Profile' },
+  { href: '/user/orders', label: 'Manage Orders' },
+  { href: '/user/settings', label: 'Settings' },
+];
+
+interface NavMenuContextType {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export const NavMenuContext = createContext<NavMenuContextType>({
+  isMobileMenuOpen: false,
+  setIsMobileMenuOpen: () => null,
+} as NavMenuContextType);
+
+export function MobileNav({ children }: { children: React.ReactNode }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const navMenuContext = {
+    isMobileMenuOpen,
+    setIsMobileMenuOpen,
+  };
+
+  return (
+    <NavMenuContext.Provider value={navMenuContext}>
+      {children}
+    </NavMenuContext.Provider>
+  );
+}
+
+function Menu() {
+  const navMenuCtx = useContext(NavMenuContext);
   const { data: session, status } = useSession();
   const MobileUserAccountMenu = (
     <>
-      <div className="flow-root">
-        <Link
-          href="/user/profile"
-          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-        >
-          Profile
-        </Link>
-      </div>
-      <div className="flow-root">
-        <Link
-          href="/user/orders"
-          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-        >
-          Manage Orders
-        </Link>
-      </div>
-      <div className="flow-root">
-        <Link
-          href="/user/settings"
-          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-        >
-          Settings
-        </Link>
-      </div>
+      {mobileUserAccountMenu.map((item) => (
+        <div key={item.href} className="flow-root">
+          <Link
+            href={item.href}
+            className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+            onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
+          >
+            {item.label}
+          </Link>
+        </div>
+      ))}
       <div className="flow-root">
         <span
           onClick={async () => {
@@ -142,3 +159,22 @@ export default function MobileMenu() {
     </Transition.Root>
   );
 }
+
+function Hamburger() {
+  const navMenuCtx = useContext(NavMenuContext);
+
+  return (
+    <Button
+      type="button"
+      className=" bg-white hover:bg-transparent shadow-none p-2 text-gray-400 lg:hidden"
+      onClick={() => {
+        navMenuCtx.setIsMobileMenuOpen(true);
+      }}
+    >
+      <span className="sr-only">Open menu</span>
+      <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+    </Button>
+  );
+}
+MobileNav.Menu = Menu;
+MobileNav.Hamburger = Hamburger;
