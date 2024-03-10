@@ -4,21 +4,14 @@ import { Popover, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
 import { Filter } from '@components/Filter';
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from '@node_modules/next/navigation';
+import useFilterAction from '@hooks/useFilterAction';
 
 type FilterFormProps = {
   filters: Filter[];
 };
 
 export default function FilterForm({ filters }: FilterFormProps) {
-  const searchParams = useSearchParams();
-  const categoryFilters = searchParams.getAll('category');
-  const router = useRouter();
-  const pathname = usePathname();
+  const { handleFilterChange, categoryFilters } = useFilterAction();
 
   return (
     <Popover.Group className="hidden sm:flex sm:items-baseline sm:space-x-8">
@@ -53,7 +46,7 @@ export default function FilterForm({ filters }: FilterFormProps) {
           >
             <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
               <form className="space-y-4">
-                {section.options.map((option, optionIdx) => (
+                {section?.options?.map((option, optionIdx) => (
                   <div key={option.name} className="flex items-center">
                     <input
                       id={`filter-${section.id}-${optionIdx}`}
@@ -61,22 +54,8 @@ export default function FilterForm({ filters }: FilterFormProps) {
                       defaultValue={option.name}
                       defaultChecked={categoryFilters.includes(option.name)}
                       type="checkbox"
-                      onClick={(e) => {
-                        const checkbox = e.currentTarget;
-                        const optionName = checkbox.value;
-                        const isChecked = checkbox.checked;
-                        const params = new URLSearchParams(
-                          window.location.search
-                        );
-                        if (isChecked) {
-                          params.append('category', optionName);
-                        } else {
-                          // @ts-ignore
-                          params.delete('category', optionName);
-                        }
-                        router.replace(`${pathname}?${params.toString()}`);
-                      }}
                       className="h-4 w-4 rounded border-gray-300 text-secondary-500 focus:ring-secondary-400"
+                      onChange={handleFilterChange}
                     />
                     <label
                       htmlFor={`filter-${section.id}-${optionIdx}`}

@@ -1,36 +1,31 @@
-'use client';
-
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dispatch, Fragment, SetStateAction } from 'react';
+import { Fragment } from 'react';
 
 import Button from '@components/ui/Button';
 import { cn } from '@lib/classNames';
 import { type Filter } from './Filter';
+import useFilterAction from '@hooks/useFilterAction';
 
 interface MobileFilterDialogProps {
-  isMobileFiltersOpen: boolean;
-  handleMobileFiltersOpen: Dispatch<SetStateAction<boolean>>;
   filters: Filter[];
 }
 
-export function MobileFilterDialog({
-  isMobileFiltersOpen,
-  filters,
-  handleMobileFiltersOpen,
-}: MobileFilterDialogProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const categoryFilters = searchParams.getAll('category');
+export function MobileFilterDialog({ filters }: MobileFilterDialogProps) {
+  const {
+    isMobileFilterOpen,
+    setIsMobileFilterOpen,
+    handleFilterChange,
+    categoryFilters,
+  } = useFilterAction();
+
   return (
-    <Transition.Root show={isMobileFiltersOpen} as={Fragment}>
+    <Transition.Root show={isMobileFilterOpen} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-40 lg:hidden"
-        onClose={handleMobileFiltersOpen}
+        onClose={setIsMobileFilterOpen}
       >
         <Transition.Child
           as={Fragment}
@@ -60,7 +55,7 @@ export function MobileFilterDialog({
                 <Button
                   type="button"
                   className="-mr-2 flex h-10 w-10 items-center justify-center p-2 text-gray-400 hover:text-gray-500 bg-transparent hover:bg-transparent shadow-none"
-                  onClick={() => handleMobileFiltersOpen(false)}
+                  onClick={() => setIsMobileFilterOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
                   <XMarkIcon className="h-6 w-6" aria-hidden="true" />
@@ -95,7 +90,7 @@ export function MobileFilterDialog({
                         </legend>
                         <Disclosure.Panel className="px-4 pb-2 pt-4">
                           <div className="space-y-6">
-                            {section.options.map((option, optionIdx) => (
+                            {section?.options?.map((option, optionIdx) => (
                               <div
                                 key={option.name}
                                 className="flex items-center justify-between"
@@ -109,29 +104,7 @@ export function MobileFilterDialog({
                                       option.name
                                     )}
                                     type="checkbox"
-                                    onClick={(e) => {
-                                      const checkbox = e.currentTarget;
-                                      const optionName = checkbox.value;
-                                      const isChecked = checkbox.checked;
-                                      const params = new URLSearchParams(
-                                        window.location.search
-                                      );
-                                      if (isChecked) {
-                                        params.append('category', optionName);
-                                      } else {
-                                        const categories =
-                                          params.getAll('category');
-                                        params.delete('category');
-                                        categories.forEach((category) => {
-                                          if (category !== optionName) {
-                                            params.append('category', category);
-                                          }
-                                        });
-                                      }
-                                      router.replace(
-                                        `${pathname}?${params.toString()}`
-                                      );
-                                    }}
+                                    onChange={handleFilterChange}
                                     className="h-4 w-4 rounded border-gray-300 text-secondary-500 focus:ring-secondary-400"
                                   />
                                   <label
