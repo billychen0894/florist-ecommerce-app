@@ -1,22 +1,21 @@
-'use client';
-
-import { usePathname } from 'next/navigation';
 import Link from '@node_modules/next/link';
 import { headerNavigation } from '@const/navigation';
 import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
 import NavCart from '@components/Navigation/NavCart';
 import Search from '@components/Navigation/Search';
-import { useSession } from 'next-auth/react';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import Logo from '@public/images/logo.png';
 import Image from 'next/image';
-import { MobileNav } from './MobileNav';
+import { options } from '@app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { NavMenuContextProvider } from '@contexts/NavMenu';
+import MobileMenu from './MobileMenu';
+import MobileHamburger from './MobileHamburger';
 
-export function Navigation() {
-  const { data: session, status } = useSession();
-  const pathname = usePathname();
+export async function Navigation() {
+  const session = await getServerSession(options);
 
-  if (pathname.startsWith('/admin')) return null;
+  if (session?.user?.role === 'admin') return null;
 
   return (
     <header className="relative">
@@ -26,10 +25,10 @@ export function Navigation() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center">
-            <MobileNav>
-              <MobileNav.Menu />
-              <MobileNav.Hamburger />
-            </MobileNav>
+            <NavMenuContextProvider>
+              <MobileMenu />
+              <MobileHamburger />
+            </NavMenuContextProvider>
 
             {/* Logo */}
             <div className="ml-4 lg:ml-0">
@@ -60,22 +59,20 @@ export function Navigation() {
               <NavCart />
 
               {/*Admin Edit Link*/}
-              {session &&
-                session.user.role === 'admin' &&
-                status === 'authenticated' && (
-                  <div className="ml-4 flow-root lg:ml-6 relative">
-                    <Link
-                      href={{ pathname: '/admin/dashboard' }}
-                      className="group -m-2 flex items-center p-2"
-                    >
-                      <PencilSquareIcon
-                        className="h-6 w-6 flex-shrink-0 text-red-500 group-hover:text-red-400"
-                        aria-hidden="true"
-                      />
-                      <span className="sr-only">Admin Edit</span>
-                    </Link>
-                  </div>
-                )}
+              {session?.user?.role === 'admin' && (
+                <div className="ml-4 flow-root lg:ml-6 relative">
+                  <Link
+                    href={{ pathname: '/admin/dashboard' }}
+                    className="group -m-2 flex items-center p-2"
+                  >
+                    <PencilSquareIcon
+                      className="h-6 w-6 flex-shrink-0 text-red-500 group-hover:text-red-400"
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">Admin Edit</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
