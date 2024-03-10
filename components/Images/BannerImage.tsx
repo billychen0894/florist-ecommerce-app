@@ -16,6 +16,7 @@ export default function BannerImage({
         src={bannerImage}
         alt={bannerImageAlt}
         quality={50}
+        priority
         className="absolute inset-0 -z-10 h-full max-h-40 w-full object-cover object-center"
       />
       {/* Backdrop */}
