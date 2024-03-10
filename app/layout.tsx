@@ -4,8 +4,6 @@ import { Toaster } from 'react-hot-toast';
 import { headers } from 'next/headers';
 import Script from 'next/script';
 
-import { Footer } from '@components/Footer';
-import { Navigation } from '@components/Navigation';
 import '@styles/globals.css';
 import dynamic from 'next/dynamic';
 
@@ -53,9 +51,7 @@ export default async function RootLayout({
                   },
                 }}
               />
-              <Navigation />
               {children}
-              <Footer />
             </AuthProvider>
           </ReduxProvider>
         </QueryProvider>
