@@ -2,7 +2,7 @@
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { Fragment, useCallback } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 
 import { productSortOptions } from '@const/products';
 import { cn } from '@lib/classNames';
@@ -14,23 +14,23 @@ export function Sort() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const getCurrSortLabel = useCallback((sortParams: string | null) => {
-    let sortLabel: {
-      name: string;
-      href: string;
-    } = {
-      name: '',
-      href: '',
-    };
+  const getCurrSortLabel = useMemo(() => {
     if (sortParams) {
-      [sortLabel] = productSortOptions.filter((option) => {
+      const sortLabel = productSortOptions.find((option) => {
         return option.href === sortParams;
       });
+      return sortLabel ? sortLabel.name : '';
     }
-    return sortLabel.name;
-  }, []);
+  }, [sortParams]);
 
-  const currSortLabel = getCurrSortLabel(sortParams);
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -38,7 +38,7 @@ export function Sort() {
         <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
           Sort
           {sortParams && (
-            <span className="text-gray-500">: {currSortLabel}</span>
+            <span className="text-gray-500">: {getCurrSortLabel}</span>
           )}
           <ChevronDownIcon
             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -68,17 +68,9 @@ export function Sort() {
                       'block px-4 py-2 text-sm font-medium text-gray-900 w-full text-left'
                     )}
                     onClick={() => {
-                      const searchParams = new URLSearchParams(
-                        window.location.search
+                      router.push(
+                        `${pathname}?${createQueryString('sort', option.href)}`
                       );
-                      const sortParam = searchParams.get('sort');
-                      if (sortParam) {
-                        searchParams.delete('sort');
-                        searchParams.append('sort', option.href);
-                      } else {
-                        searchParams.append('sort', option.href);
-                      }
-                      router.push(`${pathname}?${searchParams.toString()}`);
                     }}
                   >
                     {option.name}
