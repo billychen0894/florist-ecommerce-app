@@ -1,40 +1,19 @@
-'use client';
-
 import Link from 'next/link';
+import HeroImage from '@public/images/cover2.jpg';
 
-import {
-  heroCTALabel,
-  heroSubtitle,
-  heroTitle,
-  heroUrl,
-  heroUrlAlt,
-} from '@const/hero';
-import { CldImage } from '@node_modules/next-cloudinary';
+import { heroCTALabel, heroSubtitle, heroTitle } from '@const/hero';
+import Image from 'next/image';
 
-export function Hero({ heroBase64Url }: { heroBase64Url: string | undefined }) {
+export function Hero() {
   return (
     <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40 relative isolate overflow-hidden">
-      <CldImage
-        alt={heroUrlAlt}
-        src={heroUrl}
-        width="1920"
-        height="1080"
-        priority
+      <Image
+        src={HeroImage}
+        alt="hero image"
         sizes="100vw"
         className="absolute inset-0 -z-10 w-full h-full object-cover"
-        blurDataURL={heroBase64Url}
-        placeholder="blur"
-        dpr="auto"
-        format="webp"
-        quality={50}
-        overlays={[
-          {
-            publicId: `${heroUrl}`,
-            effect: {
-              aspectRatio: '16:9',
-            },
-          },
-        ]}
+        quality={20}
+        priority
       />
       <div
         className="absolute inset-0 bg-gray-800 bg-opacity-75 -z-10"
