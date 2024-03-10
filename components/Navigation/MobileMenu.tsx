@@ -3,13 +3,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { Fragment, useContext } from 'react';
+import { Fragment } from 'react';
 import Button from '@components/ui/Button';
 import { headerNavigation } from '@const/navigation';
 import { useSession } from 'next-auth/react';
 import useNavMenuCtx from '@hooks/useNavMenuCtx';
-import { Bars3Icon } from '@node_modules/@heroicons/react/24/outline';
-import { createContext, Dispatch, SetStateAction, useState } from 'react';
 
 const mobileUserAccountMenu = [
   { href: '/user/profile', label: 'Profile' },
@@ -17,34 +15,10 @@ const mobileUserAccountMenu = [
   { href: '/user/settings', label: 'Settings' },
 ];
 
-interface NavMenuContextType {
-  isMobileMenuOpen: boolean;
-  setIsMobileMenuOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-export const NavMenuContext = createContext<NavMenuContextType>({
-  isMobileMenuOpen: false,
-  setIsMobileMenuOpen: () => null,
-} as NavMenuContextType);
-
-export function MobileNav({ children }: { children: React.ReactNode }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-
-  const navMenuContext = {
-    isMobileMenuOpen,
-    setIsMobileMenuOpen,
-  };
-
-  return (
-    <NavMenuContext.Provider value={navMenuContext}>
-      {children}
-    </NavMenuContext.Provider>
-  );
-}
-
-function Menu() {
-  const navMenuCtx = useContext(NavMenuContext);
+export default function MobileMenu() {
+  const navMenuCtx = useNavMenuCtx();
   const { data: session, status } = useSession();
+
   const MobileUserAccountMenu = (
     <>
       {mobileUserAccountMenu.map((item) => (
@@ -159,22 +133,3 @@ function Menu() {
     </Transition.Root>
   );
 }
-
-function Hamburger() {
-  const navMenuCtx = useContext(NavMenuContext);
-
-  return (
-    <Button
-      type="button"
-      className=" bg-white hover:bg-transparent shadow-none p-2 text-gray-400 lg:hidden"
-      onClick={() => {
-        navMenuCtx.setIsMobileMenuOpen(true);
-      }}
-    >
-      <span className="sr-only">Open menu</span>
-      <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-    </Button>
-  );
-}
-MobileNav.Menu = Menu;
-MobileNav.Hamburger = Hamburger;

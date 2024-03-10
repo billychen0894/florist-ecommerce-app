@@ -1,10 +1,10 @@
 'use client';
 
 import Button from '@components/ui/Button';
-import { Bars3Icon } from '@node_modules/@heroicons/react/24/outline';
 import useNavMenuCtx from '@hooks/useNavMenuCtx';
+import { Bars3Icon } from '@node_modules/@heroicons/react/24/outline';
 
-export default function HamburgerMenu() {
+export default function MobileHamburger() {
   const navMenuCtx = useNavMenuCtx();
 
   return (
