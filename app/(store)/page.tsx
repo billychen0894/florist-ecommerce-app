@@ -1,19 +1,13 @@
 import Link from 'next/link';
 import { ProductList } from '@components/Product';
-import { generateBase64 } from '@actions/generateBase64';
-import { heroUrl } from '@const/hero';
 import { Hero } from '@components/Homepage/Hero';
 import { Suspense } from 'react';
 import ProductListSkeleton from '@components/Product/ProductListSkeleton';
 
 export default async function Home() {
-  const heroBase64Url = await generateBase64(
-    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${heroUrl}`
-  );
-
   return (
     <div className="bg-white">
-      <Hero heroBase64Url={heroBase64Url} />
+      <Hero />
       <main>
         {/* Popular section */}
         <section aria-labelledby="popular-heading">
