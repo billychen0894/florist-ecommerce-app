@@ -1,6 +1,5 @@
 import { TProduct } from '@lib/types/api';
 import { ProductItem } from './ProductItem';
-import React from 'react';
 import { parseSearchParams } from '@lib/parseSearchParams';
 import { buildQueryFilters } from '@lib/buildQueryFilters';
 import { prisma } from '@lib/prisma';
@@ -57,6 +56,7 @@ async function fetchProducts({
   sort: string;
   queryFilters: any;
 }) {
+  'use server';
   const price = sort === 'price-high-to-low' ? 'desc' : 'asc';
   const newest = sort === 'newest' ? 'desc' : 'asc';
   const popular = sort === 'popular' ? 'desc' : 'asc';
@@ -85,5 +85,6 @@ async function fetchProducts({
     return products;
   } catch (err) {
     console.error(err);
+    return null;
   }
 }

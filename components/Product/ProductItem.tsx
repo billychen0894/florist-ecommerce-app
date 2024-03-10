@@ -2,8 +2,8 @@ import { formatCurrency } from '@lib/formatCurrency';
 import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import React from 'react';
+import ProductWishlistButton from './ProductWishlistButton';
 
 interface ProductItemProps {
   product: TProduct;
@@ -16,10 +16,6 @@ export function ProductItem({
   showCategory = false,
   isWishlistBtnToggle,
 }: ProductItemProps) {
-  const ProductWishlistButton = dynamic(
-    () => import('@components/Product/ProductWishlistButton')
-  );
-
   return (
     <>
       <div className="group relative">
