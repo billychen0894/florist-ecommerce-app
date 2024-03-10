@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '@public/images/logo.png';
 
 import { footerNavigation, hasIcon, IconWrapper } from '@const/navigation';
 import { FooterItem } from './FooterItem';
@@ -15,7 +16,7 @@ export function Footer() {
           <div className="space-y-4">
             <Image
               className="max-h-[6rem] w-auto"
-              src="/images/logo.png"
+              src={Logo}
               alt="Company Logo"
               width={96}
               height={96}
