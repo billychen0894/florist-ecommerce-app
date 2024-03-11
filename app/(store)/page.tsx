@@ -1,10 +1,13 @@
 import Link from 'next/link';
-import { ProductList } from '@components/Product';
+import { ProductItem, ProductList } from '@components/Product';
 import { Hero } from '@components/Homepage/Hero';
 import { Suspense } from 'react';
 import ProductListSkeleton from '@components/Product/ProductListSkeleton';
+import { fetchProducts } from '@actions/fetch-products';
 
 export default async function Home() {
+  const products = await fetchProducts('1', '9', 'popular');
+
   return (
     <div className="bg-white">
       <Hero />
@@ -35,9 +38,14 @@ export default async function Home() {
               }
             >
               <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
-                <ProductList
-                  searchParams={{ page: '1', limit: '9', sort: 'popular' }}
-                />
+                {products?.map((product) => (
+                  <ProductItem
+                    key={product.id}
+                    product={product}
+                    showCategory={false}
+                    isWishlistBtnToggle={false}
+                  />
+                ))}
               </div>
             </Suspense>
             <div className="mt-6 sm:hidden">
