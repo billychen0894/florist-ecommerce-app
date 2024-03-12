@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { ProductItem, ProductList } from '@components/Product';
+import { ProductItem } from '@components/Product';
 import { Hero } from '@components/Homepage/Hero';
 import { Suspense } from 'react';
 import ProductListSkeleton from '@components/Product/ProductListSkeleton';
 import { fetchProducts } from '@actions/fetch-products';
 
 export default async function Home() {
-  const products = await fetchProducts('1', '9', 'popular');
+  const products = await fetchProducts('1', 9, 'popular');
 
   return (
     <div className="bg-white">
