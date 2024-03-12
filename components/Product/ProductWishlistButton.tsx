@@ -8,7 +8,7 @@ import React from 'react';
 import { useAppDispatch } from '@store/hooks';
 import { useSession } from '@node_modules/next-auth/react';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { TProduct } from '@lib/types/api';
+import { TProduct } from '@actions/fetch-products';
 
 type ProductWishlistButtonProps = {
   product: TProduct;
@@ -28,7 +28,7 @@ export default function ProductWishlistButton({
         className="absolute top-0 right-0 ml-4 flex items-center justify-center px-3 py-3 text-secondary-400 bg-transparent hover:bg-transparent shadow-none hover:text-secondary-500 transition-transform transform hover:scale-90"
         title="Add Products to Wishlist"
         onClick={() => {
-          if (session?.user) {
+          if (session?.user && product) {
             users.deleteProductFromWishlist(
               product.id,
               session?.user.id,

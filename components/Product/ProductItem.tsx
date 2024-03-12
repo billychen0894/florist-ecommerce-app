@@ -1,9 +1,9 @@
 import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import ProductWishlistButton from './ProductWishlistButton';
+import { TProduct } from '@actions/fetch-products';
 
 interface ProductItemProps {
   product: TProduct;
@@ -16,6 +16,8 @@ export function ProductItem({
   showCategory = false,
   isWishlistBtnToggle,
 }: ProductItemProps) {
+  if (!product) return null;
+
   return (
     <>
       <div className="group relative">
@@ -26,7 +28,7 @@ export function ProductItem({
             className="w-full h-full object-cover object-center"
             fill
             priority
-            quality={60}
+            quality={50}
             sizes="(min-width: 1340px) 384px, (min-width: 640px) calc(29.85vw - 10px), calc(100vw - 32px)"
           />
           {isWishlistBtnToggle && <ProductWishlistButton product={product} />}
