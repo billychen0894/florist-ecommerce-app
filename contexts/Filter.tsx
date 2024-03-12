@@ -42,8 +42,10 @@ export function FilterActionCtxProvider({
       const isChecked = checkbox.checked;
       const params = new URLSearchParams(searchParams.toString());
       if (isChecked) {
+        params.set('page', '1');
         params.append('category', optionName);
       } else {
+        params.set('page', '1');
         params.delete('category');
         categoryFilters.forEach((category) => {
           if (category !== optionName) {
