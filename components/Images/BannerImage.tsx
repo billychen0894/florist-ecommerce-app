@@ -17,6 +17,7 @@ export default function BannerImage({
         alt={bannerImageAlt}
         quality={50}
         priority
+        sizes="(min-width: 1360px) 280px, (min-width: 1040px) calc(20vw + 12px), (min-width: 820px) 344px, (min-width: 640px) calc(40vw + 24px), calc(100vw - 32px)"
         className="absolute inset-0 -z-10 h-full max-h-40 w-full object-cover object-center"
       />
       {/* Backdrop */}
