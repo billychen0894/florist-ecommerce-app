@@ -4,10 +4,10 @@ import { Disclosure } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
 
 import { cn } from '@lib/classNames';
-import { Product } from '@prisma/client';
+import { TFullProduct } from '@lib/types/types';
 
 interface ProductDetailsProps {
-  product: Product | null;
+  product: TFullProduct | null;
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
@@ -18,7 +18,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </h2>
 
       <div className="divide-y divide-gray-200 border-t">
-        {product?.productDetail.productDetailItems.map((detailItem) => (
+        {product?.productDetail?.productDetailItems.map((detailItem) => (
           <Disclosure as="div" key={detailItem.id}>
             {({ open }) => (
               <>
