@@ -22,6 +22,7 @@ import {
 } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { cn } from '@lib/classNames';
+import { TProduct } from '@lib/types/types';
 import { Product } from '@prisma/client';
 
 interface ProductActionsProps {
@@ -35,7 +36,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   const quantityRef = useRef<HTMLSelectElement>(null);
   const dispatch = useAppDispatch();
   const userWishlist = useAppSelector((state) => state.userReducer.wishlist);
-  const userWishlistProductIdArr = userWishlist.map((product) => product.id);
+  const userWishlistProductIdArr = userWishlist.map((product) => product?.id);
   const axiosWithAuth = useAxiosWithAuth();
   const router = useRouter();
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
@@ -78,8 +79,9 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
       quantity: quantityRef.current?.value
         ? Number(quantityRef.current.value)
         : 0,
-      product: product as TProduct,
+      product: product as Product,
     };
+
     dispatch(addItemToCart(dispatchPayload));
 
     toast(

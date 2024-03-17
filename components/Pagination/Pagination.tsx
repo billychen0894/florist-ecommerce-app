@@ -1,7 +1,7 @@
 import { generatePagination } from '@lib/generatePagination';
 import { PaginationLink } from './PaginationLink';
-import { TProducts } from '@actions/fetch-products';
 import { parseSearchParams } from '@lib/parseSearchParams';
+import { TProducts } from '@lib/types/types';
 
 function constructURL(
   baseURL: string,

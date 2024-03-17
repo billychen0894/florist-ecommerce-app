@@ -1,7 +1,8 @@
 import { orders } from '@lib/api/orders';
 import { users } from '@lib/api/users';
 import { stripe } from '@lib/stripe';
-import { Order, TProduct } from '@lib/types/api.d';
+import { Order } from '@lib/types/api.d';
+import { TProduct } from '@lib/types/types';
 import { OrderStatus, User } from '@prisma/client';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -124,7 +125,7 @@ const userSlice = createSlice({
     },
     removeProductsFromWishlist(state, action: PayloadAction<TProduct>) {
       state.wishlist = state.wishlist.filter(
-        (product) => product.id !== action.payload.id
+        (product) => product?.id !== action?.payload?.id
       );
     },
     updateUserInfo(

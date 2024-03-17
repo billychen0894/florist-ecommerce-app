@@ -1,5 +1,5 @@
+import { TProducts } from '@lib/types/types';
 import { ProductItem } from './ProductItem';
-import { TProducts } from '@actions/fetch-products';
 
 interface ProductListProps {
   showCategory?: boolean;

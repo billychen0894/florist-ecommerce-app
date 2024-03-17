@@ -1,4 +1,4 @@
-import { TCartItem } from '@lib/types/api';
+import { TCartItem } from '@lib/types/types';
 import type {
   AnyAction,
   Dispatch,
@@ -26,7 +26,7 @@ const cartSlice = createSlice({
       state.cartItems = action.payload;
       const cartItemsArr = Object.values(state.cartItems);
       const subtotal = cartItemsArr.reduce((acc, item) => {
-        return acc + item.quantity * item.product.price;
+        return acc + item.quantity * item?.product?.price;
       }, 0);
       state.subtotal = subtotal;
     },

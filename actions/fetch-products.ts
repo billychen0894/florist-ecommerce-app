@@ -1,11 +1,6 @@
 'use server';
 import { parseSearchParams } from '@lib/parseSearchParams';
 import { prisma } from '@lib/prisma';
-import { Prisma } from '@prisma/client';
-import { Unpacked } from '@utils';
-
-export type TProducts = Prisma.PromiseReturnType<typeof fetchProducts>;
-export type TProduct = Unpacked<TProducts>;
 
 export const fetchProducts = async (
   page?: string,

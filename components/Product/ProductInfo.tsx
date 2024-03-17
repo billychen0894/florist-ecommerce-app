@@ -1,8 +1,8 @@
 import { formatCurrency } from '@lib/formatCurrency';
-import { Product } from '@prisma/client';
+import { TProduct } from '@lib/types/types';
 
 interface ProductInfoProps {
-  product: Product | null;
+  product: TProduct | null;
 }
 
 export function ProductInfo({ product }: ProductInfoProps) {
