@@ -4,10 +4,10 @@ import { Disclosure } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
 
 import { cn } from '@lib/classNames';
-import { TProduct } from '@lib/types/api';
+import { Product } from '@prisma/client';
 
 interface ProductDetailsProps {
-  product: TProduct | null;
+  product: Product | null;
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {

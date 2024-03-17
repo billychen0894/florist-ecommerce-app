@@ -1,11 +1,11 @@
 import { fetchProducts } from '@actions/fetch-products';
 import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/api';
+import { Product } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductsRecommendationProps {
-  product: TProduct | null;
+  product: Product | null;
   currProductId: string;
 }
 

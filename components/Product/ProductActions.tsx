@@ -14,7 +14,6 @@ import Modal from '@components/ui/Modal';
 import Notification from '@components/ui/Notification';
 import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import { users } from '@lib/api/users';
-import { TProduct } from '@lib/types/api';
 import { addItemToCart } from '@store/features/cartSlice';
 import {
   addProductsToWishlist,
@@ -23,10 +22,11 @@ import {
 } from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { cn } from '@lib/classNames';
+import { Product } from '@prisma/client';
 
 interface ProductActionsProps {
   productId: string;
-  product: TProduct | null;
+  product: Product | null;
 }
 
 export function ProductActions({ productId, product }: ProductActionsProps) {

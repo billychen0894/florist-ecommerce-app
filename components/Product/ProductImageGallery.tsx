@@ -4,10 +4,10 @@ import { Tab } from '@headlessui/react';
 import Image from 'next/image';
 
 import { cn } from '@lib/classNames';
-import { TProduct } from '@lib/types/api';
+import { Product } from '@prisma/client';
 
 interface ProductImageGalleryProps {
-  product: TProduct | null;
+  product: Product | null;
 }
 
 export function ProductImageGallery({ product }: ProductImageGalleryProps) {
