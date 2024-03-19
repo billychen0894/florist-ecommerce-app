@@ -6,6 +6,7 @@ import Script from 'next/script';
 
 import '@styles/globals.css';
 import dynamic from 'next/dynamic';
+import { CartStoreProvider } from '@providers/cart-store-provider';
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
@@ -40,20 +41,22 @@ export default async function RootLayout({
     <html lang="en" className="h-full">
       <body className={`${inter.className} h-full antialiased`}>
         <QueryProvider>
-          <ReduxProvider>
-            <AuthProvider>
-              <Toaster
-                toastOptions={{
-                  style: {
-                    color: '#111827',
-                    fontSize: '0.8rem',
-                    backgroundColor: '#F9FAFB',
-                  },
-                }}
-              />
-              {children}
-            </AuthProvider>
-          </ReduxProvider>
+          <CartStoreProvider>
+            <ReduxProvider>
+              <AuthProvider>
+                <Toaster
+                  toastOptions={{
+                    style: {
+                      color: '#111827',
+                      fontSize: '0.8rem',
+                      backgroundColor: '#F9FAFB',
+                    },
+                  }}
+                />
+                {children}
+              </AuthProvider>
+            </ReduxProvider>
+          </CartStoreProvider>
         </QueryProvider>
       </body>
       <Script strategy="afterInteractive" nonce={nonce ? nonce : undefined} />
