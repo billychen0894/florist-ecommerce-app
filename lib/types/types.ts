@@ -1,7 +1,8 @@
 import { fetchProducts } from '@actions/fetch-products';
 import { getProductById } from '@actions/getProductById';
-import { Prisma, Product } from '@prisma/client';
+import { OrderStatus, Prisma, Product, User } from '@prisma/client';
 import { Unpacked } from '@utils';
+import Stripe from 'stripe';
 
 export type TProducts = Prisma.PromiseReturnType<typeof fetchProducts>;
 export type TFullProduct = Prisma.PromiseReturnType<
@@ -11,3 +12,7 @@ export type TFullProduct = Prisma.PromiseReturnType<
   : never;
 export type TProduct = Unpacked<TProducts>;
 export type TCartItem = { id: string; quantity: number; product: Product };
+export type UserWithoutPass = Omit<User, 'password'>;
+export interface ExtendedStripeInvoice extends Stripe.Invoice {
+  orderStatus: OrderStatus;
+}
