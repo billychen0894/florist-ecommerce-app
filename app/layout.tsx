@@ -6,7 +6,7 @@ import Script from 'next/script';
 
 import '@styles/globals.css';
 import dynamic from 'next/dynamic';
-import { CartStoreProvider } from '@providers/cart-store-provider';
+import { CartStoreProvider } from '@components/Providers/CartStoreProvider';
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
