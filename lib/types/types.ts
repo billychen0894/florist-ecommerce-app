@@ -16,3 +16,13 @@ export type UserWithoutPass = Omit<User, 'password'>;
 export interface ExtendedStripeInvoice extends Stripe.Invoice {
   orderStatus: OrderStatus;
 }
+export type UpdatedUserData = {
+  name?: string;
+  emailVerified?: Date;
+  emailVerifyToken?: string;
+  image?: string;
+  phone?: string;
+  password?: string;
+  cloudinaryPublicId?: string;
+  stripeCustomerId?: string;
+};
