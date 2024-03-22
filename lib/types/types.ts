@@ -26,3 +26,9 @@ export type UpdatedUserData = {
   cloudinaryPublicId?: string;
   stripeCustomerId?: string;
 };
+export type ProductReqPayload = Omit<ProductDetailsFormSchema, 'images'> & {
+  images: {
+    existingImages: string[];
+    newImages: ({ url: string; publicId: string } | null)[];
+  };
+};
