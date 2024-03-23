@@ -1,4 +1,4 @@
-import { fetchProducts } from '@actions/fetch-products';
+import { fetchProducts } from '@actions/productsActions';
 import { formatCurrency } from '@lib/formatCurrency';
 import { TProduct } from '@lib/types/types';
 import Image from 'next/image';

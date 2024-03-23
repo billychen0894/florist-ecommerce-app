@@ -2,10 +2,10 @@ import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
 import { ProductList } from '@components/Product';
 import ProductListSkeleton from '@components/Product/ProductListSkeleton';
-import { fetchProducts } from '@actions/fetch-products';
 import { Suspense } from 'react';
 import PaginationSkeleton from '@components/Product/PaginationSkeleton';
 import { Pagination } from '@components/Pagination';
+import { fetchProducts } from '@actions/productsActions';
 
 export default async function Products({
   searchParams,
