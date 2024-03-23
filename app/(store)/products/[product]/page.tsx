@@ -9,7 +9,7 @@ import { notFound } from '@node_modules/next/dist/client/components/not-found';
 import { Metadata } from 'next';
 import React, { Suspense } from 'react';
 import SkeletonProductsRecommend from '@components/Product/SkeletonProductsRecommend';
-import { getProductById } from '@actions/getProductById';
+import { getProductById } from '@actions/productsActions';
 
 type Props = {
   params: { product: string };
@@ -17,8 +17,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const productId = params.product;
-  const productResult = await getProductById(productId);
-  const product = productResult?.data;
+  const product = await getProductById(productId);
 
   return {
     title: product?.name,
@@ -32,9 +31,9 @@ export default async function Product({
 }: {
   params: { product: string };
 }) {
-  const productResult = await getProductById(params.product);
+  const product = await getProductById(params.product);
 
-  if (!productResult?.data) {
+  if (!product) {
     notFound();
   }
 
@@ -46,22 +45,19 @@ export default async function Product({
             {/* Product */}
             <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
               {/* Image gallery */}
-              <ProductImageGallery product={productResult?.data} />
+              <ProductImageGallery product={product} />
 
               {/* Product info */}
               <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
-                <ProductInfo product={productResult?.data} />
-                <ProductActions
-                  productId={params.product}
-                  product={productResult?.data}
-                />
-                <ProductDetails product={productResult?.data} />
+                <ProductInfo product={product} />
+                <ProductActions productId={params.product} product={product} />
+                <ProductDetails product={product} />
               </div>
             </div>
 
             <Suspense fallback={<SkeletonProductsRecommend />}>
               <ProductsRecommendation
-                product={productResult?.data}
+                product={product}
                 currProductId={params.product}
               />
             </Suspense>
