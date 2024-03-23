@@ -1,5 +1,5 @@
-import { fetchProducts } from '@actions/fetch-products';
-import { getProductById } from '@actions/productsActions';
+import { fetchProducts, getProductById } from '@actions/productsActions';
+import { getUserWishlist } from '@actions/userActions';
 import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
 import { OrderStatus, Prisma, Product, User } from '@prisma/client';
 import { Unpacked } from '@utils';
@@ -8,6 +8,7 @@ import Stripe from 'stripe';
 export type TProducts = Prisma.PromiseReturnType<typeof fetchProducts>;
 export type TFullProduct = Prisma.PromiseReturnType<typeof getProductById>;
 export type TProduct = Unpacked<TProducts>;
+export type TWishlist = Prisma.PromiseReturnType<typeof getUserWishlist>;
 export type TCartItem = { id: string; quantity: number; product: Product };
 export type UserWithoutPass = Omit<User, 'password'>;
 export interface ExtendedStripeInvoice extends Stripe.Invoice {

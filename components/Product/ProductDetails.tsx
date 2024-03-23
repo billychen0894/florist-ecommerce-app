@@ -7,7 +7,7 @@ import { cn } from '@lib/classNames';
 import { TFullProduct } from '@lib/types/types';
 
 interface ProductDetailsProps {
-  product: TFullProduct | null;
+  product: TFullProduct;
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
