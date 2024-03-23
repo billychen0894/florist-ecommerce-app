@@ -10,6 +10,9 @@ import { Metadata } from 'next';
 import React, { Suspense } from 'react';
 import SkeletonProductsRecommend from '@components/Product/SkeletonProductsRecommend';
 import { getProductById } from '@actions/productsActions';
+import { getServerSession } from 'next-auth';
+import { options } from '@app/api/auth/[...nextauth]/options';
+import { getUserWishlist } from '@actions/userActions';
 
 type Props = {
   params: { product: string };
@@ -31,7 +34,9 @@ export default async function Product({
 }: {
   params: { product: string };
 }) {
+  const session = await getServerSession(options);
   const product = await getProductById(params.product);
+  const userWishlist = await getUserWishlist(session?.user.id);
 
   if (!product) {
     notFound();
@@ -50,7 +55,11 @@ export default async function Product({
               {/* Product info */}
               <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
                 <ProductInfo product={product} />
-                <ProductActions productId={params.product} product={product} />
+                <ProductActions
+                  productId={params.product}
+                  product={product}
+                  userWishlist={userWishlist}
+                />
                 <ProductDetails product={product} />
               </div>
             </div>

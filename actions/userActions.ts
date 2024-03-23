@@ -9,6 +9,7 @@ import { UpdatedUserData } from '@lib/types/types';
 import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { exclude } from '@lib/exclude';
+import { revalidatePath } from 'next/cache';
 
 export const getUserWishlist = async (userId: string) => {
   try {
@@ -17,7 +18,7 @@ export const getUserWishlist = async (userId: string) => {
     if (!session) throw new Error('Unauthorized');
     if (session?.user?.id !== userId) throw new Error('Unauthorized');
 
-    const userWishlist = await prisma.user.findFirst({
+    const result = await prisma.user.findFirst({
       where: { id: userId },
       select: {
         wishlist: {
@@ -28,21 +29,8 @@ export const getUserWishlist = async (userId: string) => {
       },
     });
 
-    if (!userWishlist) {
-      return {
-        success: true,
-        data: {
-          wishlist: [],
-        },
-        message: 'No wishlist found',
-      };
-    }
-
-    return {
-      success: true,
-      data: userWishlist,
-      message: 'User wishlist',
-    };
+    revalidatePath('(store)/products/[product]', 'page');
+    return result ? result.wishlist : null;
   } catch (error) {
     console.error('Error fetching user wishlist', error);
     return null;
@@ -263,6 +251,7 @@ export const addToUserWishlist = async (productId: string, userId: string) => {
       },
     });
 
+    revalidatePath('(store)/products/[product]', 'page');
     return {
       success: true,
       data: addedProduct,
@@ -316,6 +305,7 @@ export const removeProductFromWishlist = async (
       },
     });
 
+    revalidatePath('(store)/products/[product]', 'page');
     return {
       success: true,
       data: updatedWishlist,

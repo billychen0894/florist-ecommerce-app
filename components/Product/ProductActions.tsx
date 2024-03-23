@@ -4,53 +4,42 @@ import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Session } from 'next-auth';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
 import Notification from '@components/ui/Notification';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { users } from '@lib/api/users';
 import { addItemToCart } from '@store/features/cartSlice';
-import {
-  addProductsToWishlist,
-  fetchUserWishlistById,
-  removeProductsFromWishlist,
-} from '@store/features/userSlice';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { cn } from '@lib/classNames';
-import { TProduct } from '@lib/types/types';
 import { Product } from '@prisma/client';
+import { TWishlist } from '@lib/types/types';
+import {
+  addToUserWishlist,
+  removeProductFromWishlist,
+} from '@actions/userActions';
 
 interface ProductActionsProps {
   productId: string;
   product: Product | null;
+  userWishlist: TWishlist | null;
 }
 
-export function ProductActions({ productId, product }: ProductActionsProps) {
+export function ProductActions({
+  productId,
+  product,
+  userWishlist,
+}: ProductActionsProps) {
   const { data: session } = useSession();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const quantityRef = useRef<HTMLSelectElement>(null);
   const dispatch = useAppDispatch();
-  const userWishlist = useAppSelector((state) => state.userReducer.wishlist);
-  const userWishlistProductIdArr = userWishlist.map((product) => product?.id);
-  const axiosWithAuth = useAxiosWithAuth();
+  const userWishlistProductIdArr = userWishlist?.map((product) => product?.id);
   const router = useRouter();
   const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
-
-  useEffect(() => {
-    if (session?.user.id) {
-      dispatch(
-        fetchUserWishlistById({
-          userId: session?.user.id,
-          axiosWithAuth: axiosWithAuth,
-        })
-      );
-    }
-  }, [dispatch, session?.user.id, axiosWithAuth]);
 
   const handleViewCart = () => {
     router.push('/cart');
@@ -100,27 +89,28 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     );
   };
 
-  const handleAddToWishlist = (session: Session | null) => {
+  const handleAddToWishlist = async (session: Session | null) => {
     if (!session) {
       setIsModalOpen(true);
-    } else {
-      if (session?.user.role && session?.user.role !== 'user')
-        return toast.error('Admin cannot add products to wishlist');
+      return;
+    }
 
-      setIsModalOpen(false);
-      if (userWishlistProductIdArr.includes(productId) && product) {
-        users.deleteProductFromWishlist(
-          productId,
-          session?.user.id,
-          axiosWithAuth
-        );
-        dispatch(removeProductsFromWishlist(product as TProduct));
-      } else {
-        users.addToUserWishlist(productId, session?.user.id, axiosWithAuth);
-        dispatch(addProductsToWishlist(product as TProduct));
-      }
+    if (session?.user.role && session?.user.role !== 'user') {
+      return toast.error('Admin cannot add products to wishlist');
+    }
+
+    if (userWishlistProductIdArr?.includes(productId)) {
+      const result = await removeProductFromWishlist(
+        productId,
+        session?.user?.id
+      );
+      return result?.success === false ? toast.error(result?.message) : null;
+    } else {
+      const result = await addToUserWishlist(productId, session?.user?.id);
+      return result?.success === false ? toast.error(result?.message) : null;
     }
   };
+
   return (
     <>
       {isModalOpen && (
@@ -191,7 +181,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
             }}
             title="Add Products to Wishlist"
           >
-            {userWishlistProductIdArr.includes(productId) ? (
+            {userWishlistProductIdArr?.includes(productId) ? (
               <HeartIconSolid
                 className="h-6 w-6 flex-shrink-0"
                 aria-hidden="true"
