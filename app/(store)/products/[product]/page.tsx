@@ -36,7 +36,7 @@ export default async function Product({
 }) {
   const session = await getServerSession(options);
   const product = await getProductById(params.product);
-  const userWishlist = await getUserWishlist(session?.user.id);
+  const userWishlist = session ? await getUserWishlist(session?.user.id) : null;
 
   if (!product) {
     notFound();
