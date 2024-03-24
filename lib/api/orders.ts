@@ -1,5 +1,6 @@
 import axios from '@lib/axios';
-import { ApiResponse, Order, TCartItem } from '@lib/types/api';
+import { ApiResponse, Order } from '@lib/types/api';
+import { TCartItem } from '@lib/types/types';
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 async function getUserOrders(
