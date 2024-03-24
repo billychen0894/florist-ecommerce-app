@@ -28,9 +28,15 @@ export const createCartStore = (initState: CartState = defaultInitState) => {
         ...initState,
         addItemToCart: (item) =>
           set((state) => {
-            const orderItem = item;
-            state.cartItems[orderItem.id] = orderItem;
-            state.subtotal += orderItem.quantity * orderItem.product.price;
+            const existingItem = state.cartItems[item.id];
+
+            if (!existingItem) {
+              state.cartItems[item.id] = item;
+              state.subtotal += item.quantity * item.product.price;
+            } else {
+              existingItem.quantity += item.quantity;
+              state.subtotal += item.quantity * item.product.price;
+            }
             return state;
           }),
         removeItemFromCart: (itemId) =>
