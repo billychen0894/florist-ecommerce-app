@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { formatCurrency } from '@lib/formatCurrency';
-import { useAppSelector } from '@store/hooks';
 import { ShoppingCartCountSelect } from './ShoppingCartCountSelect';
+import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 export function ShoppingCartList() {
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItems = useCartStore((state) => state.cartItems);
   const cartItemsArr = Object.values(cartItems);
 
   return (

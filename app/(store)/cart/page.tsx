@@ -1,7 +1,5 @@
 import { OrderSummary, ShoppingCartList } from '@components/ShoppingCart';
 
-export const dynamic = 'force-static';
-
 export default function Cart() {
   return (
     <div className="bg-white">

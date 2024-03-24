@@ -1,18 +1,17 @@
 'use client';
 
 import { checkout } from '@actions/checkout';
+import { useCartStore } from '@components/Providers/CartStoreProvider';
 import { HoverCard } from '@components/ui';
 import Button from '@components/ui/Button';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/OrderInfo';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
 import { formatCurrency } from '@lib/formatCurrency';
-import { useAppSelector } from '@store/hooks';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export function OrderSummary() {
-  const subtotal = useAppSelector((state) => state.cartReducer.subtotal);
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const { subtotal, cartItems } = useCartStore((state) => state);
   const cartItemsArr = Object.values(cartItems);
   const router = useRouter();
   const { data: session } = useSession();
@@ -44,6 +43,7 @@ export function OrderSummary() {
     const data = await checkout(cartItemsArr, session?.user.id);
     router.push(data.url);
   };
+
   return (
     <section
       aria-labelledby="summary-heading"
