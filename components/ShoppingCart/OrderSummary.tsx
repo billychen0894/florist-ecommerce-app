@@ -41,7 +41,9 @@ export function OrderSummary() {
     }
 
     const data = await checkout(cartItemsArr, session?.user.id);
-    router.push(data.url);
+    if (data?.url) {
+      router.push(data.url);
+    }
   };
 
   return (
