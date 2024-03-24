@@ -13,8 +13,7 @@ import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
 import Notification from '@components/ui/Notification';
 import { cn } from '@lib/classNames';
-import { Product } from '@prisma/client';
-import { TWishlist } from '@lib/types/types';
+import { TProduct, TWishlist } from '@lib/types/types';
 import {
   addToUserWishlist,
   removeProductFromWishlist,
@@ -23,7 +22,7 @@ import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 interface ProductActionsProps {
   productId: string;
-  product: Product | null;
+  product: TProduct | null;
   userWishlist: TWishlist | null;
 }
 
@@ -55,6 +54,12 @@ export function ProductActions({
     if (units <= 0) {
       return toast.error(
         'Oops! This product is out of stock. Please check back later.'
+      );
+    }
+
+    if (currProduct?.quantity + quantity > 10) {
+      return toast.error(
+        'Sorry, you can only add up to 10 of this product to your cart.'
       );
     }
 
