@@ -3,22 +3,10 @@
 import Link from '@node_modules/next/link';
 import { ShoppingBagIcon } from '@node_modules/@heroicons/react/24/outline';
 import { cn } from '@lib/classNames';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useEffect } from 'react';
-import { getCartItemsFromLocalStorage } from '@lib/getCartItemsFromLocalStorage';
-import { initializeCart } from '@store/features/cartSlice';
+import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 export default function NavCart() {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      const cachedCartItems = getCartItemsFromLocalStorage();
-      dispatch(initializeCart(cachedCartItems));
-    }
-  }, [dispatch]);
-
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItems = useCartStore((state) => state.cartItems);
   const cartItemsArr = Object.values(cartItems);
 
   return (
