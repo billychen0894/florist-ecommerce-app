@@ -12,8 +12,6 @@ import toast from 'react-hot-toast';
 import Button from '@components/ui/Button';
 import Modal from '@components/ui/Modal';
 import Notification from '@components/ui/Notification';
-import { addItemToCart } from '@store/features/cartSlice';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { cn } from '@lib/classNames';
 import { Product } from '@prisma/client';
 import { TWishlist } from '@lib/types/types';
@@ -21,6 +19,7 @@ import {
   addToUserWishlist,
   removeProductFromWishlist,
 } from '@actions/userActions';
+import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 interface ProductActionsProps {
   productId: string;
@@ -34,12 +33,11 @@ export function ProductActions({
   userWishlist,
 }: ProductActionsProps) {
   const { data: session } = useSession();
+  const { addItemToCart, cartItems } = useCartStore((state) => state);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const quantityRef = useRef<HTMLSelectElement>(null);
-  const dispatch = useAppDispatch();
   const userWishlistProductIdArr = userWishlist?.map((product) => product?.id);
   const router = useRouter();
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
 
   const handleViewCart = () => {
     router.push('/cart');
@@ -47,31 +45,30 @@ export function ProductActions({
   };
 
   const handleAddToCart = () => {
-    if (product && product?.units === 0) {
+    if (!product) return toast.error('Oops! Something went wrong.');
+    if (!quantityRef.current) return;
+
+    const units = product?.units;
+    const quantity = Number(quantityRef.current.value);
+    const currProduct = cartItems[productId];
+
+    if (units <= 0) {
       return toast.error(
         'Oops! This product is out of stock. Please check back later.'
       );
     }
-    const currProductInCart = cartItems[productId];
-    if (
-      currProductInCart &&
-      quantityRef.current &&
-      product &&
-      currProductInCart?.quantity + +quantityRef.current?.value > product?.units
-    ) {
+
+    if (currProduct?.quantity + quantity > units) {
       return toast.error(
         "Sorry, you can't add more of this product to your cart. It exceeds the available stock."
       );
     }
-    const dispatchPayload = {
-      id: productId,
-      quantity: quantityRef.current?.value
-        ? Number(quantityRef.current.value)
-        : 0,
-      product: product as Product,
-    };
 
-    dispatch(addItemToCart(dispatchPayload));
+    addItemToCart({
+      id: productId,
+      quantity,
+      product: product,
+    });
 
     toast(
       () => (
