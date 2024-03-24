@@ -1,6 +1,6 @@
 import { TCartItem } from '@lib/types/types';
 import { createStore } from 'zustand/vanilla';
-import { persist } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
 export type CartState = {
   cartItems: Record<string, TCartItem>;
@@ -23,51 +23,55 @@ export const defaultInitState: CartState = {
 
 export const createCartStore = (initState: CartState = defaultInitState) => {
   return createStore<CartStore>()(
-    persist(
-      (set) => ({
-        ...initState,
-        addItemToCart: (item) =>
-          set((state) => {
-            const existingItem = state.cartItems[item.id];
+    devtools(
+      persist(
+        (set) => ({
+          ...initState,
+          addItemToCart: (item) =>
+            set((state) => ({
+              cartItems: {
+                ...state.cartItems,
+                [item.id]: {
+                  ...item,
+                  quantity: state.cartItems[item.id]
+                    ? state.cartItems[item.id].quantity + item.quantity
+                    : item.quantity,
+                },
+              },
+              subtotal: state.subtotal + item.quantity * item.product.price,
+            })),
+          removeItemFromCart: (itemId) =>
+            set((state) => {
+              const newCartItems = { ...state.cartItems };
+              delete newCartItems[itemId];
 
-            if (!existingItem) {
-              state.cartItems[item.id] = item;
-              state.subtotal += item.quantity * item.product.price;
-            } else {
-              existingItem.quantity += item.quantity;
-              state.subtotal += item.quantity * item.product.price;
-            }
-            return state;
-          }),
-        removeItemFromCart: (itemId) =>
-          set((state) => {
-            if (state.cartItems.hasOwnProperty(itemId)) {
-              const { quantity, product } = state.cartItems[itemId];
-              if (state.subtotal - quantity * product.price < 0) {
-                state.subtotal = 0;
-              } else {
-                state.subtotal -= quantity * product.price;
-              }
-              delete state.cartItems[itemId];
-            }
-            return state;
-          }),
-        updateCartItemQuantity: (itemId, quantity) =>
-          set((state) => {
-            if (state.cartItems[itemId]) {
-              const prevSelectedQuantity = state.cartItems[itemId].quantity;
-              const selectedProductPrice =
-                state.cartItems[itemId].product.price;
-              state.cartItems[itemId].quantity = quantity;
-              state.subtotal +=
-                quantity * selectedProductPrice -
-                prevSelectedQuantity * selectedProductPrice;
-            }
-            return state;
-          }),
-        resetCart: () => set(initState),
-      }),
-      { name: 'cart' }
+              return {
+                cartItems: newCartItems,
+                subtotal:
+                  state.subtotal -
+                  state.cartItems[itemId].quantity *
+                    state.cartItems[itemId].product.price,
+              };
+            }),
+          updateCartItemQuantity: (itemId, quantity) =>
+            set((state) => ({
+              cartItems: {
+                ...state.cartItems,
+                [itemId]: {
+                  ...state.cartItems[itemId],
+                  quantity,
+                },
+              },
+              subtotal:
+                state.subtotal +
+                (quantity * state.cartItems[itemId].product.price -
+                  state.cartItems[itemId].quantity *
+                    state.cartItems[itemId].product.price),
+            })),
+          resetCart: () => set(initState),
+        }),
+        { name: 'cart' }
+      )
     )
   );
 };
