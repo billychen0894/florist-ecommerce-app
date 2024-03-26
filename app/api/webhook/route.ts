@@ -4,24 +4,19 @@ import { PaymentStatus, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-export const dynamic = 'force-dynamic';
-
 export async function POST(req: Request) {
   // due to its webhook it has to be text not json
   const body = await req.text();
-  const signature = req.headers.get('Stripe-Signature') as string;
+  const signature = req.headers.get('stripe-signature') as string;
 
   let event: Stripe.Event;
 
-  const webhookSecret =
-    process.env.NODE_ENV === 'development'
-      ? process.env.STRIPE_WEBHOOK_SECRET_LOCAL!
-      : process.env.STRIPE_WEBHOOK_SECRET!;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (e: any) {
-    return new NextResponse(`Webhook Error: ${e.message}`, { status: 400 });
+    return new NextResponse(`Webhook Error: ${e}`, { status: 400 });
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
@@ -186,7 +181,6 @@ export async function POST(req: Request) {
       await prisma.order.create({
         data: orderData,
       });
-      console.log('end - orderData number', orderData.orderNumber);
     }
     return new NextResponse(null, { status: 200 });
   } catch (e: any) {
