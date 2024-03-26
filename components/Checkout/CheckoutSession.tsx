@@ -4,9 +4,8 @@ import { useRouter } from 'next/navigation';
 import Stripe from 'stripe';
 
 import Button from '@components/ui/Button';
-import { resetCart } from '@store/features/cartSlice';
-import { useAppDispatch } from '@store/hooks';
 import { useEffect } from 'react';
+import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 interface CheckoutSessionProps {
   customerDetails: Stripe.Checkout.Session.CustomerDetails | null;
@@ -18,14 +17,13 @@ export default function CheckoutSession({
   invoice,
 }: CheckoutSessionProps) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  const resetCart = useCartStore((state) => state.resetCart);
 
-  // Reset Redux CartItems and localStorage
   useEffect(() => {
     if (customerDetails) {
-      dispatch(resetCart());
+      resetCart();
     }
-  }, [customerDetails, dispatch]);
+  }, [customerDetails, resetCart]);
 
   return (
     <>
