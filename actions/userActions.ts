@@ -110,7 +110,8 @@ export const updateUser = async (userData: UpdatedUserData, userId: string) => {
     if (!session) throw new Error('Unauthorized');
 
     if (
-      (session?.user?.id !== userId && session?.user?.role !== 'user') ||
+      session?.user?.id !== userId &&
+      session?.user?.role !== 'user' &&
       session?.user?.role !== 'admin'
     ) {
       throw new Error('Unauthorized');
@@ -182,8 +183,9 @@ export const getUser = async (userId: string) => {
     const session = await getServerSession(options);
     if (!session) throw new Error('Unauthorized');
     if (session?.user?.id !== userId) throw new Error('Unauthorized');
-    if (session?.user?.role !== 'user' || session?.user?.role !== 'admin')
+    if (session?.user?.role !== 'user' && session?.user?.role !== 'admin') {
       throw new Error('Unauthorized');
+    }
 
     const user = await prisma.user.findFirst({
       where: { id: userId },
@@ -195,17 +197,10 @@ export const getUser = async (userId: string) => {
 
     const userWithoutPassword = exclude(user, ['password']);
 
-    return {
-      success: true,
-      data: userWithoutPassword,
-      message: 'User found',
-    };
+    return userWithoutPassword;
   } catch (error: any) {
     console.error(error);
-    return {
-      success: false,
-      message: error.message,
-    };
+    return null;
   }
 };
 
