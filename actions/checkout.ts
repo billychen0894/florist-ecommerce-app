@@ -71,7 +71,7 @@ export const checkout = async (orderItems: TCartItem[], userId?: string) => {
       currency: 'CAD',
       shipping_options: [
         {
-          shipping_rate: 'shr_1NnvQ6I68Lgv4LlQsErbx9n7',
+          shipping_rate: process.env.STRIPE_SHIPPING_RATE,
         },
       ],
       invoice_creation: {
