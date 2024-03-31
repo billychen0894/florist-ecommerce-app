@@ -10,6 +10,8 @@ import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { exclude } from '@lib/exclude';
 import { revalidatePath } from 'next/cache';
+import { stripe } from '@lib/stripe';
+import Stripe from 'stripe';
 
 export const getUserWishlist = async (userId: string) => {
   try {
@@ -162,6 +164,7 @@ export const updateUser = async (userData: UpdatedUserData, userId: string) => {
 
     const userWithoutPassword = exclude(user, ['password']);
 
+    revalidatePath('(store)/user');
     return {
       success: true,
       data: userWithoutPassword,
@@ -312,5 +315,20 @@ export const removeProductFromWishlist = async (
       success: false,
       message: error.message,
     };
+  }
+};
+
+export const fetchUserByStripeId = async (stripeCustomerId: string) => {
+  try {
+    if (!stripeCustomerId) throw new Error('Stripe customer ID is required');
+
+    const customer = await stripe.customers.retrieve(stripeCustomerId, {
+      apiKey: process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY,
+    });
+
+    return customer as Stripe.Customer;
+  } catch (error) {
+    console.error('Error fetching user by stripe ID', error);
+    return null;
   }
 };
