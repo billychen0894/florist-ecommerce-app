@@ -13,7 +13,10 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [{ protocol: 'http', hostname: 'res.cloudinary.com' }],
+    remotePatterns: [
+      { protocol: 'http', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+    ],
   },
   experimental: {
     serverActions: {
