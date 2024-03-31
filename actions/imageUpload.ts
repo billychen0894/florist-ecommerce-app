@@ -1,6 +1,7 @@
 'use server';
 
-import cloudinary from 'cloudinary';
+import { readFileAsDataUrl } from '@lib/readFile';
+import cloudinary, { UploadApiResponse, UploadStream } from 'cloudinary';
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,18 +10,48 @@ cloudinary.v2.config({
   secure: true,
 });
 
-export const imageUpload = async (file: any, public_id?: string) => {
-  try {
-    if (file) {
-      const result = await cloudinary.v2.uploader.upload(file, {
-        public_id,
-        overwrite: true,
-      });
+type ImageUploadResult = {
+  public_id: string;
+  url: string;
+};
 
-      return result;
-    }
-  } catch (err) {
+export const imageUpload = async (
+  file: File,
+  public_id?: string
+): Promise<ImageUploadResult | undefined> => {
+  try {
+    if (!file || file.size === 0) throw new Error('No file provided');
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+    const result = await new Promise<UploadApiResponse | undefined>(
+      (resolve, reject) => {
+        cloudinary.v2.uploader
+          .upload_stream(
+            { public_id, overwrite: true },
+            function (error, result) {
+              if (error) {
+                console.error('Upload Error: ', error);
+                reject(error);
+                return;
+              }
+
+              resolve(result);
+            }
+          )
+          .end(buffer);
+      }
+    );
+
+    if (!result) return undefined;
+
+    return {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  } catch (err: any) {
     console.error('Upload Error: ', err);
+    return undefined;
   }
 };
 
