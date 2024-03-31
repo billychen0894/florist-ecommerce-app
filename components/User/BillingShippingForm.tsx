@@ -1,71 +1,43 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import {
-  createStripeCustomer,
-  updateStripeCustomer,
-} from '@actions/stripeCustomer';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
 import Spinner from '@components/ui/Spinner';
 import { shippingLocations } from '@const/shippingLocation';
 import { ErrorMessage } from '@hookform/error-message';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { users } from '@lib/api/users';
-import { updateUserStripeInfo } from '@store/features/userSlice';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { UserWithoutPass } from '@lib/types/types';
+import Stripe from 'stripe';
 import {
   BillingShippingFormSchema,
-  defaultBillingShippingFormSchema,
-} from './billingShippingFormValidator';
+  billingShippingFormSchema,
+} from '@lib/schemaValidator';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { onSubmitBillingShippingForm } from '@lib/formActions';
 
 interface BillingShippingFormProps {
   isInputsDisabled: boolean;
+  user: UserWithoutPass | null;
+  userStripeInfo: Stripe.Customer | null;
 }
 
 export default function BillingShippingForm({
+  user,
+  userStripeInfo,
   isInputsDisabled,
 }: BillingShippingFormProps) {
-  const userStripeInfo = useAppSelector(
-    (state) => state.userReducer.userStripe
-  );
-  const user = useAppSelector((state) => state.userReducer.user);
-  const dispacth = useAppDispatch();
-  const axiosWithAuth = useAxiosWithAuth();
   const billingAddressObj = userStripeInfo?.address;
   const shippingAddressObj = userStripeInfo?.shipping?.address;
-
-  const methods = useForm<BillingShippingFormSchema>({
-    resolver: yupResolver(defaultBillingShippingFormSchema),
-    defaultValues: {
-      shippingAddressLine1: shippingAddressObj?.line1!,
-      shippingAddressLine2: shippingAddressObj?.line2!,
-      shippingCity: shippingAddressObj?.city!,
-      shippingArea: shippingAddressObj?.state!,
-      shippingPostalCode: shippingAddressObj?.postal_code!,
-      shippingCountry: shippingAddressObj?.country!,
-      billingAddressLine1: billingAddressObj?.line1!,
-      billingAddressLine2: billingAddressObj?.line2!,
-      billingCity: billingAddressObj?.city!,
-      billingArea: billingAddressObj?.state!,
-      billingPostalCode: billingAddressObj?.postal_code!,
-      billingCountry: billingAddressObj?.country!,
-    },
-  });
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
-    setValue,
-  } = methods;
-
-  useEffect(() => {
-    const formDefaultValues: { [key: string]: string } = {
+  } = useForm<BillingShippingFormSchema>({
+    resolver: zodResolver(billingShippingFormSchema),
+    defaultValues: {
       shippingAddressLine1: shippingAddressObj?.line1 || '',
       shippingAddressLine2: shippingAddressObj?.line2 || '',
       shippingCity: shippingAddressObj?.city || '',
@@ -78,104 +50,41 @@ export default function BillingShippingForm({
       billingArea: billingAddressObj?.state || '',
       billingPostalCode: billingAddressObj?.postal_code || '',
       billingCountry: billingAddressObj?.country || '',
-    };
-
-    Object.keys(formDefaultValues).forEach((key) =>
-      setValue(key, formDefaultValues[key] as never)
-    );
-  }, [billingAddressObj, shippingAddressObj, setValue]);
-
-  const isFormDataSameAsCurrent = useCallback(
-    (formData: BillingShippingFormSchema): boolean => {
-      if (shippingAddressObj && billingAddressObj && formData) {
-        return (
-          formData.shippingAddressLine1 === shippingAddressObj?.line1 &&
-          formData.shippingAddressLine2 === shippingAddressObj?.line2 &&
-          formData.shippingCity === shippingAddressObj?.city &&
-          formData.shippingArea === shippingAddressObj?.state &&
-          formData.shippingPostalCode === shippingAddressObj?.postal_code &&
-          formData.shippingCountry === shippingAddressObj?.country &&
-          formData.billingAddressLine1 === billingAddressObj?.line1 &&
-          formData.billingAddressLine2 === billingAddressObj?.line2 &&
-          formData.billingCity === billingAddressObj?.city &&
-          formData.billingArea === billingAddressObj?.state &&
-          formData.billingPostalCode === billingAddressObj?.postal_code &&
-          formData.billingCountry === billingAddressObj?.country
-        );
-      }
-      return false;
     },
-    [billingAddressObj, shippingAddressObj]
-  );
+  });
 
   const onSubmit = async (data: BillingShippingFormSchema) => {
     try {
-      const isDataSameAsCurrent = isFormDataSameAsCurrent(data);
-
-      if (!isDirty || isDataSameAsCurrent) {
+      if (!isDirty) {
         toast.error('No information updated. Cannot save');
         return;
       }
 
-      const {
-        shippingAddressLine1,
-        shippingAddressLine2,
-        shippingCity,
-        shippingArea,
-        shippingPostalCode,
-        shippingCountry,
-        billingAddressLine1,
-        billingAddressLine2,
-        billingCity,
-        billingArea,
-        billingPostalCode,
-        billingCountry,
-      } = data;
+      const formData = new FormData();
 
-      const stripeInfo = {
-        address: {
-          city: billingCity,
-          country: billingCountry,
-          line1: billingAddressLine1,
-          line2: billingAddressLine2,
-          postal_code: billingPostalCode,
-          state: billingArea,
-        },
-        shipping: {
-          address: {
-            city: shippingCity,
-            country: shippingCountry,
-            line1: shippingAddressLine1,
-            line2: shippingAddressLine2,
-            postal_code: shippingPostalCode,
-            state: shippingArea,
-          },
-          name: user?.name,
-          phone: user?.phone,
-        },
-      };
-
-      if (user?.stripeCustomerId) {
-        await updateStripeCustomer(user?.stripeCustomerId, stripeInfo);
-
-        dispacth(updateUserStripeInfo(stripeInfo));
-
-        toast.success('Successfully updated!');
-      } else {
-        const stripeCustomerId = await createStripeCustomer(stripeInfo);
-
-        if (stripeCustomerId) {
-          await users.updateUser(
-            {
-              stripeCustomerId: stripeCustomerId,
-            },
-            user?.id!,
-            axiosWithAuth
-          );
+      for (const key of Object.keys(data)) {
+        const value = data[key as keyof BillingShippingFormSchema];
+        if (value) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, '');
         }
       }
-    } catch (err: any) {
-      console.log('Error: ', err.message);
+
+      if (!user) {
+        throw new Error('No user found');
+      }
+
+      const result = await onSubmitBillingShippingForm(formData, user);
+
+      if (!result.success) {
+        throw new Error('Error updating user information');
+      }
+
+      toast.success('User information updated successfully');
+    } catch (error) {
+      console.error(error);
+      toast.error('Error updating user information');
     }
   };
 

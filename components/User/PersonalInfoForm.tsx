@@ -1,28 +1,20 @@
 'use client';
 
 import { ErrorMessage } from '@hookform/error-message';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-
-import { imageUpload } from '@actions/imageUpload';
-import {
-  createStripeCustomer,
-  updateStripeCustomer,
-} from '@actions/stripeCustomer';
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
 import Spinner from '@components/ui/Spinner';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { users } from '@lib/api/users';
-import { updateUserInfo } from '@store/features/userSlice';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { UserWithoutPass } from '@lib/types/types';
 import {
-  defaultPersonalInfoFormSchema,
   PersonalInfoFormSchema,
-} from './personalInfoFormValidator';
+  personalInfoFormSchema,
+} from '@lib/schemaValidator';
+import { onSubmitPersonalInfoForm } from '@lib/formActions';
+import toast from 'react-hot-toast';
 
 const defaultAvatarImage = (
   <svg
@@ -36,181 +28,32 @@ const defaultAvatarImage = (
 
 interface PersonalInfoFormProps {
   isInputsDisabled: boolean;
+  user: UserWithoutPass | null;
 }
 
 export default function PersonalInfoForm({
+  user,
   isInputsDisabled,
 }: PersonalInfoFormProps) {
-  const user = useAppSelector((state) => state.userReducer.user);
-  const dispatch = useAppDispatch();
-  const axiosWithAuth = useAxiosWithAuth();
   const [previewImage, setPreviewImage] = useState<string | null>(
     user?.image || ''
   );
 
-  const methods = useForm<PersonalInfoFormSchema>({
-    resolver: yupResolver(defaultPersonalInfoFormSchema),
-  });
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
     control,
-    setValue,
-  } = methods;
-
-  useEffect(() => {
-    const formDefaultValues: { [key: string]: string } = {
+  } = useForm<PersonalInfoFormSchema>({
+    resolver: zodResolver(personalInfoFormSchema),
+    defaultValues: {
+      userId: user?.id,
       firstName: user?.name?.split(' ')[0] || '',
       lastName: user?.name?.split(' ')[1] || '',
       contactPhone: user?.phone || '',
       imageFile: user?.image || '',
-    };
-
-    Object.keys(formDefaultValues).forEach((key) =>
-      setValue(key, formDefaultValues[key] as never)
-    );
-  }, [user?.image, user?.name, user?.phone, setValue]);
-  const handleImageUpload = useCallback(
-    async (file: File, cloudinaryPublicId?: string) => {
-      // Return a Promise that resolves with the uploadResult or undefined
-      return new Promise<{ public_id: string; url: string } | undefined>(
-        async (resolve) => {
-          const reader = new FileReader();
-
-          // Set up an event handler for when the FileReader operation is complete
-          reader.onload = async (event) => {
-            if (event.target) {
-              // Inside this event handler, we await imageUpload to process the result
-              const uploadResult = await imageUpload(
-                event.target.result,
-                cloudinaryPublicId
-              );
-
-              // Resolve the Promise with the uploadResult
-              resolve(uploadResult);
-            }
-          };
-
-          // Start reading the image file asynchronously
-          reader.readAsDataURL(file);
-        }
-      );
     },
-    []
-  );
-
-  const handleUserUpdate = useCallback(
-    async (userData: {
-      firstName: string;
-      lastName: string;
-      phone: string;
-      uploadResult?: { public_id: string; url: string };
-      stripeCustomerId?: string;
-    }) => {
-      const { firstName, lastName, phone, uploadResult, stripeCustomerId } =
-        userData;
-      const image = uploadResult
-        ? uploadResult.url
-        : user?.image
-        ? user?.image
-        : '';
-
-      dispatch(
-        updateUserInfo({
-          firstName,
-          lastName,
-          phone,
-          image,
-        })
-      );
-
-      await users.updateUser(
-        {
-          name: `${firstName} ${lastName}`,
-          phone,
-          image,
-          cloudinaryPublicId: uploadResult?.public_id || '',
-        },
-        user?.id!,
-        axiosWithAuth
-      );
-
-      if (stripeCustomerId) {
-        await updateStripeCustomer(stripeCustomerId, {
-          name: `${firstName} ${lastName}`,
-          phone,
-        });
-      } else if (!stripeCustomerId && user && user?.role !== 'admin') {
-        const stripeCustomerId = await createStripeCustomer({
-          name: `${firstName} ${lastName}`,
-          phone,
-        });
-
-        if (stripeCustomerId) {
-          await users.updateUser(
-            {
-              stripeCustomerId: stripeCustomerId,
-            },
-            user?.id!,
-            axiosWithAuth
-          );
-        }
-      }
-
-      toast.success('Personal Info successfully updated!');
-    },
-    [axiosWithAuth, dispatch, user]
-  );
-
-  const onSubmit = async (data: PersonalInfoFormSchema) => {
-    try {
-      if (!isDirty) {
-        toast.error('No information updated. Cannot save');
-        return;
-      }
-
-      const { firstName, lastName, contactPhone: phone, imageFile } = data;
-      const name = `${firstName} ${lastName}`;
-
-      if (
-        name === user?.name &&
-        phone === user?.phone &&
-        typeof imageFile === 'string'
-      ) {
-        toast.error('No information updated. Cannot save');
-        return;
-      }
-
-      const file = imageFile as File;
-      let uploadResult: { public_id: string; url: string } | undefined =
-        undefined;
-
-      if (file && typeof file !== 'string') {
-        uploadResult = await handleImageUpload(file, user?.cloudinaryPublicId!);
-
-        if (uploadResult && firstName && lastName) {
-          await handleUserUpdate({
-            firstName,
-            lastName,
-            phone: phone!,
-            uploadResult,
-            stripeCustomerId: user?.stripeCustomerId!,
-          });
-        }
-      } else {
-        await handleUserUpdate({
-          firstName: firstName!,
-          lastName: lastName!,
-          phone: phone!,
-          uploadResult: undefined,
-          stripeCustomerId: user?.stripeCustomerId!,
-        });
-      }
-    } catch (err: any) {
-      console.log('Error during update personal information: ', err.message);
-    }
-  };
+  });
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -225,6 +68,27 @@ export default function PersonalInfoForm({
       reader.readAsDataURL(file);
     } else {
       setPreviewImage(null);
+    }
+  };
+
+  const onSubmit = async (data: PersonalInfoFormSchema) => {
+    if (!isDirty) {
+      toast.error('Please make some changes before submitting');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('userId', data.userId);
+    formData.append('firstName', data.firstName);
+    formData.append('lastName', data.lastName);
+    formData.append('contactPhone', data.contactPhone);
+    formData.append('imageFile', data.imageFile);
+    try {
+      const result = await onSubmitPersonalInfoForm(formData);
+      if (result.success) {
+        toast.success('User information updated successfully');
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -282,6 +146,12 @@ export default function PersonalInfoForm({
           )}
         </div>
 
+        <input
+          type="hidden"
+          id="userId"
+          defaultValue={user?.id}
+          {...register('userId')}
+        />
         <div className="sm:col-span-3">
           <Label
             htmlFor="firstName"

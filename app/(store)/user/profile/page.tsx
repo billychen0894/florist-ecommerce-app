@@ -1,11 +1,24 @@
-'use client';
-
+import { fetchUserByStripeId, getUser } from '@actions/userActions';
+import { options } from '@app/api/auth/[...nextauth]/options';
 import BillingShippingForm from '@components/User/BillingShippingForm';
 import PersonalInfoForm from '@components/User/PersonalInfoForm';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
+export default async function Profile() {
+  const session = await getServerSession(options);
 
-export default function Profile() {
+  if (!session) {
+    redirect('/auth/signin');
+  }
+
+  const user = await getUser(session?.user?.id);
+  const userStripeInfo = user?.stripeCustomerId
+    ? await fetchUserByStripeId(user?.stripeCustomerId)
+    : null;
+
+  const userStripeInfoCopy = JSON.parse(JSON.stringify(userStripeInfo));
+
   return (
     <div className="divide-y divide-white/5">
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -18,7 +31,7 @@ export default function Profile() {
           </p>
         </div>
 
-        <PersonalInfoForm isInputsDisabled />
+        <PersonalInfoForm isInputsDisabled user={user} />
       </div>
 
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -31,7 +44,11 @@ export default function Profile() {
             settings.
           </p>
         </div>
-        <BillingShippingForm isInputsDisabled />
+        <BillingShippingForm
+          isInputsDisabled
+          user={user}
+          userStripeInfo={userStripeInfoCopy}
+        />
       </div>
     </div>
   );
