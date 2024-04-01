@@ -1,7 +1,7 @@
 import { fetchProducts, getProductById } from '@actions/productsActions';
-import { getUserWishlist } from '@actions/userActions';
+import { getUserOrdersByUserId, getUserWishlist } from '@actions/userActions';
 import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
-import { OrderStatus, Prisma, User } from '@prisma/client';
+import { Order, OrderStatus, Prisma, User } from '@prisma/client';
 import { Unpacked } from '@utils';
 import Stripe from 'stripe';
 
@@ -34,3 +34,4 @@ export type ProductReqPayload = Omit<ProductDetailsFormSchema, 'images'> & {
     newImages: ({ url: string; publicId: string } | null)[];
   };
 };
+export type TOrders = Prisma.PromiseReturnType<typeof getUserOrdersByUserId>;
