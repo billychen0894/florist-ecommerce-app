@@ -5,13 +5,14 @@ import { SignUpFormData, signUpFormSchema } from '@components/Auth/SignUpForm';
 import { transporter } from '@lib/emailTransporter';
 import { signJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
-import { UpdatedUserData } from '@lib/types/types';
+import { TOrders, UpdatedUserData } from '@lib/types/types';
 import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { exclude } from '@lib/exclude';
 import { revalidatePath } from 'next/cache';
 import { stripe } from '@lib/stripe';
 import Stripe from 'stripe';
+import { PrismaPromise } from '@prisma/client';
 
 export const getUserWishlist = async (userId: string) => {
   try {
@@ -321,6 +322,8 @@ export const removeProductFromWishlist = async (
 export const fetchUserByStripeId = async (stripeCustomerId: string) => {
   try {
     if (!stripeCustomerId) throw new Error('Stripe customer ID is required');
+    const session = await getServerSession(options);
+    if (!session) throw new Error('Unauthorized');
 
     const customer = await stripe.customers.retrieve(stripeCustomerId, {
       apiKey: process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY,
@@ -329,6 +332,125 @@ export const fetchUserByStripeId = async (stripeCustomerId: string) => {
     return customer as Stripe.Customer;
   } catch (error) {
     console.error('Error fetching user by stripe ID', error);
+    return null;
+  }
+};
+
+export const getUserOrders = async (
+  userId: string,
+  stripeCustomerId: string
+) => {
+  try {
+    if (!userId) throw new Error('User ID is required');
+    if (!stripeCustomerId) throw new Error('Stripe customer ID is required');
+    const session = await getServerSession(options);
+    if (!session) throw new Error('Unauthorized');
+    if (session?.user?.id !== userId) throw new Error('Unauthorized');
+
+    const promises: [
+      Promise<Stripe.ApiList<Stripe.Invoice>>,
+      PrismaPromise<TOrders | null>
+    ] = [
+      stripe.invoices.list(
+        {
+          customer: stripeCustomerId,
+        },
+        {
+          apiKey: process.env.STRIPE_SECRET_KEY,
+        }
+      ),
+      prisma.order.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          id: true,
+          orderNumber: true,
+          total: true,
+          orderStatus: true,
+          shippingAddress: true,
+          billingAddress: true,
+          createdAt: true,
+          orderItems: {
+            select: {
+              id: true,
+              quantity: true,
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  price: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+    ];
+
+    const [userStripeInvoices, userOrders] = await Promise.all(promises);
+
+    if (
+      userStripeInvoices?.data?.length > 0 &&
+      userOrders &&
+      userOrders?.length > 0
+    ) {
+      return userStripeInvoices?.data.map((invoice) => {
+        const [mappedInvoice] = userOrders.filter(
+          (order) => order.orderNumber === invoice.number
+        );
+
+        return {
+          ...invoice,
+          orderStatus: mappedInvoice?.orderStatus,
+        };
+      });
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching user orders', error);
+    return null;
+  }
+};
+
+export const getUserOrdersByUserId = async (userId: string) => {
+  try {
+    if (!userId) throw new Error('User ID is required');
+    const session = await getServerSession(options);
+    if (!session) throw new Error('Unauthorized');
+    if (session?.user?.id !== userId) throw new Error('Unauthorized');
+
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        id: true,
+        orderNumber: true,
+        total: true,
+        orderStatus: true,
+        shippingAddress: true,
+        billingAddress: true,
+        createdAt: true,
+        orderItems: {
+          select: {
+            id: true,
+            quantity: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return orders;
+  } catch (error) {
+    console.error('Error fetching user orders', error);
     return null;
   }
 };
