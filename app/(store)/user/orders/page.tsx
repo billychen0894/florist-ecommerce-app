@@ -1,13 +1,20 @@
-'use client';
-
 import StickyHeader from '@components/Table/StickyHeader';
-import { useAppSelector } from '@store/hooks';
 import Row from '@components/Table/Row';
+import { getServerSession } from 'next-auth';
+import { options } from '@app/api/auth/[...nextauth]/options';
+import { redirect } from 'next/navigation';
+import { getUser, getUserOrders } from '@actions/userActions';
 
-export const dynamic = 'force-dynamic';
-
-export default function Orders() {
-  const userOrders = useAppSelector((state) => state.userReducer.userOrders);
+export default async function Orders() {
+  const session = await getServerSession(options);
+  if (!session) {
+    redirect('/auth/signin');
+  }
+  const user = await getUser(session?.user?.id);
+  const userOrders =
+    user && user.stripeCustomerId
+      ? await getUserOrders(user?.id, user?.stripeCustomerId)
+      : [];
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

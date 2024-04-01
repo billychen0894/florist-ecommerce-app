@@ -1,5 +1,3 @@
-'use client';
-
 import { formatCurrency } from '@lib/formatCurrency';
 import { $Enums, Order } from '@prisma/client';
 import Link from 'next/link';
