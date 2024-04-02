@@ -1,13 +1,8 @@
 import { Breadcrumb } from '@components/Breadcrumb';
 import { Filter, Sort } from '@components/Filter';
-import { ProductList } from '@components/Product';
-import ProductListSkeleton from '@components/Product/ProductListSkeleton';
-import { Suspense } from 'react';
-import PaginationSkeleton from '@components/Product/PaginationSkeleton';
-import { Pagination } from '@components/Pagination';
-import { fetchProducts } from '@actions/productsActions';
+import ProductListView from '@components/Product/ProductsListView';
 
-export default async function Products({
+export default function Products({
   searchParams,
 }: {
   searchParams: {
@@ -18,8 +13,6 @@ export default async function Products({
   };
 }) {
   const { page, sort, keyword, category } = searchParams;
-
-  const products = await fetchProducts(page, 0, sort, keyword, category);
 
   return (
     <div className="bg-white">
@@ -39,30 +32,12 @@ export default async function Products({
               <Filter />
             </div>
           </section>
-          {/* Products */}
-          <Suspense fallback={<ProductListSkeleton length={8} />}>
-            <section className="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-              <ProductList
-                showCategory
-                page={page}
-                limit={12}
-                sort={sort}
-                keyword={keyword}
-                category={category}
-                products={products}
-              />
-            </section>
-          </Suspense>
-          <Suspense fallback={<PaginationSkeleton />}>
-            <Pagination
-              page={page}
-              limit={12}
-              sort={sort}
-              keyword={keyword}
-              category={category}
-              products={products}
-            />
-          </Suspense>
+          <ProductListView
+            page={page}
+            sort={sort}
+            keyword={keyword}
+            category={category}
+          />
         </main>
       </div>
     </div>

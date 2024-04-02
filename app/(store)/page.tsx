@@ -1,21 +1,16 @@
 import Link from 'next/link';
-import { ProductItem } from '@components/Product';
 import { Hero } from '@components/Homepage/Hero';
 import { Suspense } from 'react';
+import PopularProducts from '@components/Product/PopularProducts';
 import ProductListSkeleton from '@components/Product/ProductListSkeleton';
-import { fetchProducts } from '@actions/productsActions';
 
 export default async function Home() {
-  const products = await fetchProducts('1', 9, 'popular');
-
   return (
     <div className="bg-white">
       <Hero />
       <main>
-        {/* Popular section */}
         <section aria-labelledby="popular-heading">
           <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-            {/* Section header */}
             <div className="sm:flex sm:items-baseline sm:justify-between">
               <h2
                 id="popular-heading"
@@ -31,22 +26,12 @@ export default async function Home() {
                 <span aria-hidden="true"> &rarr;</span>
               </Link>
             </div>
-            {/* Product Grid List */}
             <Suspense
               fallback={
                 <ProductListSkeleton length={9} className="lg:grid-cols-3" />
               }
             >
-              <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:gap-x-8">
-                {products?.map((product) => (
-                  <ProductItem
-                    key={product.id}
-                    product={product}
-                    showCategory={false}
-                    isWishlistBtnToggle={false}
-                  />
-                ))}
-              </div>
+              <PopularProducts />
             </Suspense>
             <div className="mt-6 sm:hidden">
               <Link
