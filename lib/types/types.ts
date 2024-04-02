@@ -1,7 +1,7 @@
 import { fetchProducts, getProductById } from '@actions/productsActions';
 import { getUserOrdersByUserId, getUserWishlist } from '@actions/userActions';
 import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
-import { Order, OrderStatus, Prisma, User } from '@prisma/client';
+import { OrderStatus, Prisma, User } from '@prisma/client';
 import { Unpacked } from '@utils';
 import Stripe from 'stripe';
 
@@ -9,6 +9,7 @@ export type TProducts = Prisma.PromiseReturnType<typeof fetchProducts>;
 export type TFullProduct = Prisma.PromiseReturnType<typeof getProductById>;
 export type TProduct = Unpacked<TProducts>;
 export type TWishlist = Prisma.PromiseReturnType<typeof getUserWishlist>;
+export type TWishlistItem = Unpacked<TWishlist>;
 export type TCartItem = {
   id: string;
   quantity: number;
