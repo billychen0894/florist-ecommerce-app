@@ -1,25 +1,18 @@
-'use client';
-
 import Button from '@components/ui/Button';
-import { users } from '@lib/api/users';
-import { removeProductsFromWishlist } from '@store/features/userSlice';
 import { HeartIcon as HeartIconSolid } from '@node_modules/@heroicons/react/24/solid';
 import React from 'react';
-import { useAppDispatch } from '@store/hooks';
 import { useSession } from '@node_modules/next-auth/react';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { TProduct } from '@actions/fetch-products';
+import { TWishlistItem } from '@lib/types/types';
+import { removeProductFromWishlist } from '@actions/userActions';
 
 type ProductWishlistButtonProps = {
-  product: TProduct;
+  product: TWishlistItem;
 };
 
 export default function ProductWishlistButton({
   product,
 }: ProductWishlistButtonProps) {
-  const dispatch = useAppDispatch();
   const { data: session } = useSession();
-  const axiosWithAuth = useAxiosWithAuth();
 
   return (
     <div className="relative z-10">
@@ -29,12 +22,7 @@ export default function ProductWishlistButton({
         title="Add Products to Wishlist"
         onClick={() => {
           if (session?.user && product) {
-            users.deleteProductFromWishlist(
-              product.id,
-              session?.user.id,
-              axiosWithAuth
-            );
-            dispatch(removeProductsFromWishlist(product));
+            removeProductFromWishlist(product.id, session?.user?.id);
           }
         }}
       >

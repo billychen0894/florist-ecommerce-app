@@ -3,10 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import ProductWishlistButton from './ProductWishlistButton';
-import { TProduct } from '@actions/fetch-products';
+import { TWishlistItem } from '@lib/types/types';
 
 interface ProductItemProps {
-  product: TProduct;
+  product: TWishlistItem;
   showCategory?: boolean;
   isWishlistBtnToggle?: boolean;
 }
@@ -57,8 +57,8 @@ export function ProductItem({
           </p>
         </div>
         {showCategory &&
-          product.categories &&
-          product.categories.map((category) => (
+          product?.categories &&
+          product?.categories.map((category) => (
             <p
               key={category.id}
               className="mt-1 text-sm text-shades-500 shrink"
