@@ -27,12 +27,12 @@ export const getUserWishlist = async (userId: string) => {
         wishlist: {
           include: {
             images: true,
+            categories: true,
           },
         },
       },
     });
 
-    revalidatePath('(store)/products/[product]', 'page');
     return result ? result.wishlist : null;
   } catch (error) {
     console.error('Error fetching user wishlist', error);
