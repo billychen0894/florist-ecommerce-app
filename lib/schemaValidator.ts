@@ -96,3 +96,9 @@ export const billingShippingFormSchema = z.object({
 export type BillingShippingFormSchema = z.infer<
   typeof billingShippingFormSchema
 >;
+
+export const invoiceEditFormSchema = z.object({
+  stripeInvoiceId: z.string(),
+  orderStatus: z.enum(['CREATED', 'PROCESSING', 'COMPLETED', 'CANCELLED']),
+});
+export type InvoiceEditFormSchema = z.infer<typeof invoiceEditFormSchema>;

@@ -3,6 +3,7 @@
 import { imageUpload } from '@actions/imageUpload';
 import {
   billingShippingFormSchema,
+  invoiceEditFormSchema,
   personalInfoFormSchema,
 } from './schemaValidator';
 import {
@@ -12,6 +13,9 @@ import {
 import { updateUser } from '@actions/userActions';
 import { revalidatePath } from 'next/cache';
 import { UserWithoutPass } from './types/types';
+import { options } from '@app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { updateOrderByStripeId } from '@actions/adminActions';
 
 export type FormState = {
   success: boolean;
@@ -25,6 +29,9 @@ export async function onSubmitPersonalInfoForm(
   try {
     const formData = Object.fromEntries(data);
     const parsedData = personalInfoFormSchema.safeParse(formData);
+    const session = await getServerSession(options);
+    if (!session || session?.user?.role !== 'user')
+      throw new Error('Unauthorized');
 
     if (!parsedData.success) {
       return {
@@ -111,6 +118,9 @@ export async function onSubmitBillingShippingForm(
   );
   try {
     if (!user) throw new Error('User object is missing');
+    const session = await getServerSession(options);
+    if (!session || session?.user?.id !== user.id)
+      throw new Error('Unauthorized');
 
     if (!parsedData.success) {
       return {
@@ -160,6 +170,46 @@ export async function onSubmitBillingShippingForm(
     }
 
     revalidatePath('(store)/user');
+    return {
+      success: true,
+      message: 'Form submitted successfully',
+    };
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Form submission failed',
+    };
+  }
+}
+
+export async function onSubmitInvoiceEditForm(data: FormData) {
+  try {
+    const session = await getServerSession(options);
+    if (!session || session?.user?.role !== 'admin')
+      throw new Error('Unauthorized');
+
+    const parsedData = invoiceEditFormSchema.safeParse(
+      Object.fromEntries(data)
+    );
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    const { stripeInvoiceId, orderStatus } = parsedData.data;
+
+    const result = await updateOrderByStripeId(stripeInvoiceId, orderStatus);
+
+    if (!result?.success) {
+      throw new Error('Invoice update failed');
+    }
+
+    revalidatePath('(store)/admin/orders/[orderNumber]/edit', 'page');
     return {
       success: true,
       message: 'Form submitted successfully',
