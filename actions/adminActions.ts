@@ -20,22 +20,14 @@ export const getAllUsers = async () => {
     });
 
     if (users && users.length === 0) {
-      return {
-        success: true,
-        data: [],
-        message: 'No users found',
-      };
+      return [];
     }
 
     const usersWithoutPassword = users.map((user) => {
       return exclude(user, ['password']);
     });
 
-    return {
-      success: true,
-      data: usersWithoutPassword,
-      message: 'All users',
-    };
+    return usersWithoutPassword;
   } catch (error) {
     console.error('Error fetching all users', error);
     return null;
@@ -373,18 +365,10 @@ export const getOrders = async () => {
     });
 
     if (orders && orders.length === 0) {
-      return {
-        success: true,
-        data: [],
-        message: 'No orders found',
-      };
+      return [];
     }
 
-    return {
-      success: true,
-      data: orders,
-      message: 'All orders',
-    };
+    return orders;
   } catch (error) {
     console.error('Error fetching orders', error);
     return null;
