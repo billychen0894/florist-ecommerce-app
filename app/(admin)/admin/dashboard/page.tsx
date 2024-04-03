@@ -2,8 +2,6 @@ import { redirect } from '@node_modules/next/navigation';
 import StatCards from '@components/Admin/StatCards';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@app/api/auth/[...nextauth]/options';
-import { fetchCategories } from '@actions/fetch-categories';
-import { fetchProducts } from '@actions/productsActions';
 import { Suspense } from 'react';
 import Spinner from '@components/ui/Spinner';
 
@@ -13,9 +11,6 @@ export default async function Dashboard() {
   if (session?.user.role !== 'admin') {
     redirect('/denied');
   }
-
-  const products = await fetchProducts('1', 0, 'newest', undefined, undefined);
-  const categories = await fetchCategories();
 
   return (
     <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
@@ -27,7 +22,7 @@ export default async function Dashboard() {
             </div>
           }
         >
-          <StatCards products={products} categories={categories} />
+          <StatCards />
         </Suspense>
       </div>
     </div>

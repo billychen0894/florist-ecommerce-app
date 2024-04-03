@@ -3,19 +3,26 @@ import { formatCurrency } from '@lib/formatCurrency';
 import { Category, Order } from '@prisma/client';
 import { TProducts, UserWithoutPass } from '@lib/types/types';
 import { getAllUsers, getOrders } from '@actions/adminActions';
+import { fetchProducts } from '@actions/productsActions';
+import { fetchCategories } from '@actions/fetch-categories';
 
-type StatCardsProps = {
-  products: TProducts;
-  categories: Category[] | null;
-};
+export default async function StatCards() {
+  const promises: [
+    Promise<UserWithoutPass[] | null>,
+    Promise<Order[] | null>,
+    Promise<TProducts | null>,
+    Promise<Category[] | null>
+  ] = [
+    getAllUsers(),
+    getOrders(),
+    fetchProducts('1', 0, 'newest', undefined, undefined),
+    fetchCategories(),
+  ];
 
-export default async function StatCards({
-  products,
-  categories,
-}: StatCardsProps) {
-  const promises: [Promise<UserWithoutPass[] | null>, Promise<Order[] | null>] =
-    [getAllUsers(), getOrders()];
-  const [accountUsers, orders] = await Promise.all(promises);
+  const [accountUsers, orders, products, categories] = await Promise.all(
+    promises
+  );
+
   const totalRevenue = orders
     ? orders?.reduce((pre, curr) => {
         return pre + curr.total;
