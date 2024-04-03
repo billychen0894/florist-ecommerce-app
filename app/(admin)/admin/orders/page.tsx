@@ -1,16 +1,21 @@
-'use client';
-
 import StickyHeader from '@components/Table/StickyHeader';
 import Row from '@components/Table/Row';
-import { useAppSelector } from '@store/hooks';
 import RowData from '@components/Table/RowData';
 import Link from 'next/link';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { redirect } from 'next/navigation';
+import { options } from '@app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { getOrders } from '@actions/adminActions';
 
-export const dynamic = 'force-dynamic';
+export default async function Orders() {
+  const session = await getServerSession(options);
 
-export default function Orders() {
-  const orders = useAppSelector((state) => state.adminReducer.orders);
+  if (session?.user.role !== 'admin') {
+    redirect('/denied');
+  }
+
+  const orders = await getOrders();
 
   return (
     <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
