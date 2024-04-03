@@ -11,12 +11,9 @@ import { getServerSession } from 'next-auth';
 import { NavMenuContextProvider } from '@contexts/NavMenu';
 import MobileMenu from './MobileMenu';
 import MobileHamburger from './MobileHamburger';
+import AdminPortal from './AdminPortal';
 
 export async function Navigation() {
-  const session = await getServerSession(options);
-
-  if (session?.user?.role === 'admin') return null;
-
   return (
     <header className="relative">
       <nav
@@ -59,20 +56,7 @@ export async function Navigation() {
               <NavCart />
 
               {/*Admin Edit Link*/}
-              {session?.user?.role === 'admin' && (
-                <div className="ml-4 flow-root lg:ml-6 relative">
-                  <Link
-                    href={{ pathname: '/admin/dashboard' }}
-                    className="group -m-2 flex items-center p-2"
-                  >
-                    <PencilSquareIcon
-                      className="h-6 w-6 flex-shrink-0 text-red-500 group-hover:text-red-400"
-                      aria-hidden="true"
-                    />
-                    <span className="sr-only">Admin Edit</span>
-                  </Link>
-                </div>
-              )}
+              <AdminPortal />
             </div>
           </div>
         </div>

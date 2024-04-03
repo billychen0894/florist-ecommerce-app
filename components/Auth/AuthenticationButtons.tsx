@@ -2,14 +2,10 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 
 import { Avatar } from '@components/ui';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { fetchUserById } from '@store/features/userSlice';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useEffect } from 'react';
 import { adminMenuItems } from '@components/Admin/AdminNavigation';
+import UserAccountDropdown from '@components/ui/UserAccountDropdown';
 
 export const userMenuItems = [
   { href: '/user/profile', label: 'Profile' },
@@ -19,22 +15,7 @@ export const userMenuItems = [
 ];
 
 function AuthenticationButtons() {
-  const UserAccountDropdown = dynamic(
-    () => import('@components/ui/UserAccountDropdown')
-  );
-
   const { data: session, status } = useSession();
-  const user = useAppSelector((state) => state.userReducer.user);
-  const dispatch = useAppDispatch();
-  const axiosWithAuth = useAxiosWithAuth();
-
-  useEffect(() => {
-    if (session && status === 'authenticated') {
-      dispatch(
-        fetchUserById({ userId: session?.user.id as string, axiosWithAuth })
-      );
-    }
-  }, [axiosWithAuth, dispatch, session, status]);
 
   if (status === 'loading') {
     return null;
@@ -46,7 +27,7 @@ function AuthenticationButtons() {
         email={session?.user.email as string}
         avatar={
           <Avatar
-            avatarImageUrl={user?.image!}
+            avatarImageUrl={session?.user?.image!}
             avatarImageAlt={session?.user.name || 'user avatar'}
           />
         }
