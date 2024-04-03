@@ -17,9 +17,7 @@ export default async function Dashboard() {
       <div>
         <Suspense
           fallback={
-            <div className="flex justify-center items-center">
-              <Spinner className="text-secondary-500 h-12 w-12 my-12" />
-            </div>
+            <Spinner className="text-primary-500 h-16 w-16 mx-auto mt-24" />
           }
         >
           <StatCards />
