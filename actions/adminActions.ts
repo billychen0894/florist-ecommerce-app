@@ -8,6 +8,7 @@ import { ProductReqPayload } from '@lib/types/types';
 import { productsPayloadSchema } from '@app/api/admin/products/productsPayloadValidation';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderStatus } from '@prisma/client';
+import { stripe } from '@lib/stripe';
 
 export const getAllUsers = async () => {
   try {
@@ -377,11 +378,11 @@ export const getOrders = async () => {
 
 export const updateOrderByStripeId = async (
   orderId: string,
-  data: { orderStatus: OrderStatus }
+  orderStatus: OrderStatus
 ) => {
   try {
     if (!orderId) throw new Error('Order ID is required');
-    if (!data || !data.orderStatus) throw new Error('Order status is required');
+    if (!orderStatus) throw new Error('Order status is required');
     const session = await getServerSession(options);
     if (!session) throw new Error('Unauthorized');
     if (session?.user?.role !== 'admin') throw new Error('Unauthorized');
@@ -391,16 +392,34 @@ export const updateOrderByStripeId = async (
         stripeInvoiceId: orderId,
       },
       data: {
-        orderStatus: data.orderStatus,
+        orderStatus: orderStatus,
       },
     });
 
     return {
       success: true,
-      message: 'Order updated',
+      message: 'Order status updated',
     };
   } catch (error) {
-    console.error('Error updating order', error);
+    console.error('Error updating order status', error);
+    return null;
+  }
+};
+
+export const fetchStripeInvoice = async (invoiceId: string) => {
+  try {
+    if (!invoiceId) {
+      throw new Error('Invoice id is required');
+    }
+    const session = await getServerSession(options);
+    if (!session) throw new Error('Unauthorized');
+    if (session?.user?.role !== 'admin') throw new Error('Unauthorized');
+
+    const invoice = await stripe.invoices.retrieve(invoiceId);
+
+    return invoice;
+  } catch (err: any) {
+    console.error('Error: ', err.message);
     return null;
   }
 };
