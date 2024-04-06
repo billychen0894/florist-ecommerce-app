@@ -1,42 +1,22 @@
-'use client';
-
 import AdminNavigation from '@components/Admin/AdminNavigation';
-import { useAppDispatch } from '@store/hooks';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { useSession } from '@node_modules/next-auth/react';
 import { redirect } from '@node_modules/next/navigation';
-import { useEffect } from 'react';
-import { fetchUserById } from '@store/features/userSlice';
-import {
-  fetchAccountUsers,
-  fetchCategories,
-  fetchOrders,
-} from '@store/features/adminSlice';
+import { getServerSession } from 'next-auth';
+import { options } from '@app/api/auth/[...nextauth]/options';
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const dispatch = useAppDispatch();
-  const axiosWithAuth = useAxiosWithAuth();
-  const { data: session, status } = useSession();
+  const session = await getServerSession(options);
 
-  if (session?.user.role !== 'admin' && status === 'unauthenticated') {
+  if (!session || session?.user.role !== 'admin') {
     redirect('/denied');
   }
 
-  useEffect(() => {
-    if (session && session.user.role === 'admin') {
-      dispatch(fetchUserById({ userId: session.user.id, axiosWithAuth }));
-      dispatch(fetchAccountUsers(axiosWithAuth));
-      dispatch(fetchOrders(axiosWithAuth));
-      dispatch(fetchCategories());
-    }
-  }, [dispatch, session, axiosWithAuth]);
   return (
     <div className="min-h-full">
-      <AdminNavigation />
+      <AdminNavigation session={session} />
       <main>{children}</main>
     </div>
   );

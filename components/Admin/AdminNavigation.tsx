@@ -7,11 +7,11 @@ import { usePathname } from 'next/navigation';
 import capitalizeWords from '@lib/capitalizeWords';
 import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
 import { Avatar } from '@components/ui';
-import { useSession } from 'next-auth/react';
-import { useAppSelector } from '@store/hooks';
 import { Disclosure } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Bars3Icon, BuildingStorefrontIcon } from '@heroicons/react/24/outline';
+import Logo from '@public/images/logo.png';
+import { Session } from 'next-auth';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard' },
@@ -23,9 +23,11 @@ const navigation = [
 
 export const adminMenuItems = [{ label: 'Account', href: '/admin/account' }];
 
-export default function AdminNavigation() {
-  const { data: session } = useSession();
-  const admin = useAppSelector((state) => state.userReducer.user);
+export type AdminNavigationProps = {
+  session: Session;
+};
+
+export default function AdminNavigation({ session }: AdminNavigationProps) {
   const pathname = usePathname();
   const pathnameParts = pathname.split('/');
   const currentPageName = pathname.startsWith('/admin/orders')
@@ -45,10 +47,8 @@ export default function AdminNavigation() {
                       {/*Logo*/}
                       <Image
                         className="max-h-[4rem] w-auto"
-                        src="/images/logo.png"
+                        src={Logo}
                         alt="logo"
-                        width={75}
-                        height={75}
                       />
                     </div>
                     <div className="hidden md:block">
@@ -81,10 +81,8 @@ export default function AdminNavigation() {
                           email={session?.user.email as string}
                           avatar={
                             <Avatar
-                              avatarImageUrl={admin?.image!}
-                              avatarImageAlt={
-                                session?.user.name || 'user avatar'
-                              }
+                              avatarImageUrl={session?.user.image || ''}
+                              avatarImageAlt="user avatar"
                             />
                           }
                           menuItems={adminMenuItems}
@@ -146,17 +144,17 @@ export default function AdminNavigation() {
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0 inline-block h-10 w-10 overflow-hidden rounded-full bg-gray-100">
                       <Avatar
-                        avatarImageUrl={admin?.image!}
-                        avatarImageAlt={session?.user.name || 'user avatar'}
+                        avatarImageUrl={session?.user?.image || ''}
+                        avatarImageAlt="user avatar"
                         className="h-10 w-10"
                       />
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium text-white">
-                        {session?.user?.name!}
+                        {session?.user?.name}
                       </div>
                       <div className="text-sm font-medium text-secondary-300">
-                        {session?.user?.email!}
+                        {session?.user?.email}
                       </div>
                     </div>
                   </div>
