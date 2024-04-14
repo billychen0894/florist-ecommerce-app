@@ -2,40 +2,27 @@ import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-
 import { options } from '@app/api/auth/[...nextauth]/options';
 import SignUpForm from '@components/Auth/SignUpForm';
-import { generateBase64 } from '@actions/generateBase64';
 import AuthBackgroundImage from '@components/Images/AuthBackgroundImage';
-
-export const dynamic = 'force-static';
+import Logo from '@public/images/logo.png';
 
 export default async function SignUp() {
   const session = await getServerSession(options);
 
-  // If the user is logged in, redirect to the homepage
-  if (session?.user) {
+  if (session) {
     redirect('/');
   }
-
-  const backgroundImageBase64Url = await generateBase64(
-    `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/asskzvhh4k2mbijtqopo`
-  );
 
   return (
     <>
       <div className="relative flex h-[1000px] min-h-full flex-1 flex-col py-6 sm:py-6 sm:px-6">
-        <AuthBackgroundImage
-          cloudImagePublicId="asskzvhh4k2mbijtqopo"
-          base64Url={backgroundImageBase64Url}
-        />
+        <AuthBackgroundImage />
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <Image
             className="mx-auto max-h-[6rem] w-auto"
-            src="/images/logo.png"
+            src={Logo}
             alt="Company Logo"
-            width={96}
-            height={96}
             sizes="96px"
           />
           <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
