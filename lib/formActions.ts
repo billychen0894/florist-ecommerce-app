@@ -5,17 +5,28 @@ import {
   billingShippingFormSchema,
   invoiceEditFormSchema,
   personalInfoFormSchema,
+  productDetailsFormSchema,
+  signUpFormSchema,
 } from './schemaValidator';
 import {
   createStripeCustomer,
   updateStripeCustomer,
 } from '@actions/stripeCustomer';
-import { updateUser } from '@actions/userActions';
+import { createUser, updateUser } from '@actions/userActions';
 import { revalidatePath } from 'next/cache';
-import { UserWithoutPass } from './types/types';
+import {
+  ImageUploadResult,
+  ProductReqPayload,
+  UserWithoutPass,
+} from './types/types';
 import { options } from '@app/api/auth/[...nextauth]/options';
 import { getServerSession } from 'next-auth';
-import { updateOrderByStripeId } from '@actions/adminActions';
+import {
+  updateOrderByStripeId,
+  updateProductById,
+} from '@actions/adminActions';
+import { getProductById } from '@actions/productsActions';
+import { preprocessFormData } from './preprocessFormData';
 
 export type FormState = {
   success: boolean;
@@ -50,7 +61,7 @@ export async function onSubmitPersonalInfoForm(
       userId,
     } = parsedData.data;
 
-    let uploadResult: undefined | { public_id: string; url: string };
+    let uploadResult: ImageUploadResult | undefined;
     if (imageFile && imageFile.size > 0) {
       uploadResult = await imageUpload(imageFile);
     }
@@ -67,7 +78,7 @@ export async function onSubmitPersonalInfoForm(
             name: `${firstName} ${lastName}`,
             phone: contactPhone,
             image: uploadResult?.url || '',
-            cloudinaryPublicId: uploadResult?.public_id || '',
+            cloudinaryPublicId: uploadResult?.publicId || '',
           },
           userId
         ),
@@ -86,7 +97,7 @@ export async function onSubmitPersonalInfoForm(
             name: `${firstName} ${lastName}`,
             phone: contactPhone,
             image: uploadResult?.url || '',
-            cloudinaryPublicId: uploadResult?.public_id || '',
+            cloudinaryPublicId: uploadResult?.publicId || '',
           },
           userId
         ),
@@ -222,3 +233,131 @@ export async function onSubmitInvoiceEditForm(data: FormData) {
     };
   }
 }
+
+export async function onSubmitProductDetailsForm(data: FormData) {
+  try {
+    const session = await getServerSession(options);
+    if (!session || session?.user?.role !== 'admin')
+      throw new Error('Unauthorized');
+
+    const preprocessedData = preprocessFormData(data);
+    const parsedData = productDetailsFormSchema.safeParse(preprocessedData);
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    const { selectedProductId, images } = parsedData.data;
+
+    const selectedProduct = await getProductById(selectedProductId);
+    const prevImages = selectedProduct?.images.filter((image) => {
+      return images.existingImages.some(
+        (existingImage) => existingImage.url === image.url
+      );
+    });
+
+    const existingImagesResult = prevImages?.reduce(
+      (
+        acc: { url: string; publicId?: string; name: string; alt: string }[],
+        image
+      ) => {
+        if (image) {
+          acc.push({
+            url: image.url,
+            publicId: image.publicId || '',
+            name: `image-${image.publicId || ''}`,
+            alt: `image-${image.publicId || ''}`,
+          });
+        }
+        return acc;
+      },
+      []
+    );
+
+    const newImagesUploadPromises = images.newImages.map(async (image) => {
+      const result = await imageUpload(image);
+      return result;
+    });
+
+    const newImagesUploadResult = await Promise.all(newImagesUploadPromises);
+
+    const newImages = newImagesUploadResult.filter(
+      (image) => image !== undefined
+    ) as ImageUploadResult[];
+
+    const productPayload: ProductReqPayload = {
+      name: parsedData.data.name,
+      price: parsedData.data.price,
+      description: parsedData.data.description,
+      categories: parsedData.data.categories,
+      productDetail: {
+        productDetailItems: parsedData.data.productDetail.productDetailItems,
+      },
+      units: parsedData.data.units,
+      inStock: parsedData.data.inStock,
+      leadTime: parsedData.data.leadTime,
+      images: {
+        existingImages: existingImagesResult,
+        newImages,
+      },
+    };
+
+    const updateResult = await updateProductById(
+      selectedProductId,
+      productPayload
+    );
+
+    if (!updateResult) {
+      throw new Error('Product update failed');
+    }
+
+    revalidatePath('(store)/admin/products/[productId]', 'page');
+    return {
+      success: true,
+      message: 'Form submitted successfully',
+    };
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Form submission failed',
+    };
+  }
+}
+
+export const onSubmitSignUpForm = async (data: FormData) => {
+  try {
+    const formData = Object.fromEntries(data);
+    const parsedData = await signUpFormSchema.safeParseAsync(formData);
+
+    if (!parsedData.success) {
+      console.log('parsedData.error: ', parsedData.error.issues);
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    const newUser = await createUser(parsedData.data);
+
+    if (!newUser.success) {
+      throw new Error('User creation failed');
+    }
+
+    return {
+      success: true,
+      message: 'User created successfully',
+    };
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Form submission failed',
+    };
+  }
+};
