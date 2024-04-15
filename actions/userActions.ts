@@ -1,7 +1,6 @@
 'use server';
 
 import { options } from '@app/api/auth/[...nextauth]/options';
-import { SignUpFormData, signUpFormSchema } from '@components/Auth/SignUpForm';
 import { transporter } from '@lib/emailTransporter';
 import { signJwtAccessToken } from '@lib/jwt';
 import { prisma } from '@lib/prisma';
@@ -13,6 +12,7 @@ import { revalidatePath } from 'next/cache';
 import { stripe } from '@lib/stripe';
 import Stripe from 'stripe';
 import { PrismaPromise } from '@prisma/client';
+import { SignUpFormSchema } from '@lib/schemaValidator';
 
 export const getUserWishlist = async (userId: string) => {
   try {
@@ -40,18 +40,9 @@ export const getUserWishlist = async (userId: string) => {
   }
 };
 
-export const createUser = async (userPayload: SignUpFormData) => {
+export const createUser = async (userPayload: SignUpFormSchema) => {
   try {
-    const validatedUserData = await signUpFormSchema.validate(userPayload);
-    const { email, password, firstName, lastName } = validatedUserData;
-
-    const existedEmail = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existedEmail) {
-      throw new Error('Email already exists');
-    }
+    const { email, password, firstName, lastName } = userPayload;
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const emailVerificationToken = signJwtAccessToken({
