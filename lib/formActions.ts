@@ -3,6 +3,7 @@
 import { imageUpload } from '@actions/imageUpload';
 import {
   billingShippingFormSchema,
+  categoryFormSchema,
   invoiceEditFormSchema,
   personalInfoFormSchema,
   productDetailsFormSchema,
@@ -16,16 +17,18 @@ import { createUser, updateUser } from '@actions/userActions';
 import { revalidatePath } from 'next/cache';
 import {
   ImageUploadResult,
+  NewProductReqPayload,
   ProductReqPayload,
   UserWithoutPass,
 } from './types/types';
 import { options } from '@app/api/auth/[...nextauth]/options';
 import { getServerSession } from 'next-auth';
 import {
+  createCategory,
+  createProduct,
   updateOrderByStripeId,
   updateProductById,
 } from '@actions/adminActions';
-import { getProductById } from '@actions/productsActions';
 import { preprocessFormData } from './preprocessFormData';
 
 export type FormState = {
@@ -253,14 +256,7 @@ export async function onSubmitProductDetailsForm(data: FormData) {
 
     const { selectedProductId, images } = parsedData.data;
 
-    const selectedProduct = await getProductById(selectedProductId);
-    const prevImages = selectedProduct?.images.filter((image) => {
-      return images.existingImages.some(
-        (existingImage) => existingImage.url === image.url
-      );
-    });
-
-    const existingImagesResult = prevImages?.reduce(
+    const existingImagesResult = images.existingImages?.reduce(
       (
         acc: { url: string; publicId?: string; name: string; alt: string }[],
         image
@@ -318,13 +314,13 @@ export async function onSubmitProductDetailsForm(data: FormData) {
     revalidatePath('(store)/admin/products/[productId]', 'page');
     return {
       success: true,
-      message: 'Form submitted successfully',
+      message: 'Product updated successfully',
     };
   } catch (error: any) {
     console.error('Form submission error: ', error);
     return {
       success: false,
-      message: 'Form submission failed',
+      message: 'Error occurred while updating product',
     };
   }
 }
@@ -335,7 +331,6 @@ export const onSubmitSignUpForm = async (data: FormData) => {
     const parsedData = await signUpFormSchema.safeParseAsync(formData);
 
     if (!parsedData.success) {
-      console.log('parsedData.error: ', parsedData.error.issues);
       return {
         success: false,
         message: 'Form submission failed',
@@ -361,3 +356,107 @@ export const onSubmitSignUpForm = async (data: FormData) => {
     };
   }
 };
+
+export async function onSubmitNewProductForm(data: FormData) {
+  try {
+    const session = await getServerSession(options);
+    if (!session || session?.user?.role !== 'admin')
+      throw new Error('Unauthorized');
+
+    const preprocessedData = preprocessFormData(data);
+    const parsedData = productDetailsFormSchema.safeParse(preprocessedData);
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    const { images } = parsedData.data;
+
+    const newImagesUploadPromises = images.newImages.map(async (image) => {
+      const result = await imageUpload(image);
+      return result;
+    });
+
+    const newImagesUploadResult = await Promise.all(newImagesUploadPromises);
+
+    const newImages = newImagesUploadResult.filter(
+      (image) => image !== undefined
+    ) as ImageUploadResult[];
+
+    const productPayload: NewProductReqPayload = {
+      name: parsedData.data.name,
+      price: parsedData.data.price,
+      description: parsedData.data.description,
+      categories: parsedData.data.categories,
+      productDetail: {
+        productDetailItems: parsedData.data.productDetail.productDetailItems,
+      },
+      units: parsedData.data.units,
+      inStock: parsedData.data.inStock,
+      leadTime: parsedData.data.leadTime,
+      images: {
+        newImages,
+      },
+    };
+
+    const createResult = await createProduct(productPayload);
+
+    if (!createResult) {
+      throw new Error('Product update failed');
+    }
+
+    revalidatePath('(store)/admin/products/[productId]', 'page');
+    return {
+      success: true,
+      message: 'Product created successfully',
+    };
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Error occurred while creating product',
+    };
+  }
+}
+
+export async function onSubmitCategoryForm(data: FormData) {
+  try {
+    const session = await getServerSession(options);
+    if (!session || session?.user?.role !== 'admin')
+      throw new Error('Unauthorized');
+
+    const formData = Object.fromEntries(data);
+    const parsedData = categoryFormSchema.safeParse(formData);
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    const { name } = parsedData.data;
+
+    const result = await createCategory(name);
+
+    if (!result?.success) {
+      throw new Error('Category creation failed');
+    }
+
+    return {
+      success: true,
+      message: 'Category created successfully',
+    };
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Error occurred while creating category',
+    };
+  }
+}
