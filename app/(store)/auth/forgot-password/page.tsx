@@ -1,11 +1,11 @@
 import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import BackgroundImage from '@public/images/cover2.jpg';
+import Logo from '@public/images/logo.png';
 
 import { options } from '@app/api/auth/[...nextauth]/options';
 import ForgotPasswordForm from '@components/Auth/ForgotPasswordForm';
-
-export const dynamic = 'force-static';
 
 export default async function ForgotPassword() {
   const session = await getServerSession(options);
@@ -22,10 +22,8 @@ export default async function ForgotPassword() {
         <div className="w-full h-full" aria-hidden="true">
           <Image
             className="h-full w-full object-cover object-top"
-            src="/images/cover2.jpg"
+            src={BackgroundImage}
             alt="Background Image"
-            width={1600}
-            height={900}
             priority
           />
           <div className="absolute inset-0 bg-gray-500 opacity-25" />
@@ -34,10 +32,8 @@ export default async function ForgotPassword() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Image
           className="mx-auto max-h-[6rem] w-auto"
-          src="/images/logo.png"
+          src={Logo}
           alt="Company Logo"
-          width={75}
-          height={75}
         />
         <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Forgot Password?

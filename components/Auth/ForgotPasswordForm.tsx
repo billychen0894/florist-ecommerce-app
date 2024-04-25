@@ -1,101 +1,62 @@
 'use client';
 
 import { ErrorMessage } from '@hookform/error-message';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { asyncCacheTest } from '@lib/asyncCacheTest';
-import * as yup from 'yup';
-
 import { Input, Label } from '@components/ui';
 import Button from '@components/ui/Button';
-import { sendForgotPasswordEmail } from '@actions/sendForgotPasswordEmail';
-import { fetchUserByEmail } from '@actions/fetchUserByEmail';
 import Spinner from '@components/ui/Spinner';
-
-// Override default email regex
-yup.addMethod(yup.string, 'email', function validateEmail(message) {
-  return this.matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-    message,
-    excludeEmptyString: true,
-  });
-});
-
-const checkEmailIfExists = asyncCacheTest(
-  (value: string) =>
-    new Promise((resolve) => {
-      fetchUserByEmail(value)
-        .then((res) => {
-          if (res) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        })
-        .catch((error) => {
-          console.error('Error while validating email:', error);
-          resolve(false);
-        });
-    })
-);
-
-const forgotPasswordSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Your email is required')
-    .test('unique-email', 'This email is not registered', async (value) => {
-      await yup
-        .object({
-          email: yup
-            .string()
-            .email('Invalid email address')
-            .required('Your email is required'),
-        })
-        .validate({ email: value });
-
-      const result = await checkEmailIfExists(value);
-
-      return result as boolean;
-    }),
-});
-
-export type ForgotPasswordData = yup.InferType<typeof forgotPasswordSchema>;
+import {
+  ForgotPasswordFormSchema,
+  forgotPasswordFormSchema,
+} from '@lib/schemaValidator';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { onSubmitForgotPasswordForm } from '@lib/formActions';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 function ForgotPassword() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<ForgotPasswordData>({
-    resolver: yupResolver(forgotPasswordSchema),
+  } = useForm<ForgotPasswordFormSchema>({
+    resolver: zodResolver(forgotPasswordFormSchema),
     defaultValues: {
       email: '',
     },
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
-  // For some reason, yup test api does not work with error message react-form-hook
-  // this is a workaround to register input explicitly
   const {
     ref: emailRef,
-    onChange: emailOnChange,
     onBlur: emailOnBlur,
     name: emailName,
   } = register('email');
 
-  const onSubmit = async (data: ForgotPasswordData) => {
+  const onSubmit = async (data: ForgotPasswordFormSchema) => {
     try {
-      const { toast } = await import('react-hot-toast');
-      const result = await sendForgotPasswordEmail(data.email);
+      const formData = new FormData();
+      formData.append('email', data.email);
 
-      if (result) {
-        toast.success('Reset password email has been sent successfully!');
+      const result = await onSubmitForgotPasswordForm(formData);
+
+      if (!result?.success) {
+        setError('email', {
+          type: 'custom',
+          message: result?.message || 'Something went wrong',
+        });
       } else {
-        console.log('result', result);
-        toast.error('Something went wrong. Please try again later.');
+        toast.success('Reset password email has been sent successfully!');
+        router.push('/auth/signin');
       }
     } catch (err: any) {
       console.log('Error: ', err.message);
+      setError('email', {
+        type: 'custom',
+        message: 'Something went wrong',
+      });
     }
   };
 
@@ -112,10 +73,6 @@ function ForgotPassword() {
             autoComplete="email"
             name={emailName}
             ref={emailRef}
-            onChange={async () => {
-              const { debounce } = await import('lodash');
-              debounce(emailOnChange, 1000);
-            }}
             onBlur={emailOnBlur}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
           />
