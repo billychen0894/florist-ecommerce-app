@@ -4,11 +4,12 @@ import { options } from '@app/api/auth/[...nextauth]/options';
 import { prisma } from '@lib/prisma';
 import { getServerSession } from 'next-auth';
 import { exclude } from '@lib/exclude';
-import { ProductReqPayload } from '@lib/types/types';
-import { productsPayloadSchema } from '@app/api/admin/products/productsPayloadValidation';
-import { v4 as uuidv4 } from 'uuid';
+import { NewProductReqPayload, ProductReqPayload } from '@lib/types/types';
 import { OrderStatus } from '@prisma/client';
 import { stripe } from '@lib/stripe';
+import { revalidatePath } from 'next/cache';
+import { transformImageObj } from '@lib/transformImageObj';
+import { getProductById } from './productsActions';
 
 export const getAllUsers = async () => {
   try {
@@ -46,6 +47,7 @@ export const deleteUserById = async (userId: string) => {
       where: { id: userId },
     });
 
+    revalidatePath('(store)/admin/customers', 'page');
     return {
       success: true,
       message: 'User deleted',
@@ -56,9 +58,8 @@ export const deleteUserById = async (userId: string) => {
   }
 };
 
-export const createProduct = async (data: ProductReqPayload) => {
+export const createProduct = async (data: NewProductReqPayload) => {
   try {
-    await productsPayloadSchema.validate(data, { abortEarly: true });
     const session = await getServerSession(options);
     if (!session) throw new Error('Unauthorized');
     if (session?.user?.role !== 'admin') throw new Error('Unauthorized');
@@ -75,20 +76,7 @@ export const createProduct = async (data: ProductReqPayload) => {
       productDetail,
     } = data;
 
-    const existingImages = images.existingImages.map((image) => {
-      const publicId = image.slice(
-        image.lastIndexOf('/') + 1,
-        image.lastIndexOf('.')
-      );
-      return {
-        url: image,
-        publicId,
-        name: `image-${publicId}`,
-        alt: `image-${publicId}`,
-      };
-    });
-
-    const newImages = images.newImages.map((image) => {
+    const productImages = images?.newImages?.map((image) => {
       if (image) {
         return {
           ...image,
@@ -96,15 +84,12 @@ export const createProduct = async (data: ProductReqPayload) => {
           alt: `image-${image.publicId}`,
         };
       }
-    });
-
-    const updatedImages = [...existingImages, ...newImages] as {
+    }) as {
       url: string;
       publicId: string;
       name: string;
       alt: string;
     }[];
-
     const updatedProductDetailItems = productDetail.productDetailItems.map(
       (item) => {
         const productItems = item.items.filter((i) => i !== '');
@@ -122,7 +107,7 @@ export const createProduct = async (data: ProductReqPayload) => {
         price,
         images: {
           createMany: {
-            data: updatedImages,
+            data: productImages,
             skipDuplicates: true,
           },
         },
@@ -161,7 +146,6 @@ export const updateProductById = async (
 ) => {
   try {
     if (!productId) throw new Error('Product ID is required');
-    await productsPayloadSchema.validate(data, { abortEarly: true });
 
     const session = await getServerSession(options);
     if (!session) throw new Error('Unauthorized');
@@ -179,39 +163,21 @@ export const updateProductById = async (
       productDetail,
     } = data;
 
-    const existingImages = images.existingImages.map((image) => {
-      const partPublicId = image.slice(
-        image.lastIndexOf('/') + 1,
-        image.lastIndexOf('.')
-      );
-      const publicId = image?.startsWith('http')
-        ? partPublicId
-        : partPublicId + '-' + uuidv4();
-      return {
-        url: image,
-        publicId,
-        name: `image-${publicId}`,
-        alt: `image-${publicId}`,
-      };
-    });
+    const selectedProduct = await getProductById(productId);
+    const deletedExistingImages = selectedProduct?.images.filter(
+      (image) =>
+        !images?.existingImages?.some((existingImage) =>
+          existingImage.publicId
+            ? existingImage.publicId === image.publicId
+            : existingImage.url === image.url
+        )
+    );
 
-    const newImages = images.newImages.map((image) => {
-      if (image) {
-        return {
-          url: image.url,
-          publicId: image.publicId,
-          name: `image-${image.publicId}`,
-          alt: `image-${image.publicId}`,
-        };
-      }
-    });
-
-    const updatedImages = [...existingImages, ...newImages] as {
-      url: string;
-      publicId: string;
-      name: string;
-      alt: string;
-    }[];
+    const existingImages =
+      images?.existingImages?.map(transformImageObj).filter(Boolean) ?? [];
+    const newImages =
+      images?.newImages?.map(transformImageObj).filter(Boolean) ?? [];
+    const updatedImages = [...existingImages, ...newImages];
 
     const updatedProductDetailItems = productDetail.productDetailItems.map(
       (item) => {
@@ -223,6 +189,13 @@ export const updateProductById = async (
       }
     );
 
+    await prisma.image.deleteMany({
+      where: {
+        productId,
+        id: { in: deletedExistingImages?.map((image) => image.id) },
+      },
+    });
+
     await prisma.product.update({
       where: {
         id: productId,
@@ -232,7 +205,6 @@ export const updateProductById = async (
         description,
         price,
         images: {
-          deleteMany: {},
           createMany: {
             data: updatedImages,
             skipDuplicates: true,
@@ -259,11 +231,12 @@ export const updateProductById = async (
       },
     });
 
+    revalidatePath('(store)/admin/products/[productId]', 'page');
     return {
       success: true,
       message: 'Product updated',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating product', error);
     return null;
   }
@@ -280,6 +253,7 @@ export const deleteProductById = async (productId: string) => {
       where: { id: productId },
     });
 
+    revalidatePath('(store)/admin/products', 'page');
     return {
       success: true,
       message: 'Product deleted',
@@ -319,6 +293,7 @@ export const createCategory = async (name: string) => {
       },
     });
 
+    revalidatePath('(store)/admin/categories', 'page');
     return {
       success: true,
       message: 'Category created',
@@ -340,6 +315,7 @@ export const deleteCategoryById = async (categoryId: string) => {
       where: { id: categoryId },
     });
 
+    revalidatePath('(store)/admin/categories', 'page');
     return {
       success: true,
       message: 'Category deleted',
