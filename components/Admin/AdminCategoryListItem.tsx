@@ -1,32 +1,22 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Category } from '@prisma/client';
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/20/solid';
 import Modal from '@components/ui/Modal';
 import { useState } from 'react';
 import Button from '@components/ui/Button';
-import { admin } from '@lib/api/admin';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
 import Spinner from '@components/ui/Spinner';
 import toast from 'react-hot-toast';
-import getQueryClient from '@lib/getQueryClient';
+import { deleteCategoryById } from '@actions/adminActions';
 
 interface AdminCategoryListItem {
   category: Category;
-  selectedCategory: Category | undefined;
 }
 export default function AdminCategoryListItem({
   category,
-  selectedCategory,
 }: AdminCategoryListItem) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const categoryId = useSearchParams().get('categoryId');
   const [open, setOpen] = useState<boolean>(false);
-  const axiosWithAuth = useAxiosWithAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const queryClient = getQueryClient();
 
   return (
     <>
@@ -49,21 +39,12 @@ export default function AdminCategoryListItem({
           setOpen(true);
           try {
             setIsLoading(true);
-            if (selectedCategory) {
-              const response = await admin.deleteCategoryById(
-                selectedCategory?.id,
-                axiosWithAuth
-              );
-              if (response.status === 200) {
+            if (category) {
+              const result = await deleteCategoryById(category.id);
+              if (result?.success) {
                 toast.success('Category is successfully deleted');
                 setIsLoading(false);
-                setTimeout(() => {
-                  setOpen(false);
-                  queryClient.invalidateQueries({ queryKey: ['category'] });
-                  if (window !== undefined) {
-                    window.location.reload();
-                  }
-                }, 1500);
+                setOpen(false);
               } else {
                 toast.error('Something went wrong during deleting category');
                 setIsLoading(false);
@@ -71,11 +52,8 @@ export default function AdminCategoryListItem({
             }
           } catch (err: any) {
             setIsLoading(false);
-            toast.error(
-              err?.response?.data?.message ||
-                'Something went wrong during deleting category'
-            );
-            console.error('Error while deleting category:', err.message);
+            toast.error('Something went wrong during deleting category');
+            console.error('Error while deleting category:', err);
           }
         }}
         additionalBtns={
@@ -91,23 +69,8 @@ export default function AdminCategoryListItem({
         }
       />
       <li
-        className={`flex gap-x-4 px-3 py-5 hover:bg-primary-100 cursor-pointer ${
-          categoryId === category.id ? 'bg-primary-200' : ''
-        }`}
+        className="flex gap-x-4 px-3 py-5 hover:bg-primary-100 cursor-pointer"
         data-categoryid={category.id}
-        onClick={(e) => {
-          const params = new URLSearchParams(window.location.search);
-          if (params.has('categoryId') && e.currentTarget.dataset.categoryid) {
-            params.delete('categoryId');
-            params.append('categoryId', e.currentTarget.dataset.categoryid);
-          } else if (
-            !params.has('categoryId') &&
-            e.currentTarget.dataset.categoryid
-          ) {
-            params.append('categoryId', e.currentTarget.dataset.categoryid);
-          }
-          router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-        }}
       >
         <div className="min-w-0 flex justify-between items-center w-full">
           <p className="text-sm font-semibold leading-6 text-gray-900">

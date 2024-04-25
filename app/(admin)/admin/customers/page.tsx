@@ -1,12 +1,8 @@
-'use client';
-
-import { useAppSelector } from '@store/hooks';
+import { getAllUsers } from '@actions/adminActions';
 import CustomerCard from '@components/Admin/CustomerCard';
 
-export const dynamic = 'force-dynamic';
-
-export default function Customers() {
-  const customers = useAppSelector((state) => state.adminReducer.accountUsers);
+export default async function Customers() {
+  const customers = await getAllUsers();
 
   return (
     <>

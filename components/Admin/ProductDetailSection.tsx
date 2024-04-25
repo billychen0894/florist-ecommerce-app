@@ -6,18 +6,20 @@ import { cn } from '@lib/classNames';
 import { ErrorMessage } from '@node_modules/@hookform/error-message';
 import { Control, useFieldArray } from '@node_modules/react-hook-form';
 import { useFormContext } from 'react-hook-form';
-import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
 import { Input } from '@components/ui';
-import { TProduct } from '@lib/types/api';
 import { useEffect } from 'react';
+import { ProductDetailsFormSchema } from '@lib/schemaValidator';
+import { TProduct } from '@lib/types/types';
 
 type ProductDetailSection = {
   control: Control<ProductDetailsFormSchema>;
   selectedProduct: TProduct | undefined;
+  isEdit?: boolean;
 };
 export default function ProductDetailSection({
   control,
   selectedProduct,
+  isEdit,
 }: ProductDetailSection) {
   const {
     register,
@@ -30,13 +32,16 @@ export default function ProductDetailSection({
   });
 
   useEffect(() => {
-    if (selectedProduct?.id) {
+    if (isEdit && selectedProduct?.id) {
       const existingProductDetailItems =
         selectedProduct?.productDetail?.productDetailItems.map((item) => ({
           productDetailItemName: item.productDetailItemName,
           items: item.items,
         }));
-      if (existingProductDetailItems.length > 0) {
+      if (
+        existingProductDetailItems &&
+        existingProductDetailItems?.length > 0
+      ) {
         replace(existingProductDetailItems);
       }
     }
@@ -44,6 +49,7 @@ export default function ProductDetailSection({
     replace,
     selectedProduct?.productDetail?.productDetailItems,
     selectedProduct,
+    isEdit,
   ]);
 
   return (

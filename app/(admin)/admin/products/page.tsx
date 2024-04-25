@@ -1,4 +1,3 @@
-import { fetchCategories } from '@actions/fetch-categories';
 import { fetchProducts } from '@actions/productsActions';
 import AdminProduct from '@components/Admin/AdminProduct';
 
@@ -9,18 +8,8 @@ export default async function Products({
 }) {
   const keyword =
     typeof searchParams.search === 'string' ? searchParams?.search : undefined;
-  const productId =
-    typeof searchParams.productId === 'string' ? searchParams.productId : null;
 
-  const productsResult = await fetchProducts(
-    '1',
-    0,
-    'newest',
-    undefined,
-    keyword
-  );
-
-  const categories = await fetchCategories();
+  const productsResult = await fetchProducts('1', 0, 'newest', keyword);
 
   return (
     <>
@@ -32,12 +21,7 @@ export default async function Products({
         </div>
       </header>
       <div className="mx-auto max-w-7xl py-8 sm:px-4 lg:px-12">
-        <AdminProduct
-          products={productsResult}
-          keyword={keyword}
-          categories={categories}
-          productId={productId}
-        />
+        <AdminProduct products={productsResult} />
       </div>
     </>
   );

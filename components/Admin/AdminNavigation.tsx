@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { cn } from '@lib/classNames';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import capitalizeWords from '@lib/capitalizeWords';
 import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
 import { Avatar } from '@components/ui';
 import { Disclosure } from '@headlessui/react';
@@ -29,10 +28,6 @@ export type AdminNavigationProps = {
 
 export default function AdminNavigation({ session }: AdminNavigationProps) {
   const pathname = usePathname();
-  const pathnameParts = pathname.split('/');
-  const currentPageName = pathname.startsWith('/admin/orders')
-    ? pathnameParts[pathnameParts.length - 1]
-    : pathnameParts[pathnameParts.length - 1].split('-').join(' ');
 
   return (
     <>
@@ -187,16 +182,6 @@ export default function AdminNavigation({ session }: AdminNavigationProps) {
           )}
         </Disclosure>
       </div>
-      <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
-            {pathname.startsWith('/admin/orders') && pathname != '/admin/orders'
-              ? 'Invoice '
-              : null}
-            {capitalizeWords(currentPageName)}
-          </h1>
-        </div>
-      </header>
     </>
   );
 }

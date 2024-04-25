@@ -1,8 +1,7 @@
 import InvoiceSummary from '@components/Admin/InvoiceSummary';
 import Invoice from '@components/Admin/Invoice';
 import InvoiceEditForm from '@components/Admin/InvoiceEditForm';
-import { fetchStripeInvoice } from '@actions/fetchStripeInvoice';
-import { getOrders } from '@actions/adminActions';
+import { fetchStripeInvoice, getOrders } from '@actions/adminActions';
 import { Order } from '@prisma/client';
 import Stripe from 'stripe';
 
@@ -11,10 +10,10 @@ export default async function InvoiceEdit({
 }: {
   params: { orderNumber: string };
 }) {
-  const promises: [
-    Promise<Stripe.Invoice | undefined>,
-    Promise<Order[] | null>
-  ] = [fetchStripeInvoice(params?.orderNumber), getOrders()];
+  const promises: [Promise<Stripe.Invoice | null>, Promise<Order[] | null>] = [
+    fetchStripeInvoice(params?.orderNumber),
+    getOrders(),
+  ];
 
   const [invoice, orders] = await Promise.all(promises);
   const order = orders?.find(

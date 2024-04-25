@@ -8,7 +8,7 @@ import { Category } from '@prisma/client';
 import { useRef } from 'react';
 
 type CategoriesSection = {
-  categories: Category[];
+  categories: Category[] | null;
 };
 
 export default function CategoriesSection({ categories }: CategoriesSection) {
@@ -44,7 +44,7 @@ export default function CategoriesSection({ categories }: CategoriesSection) {
                 <option value="" disabled>
                   Select categories
                 </option>
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <option key={category.id} value={category.name}>
                     {category.name}
                   </option>

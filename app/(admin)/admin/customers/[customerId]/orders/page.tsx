@@ -1,11 +1,13 @@
-'use client';
-
 import StickyHeader from '@components/Table/StickyHeader';
 import Row from '@components/Table/Row';
-import { useAppSelector } from '@store/hooks';
 import RowData from '@components/Table/RowData';
 import Link from 'next/link';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { getUser, getUserOrders } from '@actions/userActions';
+import { formatDate } from '@lib/formatDate';
+import { getServerSession } from 'next-auth';
+import { options } from '@app/api/auth/[...nextauth]/options';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,13 +15,19 @@ type CustomerOrdersProps = {
   params: { customerId: string };
 };
 
-export default function CustomerOrders({ params }: CustomerOrdersProps) {
-  const [customer] = useAppSelector(
-    (state) => state.adminReducer.accountUsers
-  ).filter((customer) => customer?.id === params?.customerId);
-  const orders = useAppSelector((state) => state.adminReducer.orders).filter(
-    (order) => order?.userId === params?.customerId
-  );
+export default async function CustomerOrders({ params }: CustomerOrdersProps) {
+  const session = await getServerSession(options);
+
+  if (!session || session?.user.role !== 'admin') {
+    redirect('/denied');
+  }
+
+  const customer = await getUser(params.customerId);
+  const joinDate = formatDate(customer?.createdAt!);
+  const orders =
+    customer && customer.stripeCustomerId
+      ? await getUserOrders(customer?.id, customer?.stripeCustomerId)
+      : [];
 
   return (
     <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
@@ -41,12 +49,7 @@ export default function CustomerOrders({ params }: CustomerOrdersProps) {
             <div className="flex justify-between pt-6 sm:block sm:pt-0">
               <dt className="font-medium text-gray-900">Join</dt>
               <dd className="sm:mt-1">
-                <time
-                  dateTime={new Date(customer?.createdAt).toLocaleDateString()}
-                >
-                  {new Date(customer?.createdAt).toLocaleDateString() ||
-                    'unspecified'}
-                </time>
+                <time dateTime={joinDate}>{joinDate}</time>
               </dd>
             </div>
           </dl>
@@ -83,7 +86,7 @@ export default function CustomerOrders({ params }: CustomerOrdersProps) {
                   additionalRows={
                     <RowData rowIndex={idx} invoiceLength={orders?.length}>
                       <Link
-                        href={`/admin/orders/${invoice.stripeInvoiceId}/edit`}
+                        href={`/admin/orders/${invoice?.id}/edit`}
                         className="text-blue-500 hover:text-blue-400 flex justify-center items-center gap-1"
                       >
                         <PencilSquareIcon className="h-6 w-6 hidden sm:inline-block" />

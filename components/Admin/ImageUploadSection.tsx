@@ -15,8 +15,10 @@ export default function ImageUploadSection() {
     getValues,
   } = useFormContext();
 
-  const currentImages: { existingImages: string[]; newImages: File[] } =
-    getValues('images');
+  const currentImages: {
+    existingImages: { url: string; publicId?: string }[];
+    newImages: File[];
+  } = getValues('images');
 
   const handleImageRemove = (imageCategory: string, imageIndex: number) => {
     if (imageCategory === 'existingImages') {
@@ -69,8 +71,8 @@ export default function ImageUploadSection() {
       </h3>
       {/*Place states here: if no items then show this comp.*/}
       {currentImages &&
-        currentImages?.existingImages.length === 0 &&
-        currentImages.newImages.length === 0 && (
+        currentImages?.existingImages?.length === 0 &&
+        currentImages?.newImages?.length === 0 && (
           <ContextMenu>No items</ContextMenu>
         )}
       <Controller
@@ -78,18 +80,18 @@ export default function ImageUploadSection() {
         control={control}
         render={({ field }) => (
           <>
-            {(currentImages && currentImages.existingImages.length > 0) ||
-            currentImages.newImages.length > 0 ? (
+            {(currentImages && currentImages?.existingImages?.length > 0) ||
+            currentImages?.newImages?.length > 0 ? (
               <div className="mt-2 flex items-center rounded-lg border border-dashed border-gray-900/25 p-2 gap-3">
-                {currentImages.existingImages.map((image, idx) => (
+                {currentImages?.existingImages?.map((image, idx) => (
                   <ImageUploadPreview
                     key={idx}
                     index={idx}
-                    imageUrl={image}
+                    imageUrl={image.url}
                     onClick={() => handleImageRemove('existingImages', idx)}
                   />
                 ))}
-                {currentImages.newImages.map((image, idx) => (
+                {currentImages?.newImages?.map((image, idx) => (
                   <ImageUploadPreview
                     key={idx}
                     index={idx}

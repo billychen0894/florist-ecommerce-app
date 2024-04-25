@@ -1,8 +1,9 @@
+import { fetchCategories } from '@actions/fetch-categories';
 import AdminCategories from '@components/Admin/AdminCategories';
 
-export const dynamic = 'force-static';
+export default async function Categories() {
+  const categories = await fetchCategories();
 
-export default function Categories() {
   return (
     <>
       <header className="bg-white shadow">
@@ -13,7 +14,7 @@ export default function Categories() {
         </div>
       </header>
       <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        <AdminCategories />
+        <AdminCategories categories={categories} />
       </div>
     </>
   );
