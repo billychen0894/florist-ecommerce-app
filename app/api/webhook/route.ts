@@ -35,33 +35,23 @@ export async function POST(req: Request) {
     paymentStatus: PaymentStatus.PAID,
     contactPhone: phone,
     shippingAddress: {
-      connectOrCreate: {
-        where: {
-          postalCode: shippingAddress?.postal_code!,
-        },
-        create: {
-          addressLine1: shippingAddress?.line1!,
-          addressLine2: shippingAddress?.line2,
-          city: shippingAddress?.city!,
-          stateOrProvince: shippingAddress?.state!,
-          postalCode: shippingAddress?.postal_code!,
-          country: shippingAddress?.country!,
-        },
+      create: {
+        addressLine1: shippingAddress?.line1!,
+        addressLine2: shippingAddress?.line2,
+        city: shippingAddress?.city!,
+        stateOrProvince: shippingAddress?.state!,
+        postalCode: shippingAddress?.postal_code!,
+        country: shippingAddress?.country!,
       },
     },
     billingAddress: {
-      connectOrCreate: {
-        where: {
-          postalCode: billingAddress?.postal_code!,
-        },
-        create: {
-          addressLine1: billingAddress?.line1!,
-          addressLine2: billingAddress?.line2,
-          city: billingAddress?.city!,
-          stateOrProvince: billingAddress?.state!,
-          postalCode: billingAddress?.postal_code!,
-          country: billingAddress?.country!,
-        },
+      create: {
+        addressLine1: billingAddress?.line1!,
+        addressLine2: billingAddress?.line2,
+        city: billingAddress?.city!,
+        stateOrProvince: billingAddress?.state!,
+        postalCode: billingAddress?.postal_code!,
+        country: billingAddress?.country!,
       },
     },
   };
