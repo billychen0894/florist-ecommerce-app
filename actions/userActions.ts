@@ -177,7 +177,6 @@ export const getUser = async (userId: string) => {
 
     const session = await getServerSession(options);
     if (!session) throw new Error('Unauthorized');
-    if (session?.user?.id !== userId) throw new Error('Unauthorized');
     if (session?.user?.role !== 'user' && session?.user?.role !== 'admin') {
       throw new Error('Unauthorized');
     }
@@ -336,7 +335,6 @@ export const getUserOrders = async (
     if (!stripeCustomerId) throw new Error('Stripe customer ID is required');
     const session = await getServerSession(options);
     if (!session) throw new Error('Unauthorized');
-    if (session?.user?.id !== userId) throw new Error('Unauthorized');
 
     const promises: [
       Promise<Stripe.ApiList<Stripe.Invoice>>,
