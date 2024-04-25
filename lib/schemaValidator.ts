@@ -226,3 +226,14 @@ export const categoryFormSchema = z.object({
 });
 
 export type CategoryFormSchema = z.infer<typeof categoryFormSchema>;
+
+export const forgotPasswordFormSchema = z.object({
+  email: z
+    .string()
+    .email({ message: 'Invalid email address' })
+    .max(255)
+    .trim()
+    .min(1, { message: 'Email is required' }),
+});
+
+export type ForgotPasswordFormSchema = z.infer<typeof forgotPasswordFormSchema>;
