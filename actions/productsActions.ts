@@ -48,6 +48,11 @@ export const fetchProducts = async (
       include: {
         images: true,
         categories: true,
+        productDetail: {
+          include: {
+            productDetailItems: true,
+          },
+        },
       },
       skip,
       take,
