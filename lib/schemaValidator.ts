@@ -228,12 +228,23 @@ export const categoryFormSchema = z.object({
 export type CategoryFormSchema = z.infer<typeof categoryFormSchema>;
 
 export const forgotPasswordFormSchema = z.object({
-  email: z
-    .string()
-    .email({ message: 'Invalid email address' })
-    .max(255)
-    .trim()
-    .min(1, { message: 'Email is required' }),
+  email: z.string().email({ message: 'Invalid email address' }),
 });
 
 export type ForgotPasswordFormSchema = z.infer<typeof forgotPasswordFormSchema>;
+
+export const resetFormSchema = z
+  .object({
+    email: z.string().email({ message: 'Invalid email address' }),
+    newPassword: z
+      .string()
+      .min(8, { message: 'Password must be at least 8 characters' }),
+    confirmNewPassword: z.string(),
+    token: z.string().min(1, { message: 'Token is required' }),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmNewPassword'],
+  });
+
+export type ResetFormSchema = z.infer<typeof resetFormSchema>;

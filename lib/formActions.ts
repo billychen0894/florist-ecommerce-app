@@ -8,6 +8,7 @@ import {
   invoiceEditFormSchema,
   personalInfoFormSchema,
   productDetailsFormSchema,
+  resetFormSchema,
   signUpFormSchema,
 } from './schemaValidator';
 import {
@@ -32,6 +33,8 @@ import {
 } from '@actions/adminActions';
 import { preprocessFormData } from './preprocessFormData';
 import { sendForgotPasswordEmail } from '@actions/sendForgotPasswordEmail';
+import { prisma } from './prisma';
+import * as bcrypt from 'bcrypt';
 
 export type FormState = {
   success: boolean;
@@ -485,6 +488,59 @@ export async function onSubmitForgotPasswordForm(data: FormData) {
     return {
       success: false,
       message: 'Error occurred while sending reset email',
+    };
+  }
+}
+
+export async function onSubmitResetPassword(data: FormData) {
+  try {
+    const formData = Object.fromEntries(data);
+    const parsedData = resetFormSchema.safeParse(formData);
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: parsedData.data.email,
+      },
+    });
+
+    if (!user || user.passwordVerificationToken !== parsedData.data.token) {
+      return {
+        success: false,
+        message: 'Invalid token. Please request a new password reset link',
+      };
+    }
+
+    const hashedNewPassword = await bcrypt.hash(
+      parsedData.data.newPassword,
+      10
+    );
+    await prisma.user.update({
+      where: {
+        email: parsedData.data.email,
+      },
+      data: {
+        password: hashedNewPassword,
+        passwordVerificationToken: '',
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Password reset successfully',
+    };
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Error occurred while resetting password',
     };
   }
 }

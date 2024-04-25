@@ -1,20 +1,6 @@
 import ResetForm from '@components/Auth/ResetForm';
-import { redirect } from 'next/navigation';
 
-type ResetProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export const dynamic = 'force-dynamic';
-
-export default function Reset({ searchParams }: ResetProps) {
-  const token =
-    typeof searchParams.token === 'string' ? searchParams.token : null;
-
-  if (!token) {
-    redirect('/');
-  }
-
+export default function Reset() {
   return (
     <main className="min-h-full flex flex-col justify-center items-center bg-white px-6 py-24 lg:px-8 space-y-6">
       <div className="text-center">
