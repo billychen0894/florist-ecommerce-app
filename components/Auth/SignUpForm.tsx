@@ -86,12 +86,6 @@ export default function SignUpForm() {
     }
   };
 
-  // Desctructure the register method to register the email input field to be debounced in order
-  // to prevent extra api calls when the email is valid but the user is still typing.
-  // Reasoning: if the debounce is implemented directly in the yup schema, it will make a weird behaviour for the error message of the email input
-  // , which will be displayed only the previous validation error message, not the current one.
-  // Also, when other input fields are entered, the async api call will be sent again, which is not necessary.
-  // Becasue the yup schema makes the form validation as a whole asynchoronously, instead of field by field.
   const {
     ref: emailRef,
     onChange: emailOnChange,
