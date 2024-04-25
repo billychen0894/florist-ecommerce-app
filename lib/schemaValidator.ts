@@ -116,43 +116,40 @@ export const productDetailsFormSchema = z.object({
     .positive({ message: 'Price must be a positive number' }),
   images: z
     .object({
-      existingImages: z.array(
-        z.object({
-          url: z.string(),
-          publicId: z.string().nullable(),
-        })
-      ),
+      existingImages: z
+        .array(
+          z.object({
+            url: z.string(),
+            publicId: z.string().nullable(),
+          })
+        )
+        .nullable(),
       newImages: z.array(z.any()).superRefine((val, ctx) => {
         const totalSize = val.reduce(
           (acc: number = 0, file: File) => acc + file.size,
           0
         );
-        const fileTypes = val.map((file: File) => file.type);
-
         if (totalSize > MAX_UPLOAD_PRODUCTS_SIZE) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Total upload size exceeds the maximum limit of 10MB.',
           });
         }
-
-        // if (fileTypes.some((type) => !ALLOWED_FILE_TYPES.includes(type))) {
-        //   ctx.addIssue({
-        //     code: z.ZodIssueCode.custom,
-        //     message: 'Invalid file type. Only JPG, JPEG, and PNG are allowed.',
-        //   });
-        // }
       }),
     })
     .refine(
       (value) => {
-        return value.existingImages.length + value?.newImages?.length > 0;
+        return value.existingImages
+          ? value?.existingImages?.length + value?.newImages?.length > 0
+          : false;
       },
       { message: 'Product should at least have one image' }
     )
     .refine(
       (value) => {
-        return value.existingImages.length + value?.newImages?.length <= 4;
+        return value.existingImages
+          ? value.existingImages.length + value?.newImages?.length <= 4
+          : false;
       },
       { message: 'Maximum of 4 uploads' }
     ),
@@ -164,16 +161,20 @@ export const productDetailsFormSchema = z.object({
     .min(1, { message: 'Product must have at least one unit' })
     .positive({ message: 'Product must have at least one unit' }),
   inStock: z.boolean(),
-  leadTime: z.string(),
+  leadTime: z.string().min(1, { message: 'Lead time is required' }),
   productDetail: z.object({
-    productDetailItems: z.array(
-      z.object({
-        productDetailItemName: z.string(),
-        items: z.array(z.string()).min(1, {
-          message: 'Product detail item should have at least one item',
-        }),
-      })
-    ),
+    productDetailItems: z
+      .array(
+        z.object({
+          productDetailItemName: z.string(),
+          items: z.array(z.string()).min(1, {
+            message: 'Product detail item should have at least one item',
+          }),
+        })
+      )
+      .min(1, {
+        message: 'Product detail should have at least one detail item',
+      }),
   }),
   selectedProductId: z.string(),
 });
@@ -215,3 +216,13 @@ export const signInFormSchema = z.object({
 });
 
 export type SignInFormSchema = z.infer<typeof signInFormSchema>;
+
+export const categoryFormSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: 'Category name is required' })
+    .max(30, { message: 'Category name is too long' })
+    .trim(),
+});
+
+export type CategoryFormSchema = z.infer<typeof categoryFormSchema>;
