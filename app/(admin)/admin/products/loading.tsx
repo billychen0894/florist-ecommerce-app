@@ -1,4 +1,3 @@
-import SkeletonTable from '@components/Table/SkeletonTable';
 import Spinner from '@components/ui/Spinner';
 
 export default function ProductsLoading() {
