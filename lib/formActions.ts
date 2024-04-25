@@ -4,6 +4,7 @@ import { imageUpload } from '@actions/imageUpload';
 import {
   billingShippingFormSchema,
   categoryFormSchema,
+  forgotPasswordFormSchema,
   invoiceEditFormSchema,
   personalInfoFormSchema,
   productDetailsFormSchema,
@@ -30,6 +31,7 @@ import {
   updateProductById,
 } from '@actions/adminActions';
 import { preprocessFormData } from './preprocessFormData';
+import { sendForgotPasswordEmail } from '@actions/sendForgotPasswordEmail';
 
 export type FormState = {
   success: boolean;
@@ -457,6 +459,32 @@ export async function onSubmitCategoryForm(data: FormData) {
     return {
       success: false,
       message: 'Error occurred while creating category',
+    };
+  }
+}
+
+export async function onSubmitForgotPasswordForm(data: FormData) {
+  try {
+    const formData = Object.fromEntries(data);
+    const parsedData = forgotPasswordFormSchema.safeParse(formData);
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        message: 'Form submission failed',
+        errors: parsedData.error.issues.map((issue) => issue.message),
+      };
+    }
+
+    // Send email with password reset link
+    const result = await sendForgotPasswordEmail(parsedData.data.email);
+
+    return result;
+  } catch (error: any) {
+    console.error('Form submission error: ', error);
+    return {
+      success: false,
+      message: 'Error occurred while sending reset email',
     };
   }
 }
