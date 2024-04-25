@@ -1,18 +1,12 @@
 'use server';
 
-import * as yup from 'yup';
 import { signJwtAccessToken } from '@lib/jwt';
 import { transporter } from '@lib/emailTransporter';
 import { prisma } from '@lib/prisma';
 
-const emailSchema = yup
-  .string()
-  .email('Invalid email address')
-  .required('Email is required');
-
 export const sendForgotPasswordEmail = async (email: string) => {
   try {
-    const validationResult = await emailSchema.validate(email);
+    if (!email) throw new Error('Email is required');
 
     const existedUser = await prisma.user.findUnique({
       where: {
@@ -31,9 +25,7 @@ export const sendForgotPasswordEmail = async (email: string) => {
           passwordVerificationToken: verifyToken,
         },
       });
-    }
 
-    if (validationResult && existedUser) {
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: email,
@@ -55,11 +47,22 @@ export const sendForgotPasswordEmail = async (email: string) => {
     </div> 
         `,
       });
+    } else {
+      return {
+        success: false,
+        message: 'This email is not registered',
+      };
     }
 
-    return true;
+    return {
+      success: true,
+      message: 'Reset email sent successfully',
+    };
   } catch (err: any) {
-    console.log('Error: ', err.message);
-    return false;
+    console.error('Error: ', err.message);
+    return {
+      success: false,
+      message: 'Error while sending reset email',
+    };
   }
 };
