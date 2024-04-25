@@ -1,6 +1,6 @@
 import { fetchProducts, getProductById } from '@actions/productsActions';
 import { getUserOrdersByUserId, getUserWishlist } from '@actions/userActions';
-import { ProductDetailsFormSchema } from '@components/Admin/ProductDetailsFormValidation';
+import { ProductDetailsFormSchema } from '@lib/schemaValidator';
 import { OrderStatus, Prisma, User } from '@prisma/client';
 import { Unpacked } from '@utils';
 import Stripe from 'stripe';
@@ -29,10 +29,25 @@ export type UpdatedUserData = {
   cloudinaryPublicId?: string;
   stripeCustomerId?: string;
 };
-export type ProductReqPayload = Omit<ProductDetailsFormSchema, 'images'> & {
+export type ProductReqPayload = Omit<
+  Omit<ProductDetailsFormSchema, 'images'>,
+  'selectedProductId'
+> & {
   images: {
-    existingImages: string[];
-    newImages: ({ url: string; publicId: string } | null)[];
+    existingImages?: ImageUploadResult[];
+    newImages?: ImageUploadResult[];
   };
 };
 export type TOrders = Prisma.PromiseReturnType<typeof getUserOrdersByUserId>;
+export type ImageUploadResult = {
+  publicId?: string;
+  url: string;
+};
+export type NewProductReqPayload = Omit<
+  Omit<ProductDetailsFormSchema, 'images'>,
+  'selectedProductId'
+> & {
+  images: {
+    newImages?: ImageUploadResult[];
+  };
+};
