@@ -15,24 +15,8 @@ import Spinner from '@components/ui/Spinner';
 import { SignUpFormSchema, signUpFormSchema } from '@lib/schemaValidator';
 import { onSubmitSignUpForm } from '@lib/formActions';
 import { signIn } from 'next-auth/react';
-import { validateEmail } from '@actions/emailActions';
-import { asyncCacheTest } from '@lib/asyncCacheTest';
 import { debounce } from 'lodash';
-
-const actualValidityTest = asyncCacheTest(
-  (value: string) =>
-    new Promise((resolve) => {
-      const result = validateEmail(value)
-        .then((res) => {
-          resolve(res);
-        })
-        .catch((error) => {
-          console.error('Error while validating email:', error);
-          resolve(false);
-        });
-      return result;
-    })
-);
+import { checkEmailIfExists } from '@lib/checkEmailIfExists';
 
 export default function SignUpForm() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -46,7 +30,7 @@ export default function SignUpForm() {
     resolver: zodResolver(
       signUpFormSchema.refine(
         async (data) => {
-          const emailExists = await actualValidityTest(data.email);
+          const emailExists = await checkEmailIfExists(data.email);
           return !emailExists;
         },
         { message: 'Email already exists', path: ['email'] }
