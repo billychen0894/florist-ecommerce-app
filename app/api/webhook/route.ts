@@ -1,5 +1,5 @@
-import { prisma } from '@lib/prisma';
-import { stripe } from '@lib/stripe';
+import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
 import { PaymentStatus, Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';

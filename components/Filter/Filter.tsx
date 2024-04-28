@@ -1,8 +1,8 @@
+import { fetchCategories } from '@/actions/fetch-categories';
+import FilterActionButton from '@/components/Product/FilterActionButton';
+import FilterForm from '@/components/Product/FilterForm';
+import { FilterActionCtxProvider } from '@/contexts/Filter';
 import { Category } from '@prisma/client';
-import FilterForm from '@components/Product/FilterForm';
-import FilterActionButton from '@components/Product/FilterActionButton';
-import { fetchCategories } from '@actions/fetch-categories';
-import { FilterActionCtxProvider } from '@contexts/Filter';
 
 export interface Filter {
   id: string;

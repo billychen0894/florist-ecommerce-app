@@ -1,9 +1,8 @@
-import { formatCurrency } from '@lib/formatCurrency';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TWishlistItem } from '@/lib/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import ProductWishlistButton from './ProductWishlistButton';
-import { TWishlistItem } from '@lib/types/types';
 
 interface ProductItemProps {
   product: TWishlistItem;

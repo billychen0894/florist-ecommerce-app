@@ -1,5 +1,5 @@
-import { Address } from '@lib/types/api';
-import { formatDateFullMonth, formatDateYYYYMMDD } from '@lib/formatTime';
+import { formatDateFullMonth, formatDateYYYYMMDD } from '@/lib/formatTime';
+import { Address } from '@/lib/types/api';
 
 interface InvoiceProps {
   invoiceNumber: string;

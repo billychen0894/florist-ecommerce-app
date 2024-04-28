@@ -1,18 +1,18 @@
+import { getProductById } from '@/actions/productsActions';
+import { getUserWishlist } from '@/actions/userActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
 import {
   ProductActions,
   ProductDetails,
   ProductImageGallery,
   ProductInfo,
   ProductsRecommendation,
-} from '@components/Product';
-import { notFound } from '@node_modules/next/dist/client/components/not-found';
+} from '@/components/Product';
+import SkeletonProductsRecommend from '@/components/Product/SkeletonProductsRecommend';
+import { notFound } from '@/node_modules/next/dist/client/components/not-found';
 import { Metadata } from 'next';
-import React, { Suspense } from 'react';
-import SkeletonProductsRecommend from '@components/Product/SkeletonProductsRecommend';
-import { getProductById } from '@actions/productsActions';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import { getUserWishlist } from '@actions/userActions';
+import { Suspense } from 'react';
 
 type Props = {
   params: { product: string };

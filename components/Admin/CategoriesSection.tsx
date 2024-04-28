@@ -1,11 +1,11 @@
-import { Label } from '@components/ui';
-import Button from '@components/ui/Button';
+import { Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import ContextMenu from '@/components/ui/ContextMenu';
 import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
-import { Controller, useFormContext } from 'react-hook-form';
-import ContextMenu from '@components/ui/ContextMenu';
 import { Category } from '@prisma/client';
 import { useRef } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 type CategoriesSection = {
   categories: Category[] | null;

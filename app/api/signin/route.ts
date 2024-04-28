@@ -1,5 +1,5 @@
-import { signJwtAccessToken, signJwtRefreshToken } from '@lib/jwt';
-import { prisma } from '@lib/prisma';
+import { signJwtAccessToken, signJwtRefreshToken } from '@/lib/jwt';
+import { prisma } from '@/lib/prisma';
 import * as bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
 

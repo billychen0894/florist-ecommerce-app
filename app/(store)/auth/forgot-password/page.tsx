@@ -1,11 +1,11 @@
+import BackgroundImage from '@/public/images/cover2.jpg';
+import Logo from '@/public/images/logo.png';
 import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import BackgroundImage from '@public/images/cover2.jpg';
-import Logo from '@public/images/logo.png';
 
-import { options } from '@app/api/auth/[...nextauth]/options';
-import ForgotPasswordForm from '@components/Auth/ForgotPasswordForm';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import ForgotPasswordForm from '@/components/Auth/ForgotPasswordForm';
 
 export default async function ForgotPassword() {
   const session = await getServerSession(options);

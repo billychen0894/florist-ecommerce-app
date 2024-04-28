@@ -1,16 +1,16 @@
 'use client';
 
-import Image from 'next/image';
-import { cn } from '@lib/classNames';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import UserAcccountDropdown from '@components/ui/UserAccountDropdown';
-import { Avatar } from '@components/ui';
+import { Avatar } from '@/components/ui';
+import UserAcccountDropdown from '@/components/ui/UserAccountDropdown';
+import { cn } from '@/lib/classNames';
+import Logo from '@/public/images/logo.png';
 import { Disclosure } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Bars3Icon, BuildingStorefrontIcon } from '@heroicons/react/24/outline';
-import Logo from '@public/images/logo.png';
 import { Session } from 'next-auth';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard' },

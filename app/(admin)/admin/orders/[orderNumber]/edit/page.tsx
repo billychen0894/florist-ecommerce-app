@@ -1,7 +1,7 @@
-import InvoiceSummary from '@components/Admin/InvoiceSummary';
-import Invoice from '@components/Admin/Invoice';
-import InvoiceEditForm from '@components/Admin/InvoiceEditForm';
-import { fetchStripeInvoice, getOrders } from '@actions/adminActions';
+import { fetchStripeInvoice, getOrders } from '@/actions/adminActions';
+import Invoice from '@/components/Admin/Invoice';
+import InvoiceEditForm from '@/components/Admin/InvoiceEditForm';
+import InvoiceSummary from '@/components/Admin/InvoiceSummary';
 import { Order } from '@prisma/client';
 import Stripe from 'stripe';
 

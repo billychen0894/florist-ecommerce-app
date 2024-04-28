@@ -1,4 +1,4 @@
-import { cn } from '@lib/classNames';
+import { cn } from '@/lib/classNames';
 import * as React from 'react';
 
 export const Label = React.forwardRef<

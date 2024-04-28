@@ -1,8 +1,8 @@
+import Logo from '@/public/images/logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
-import Logo from '@public/images/logo.png';
 
-import { footerNavigation, hasIcon, IconWrapper } from '@const/navigation';
+import { footerNavigation, hasIcon, IconWrapper } from '@/const/navigation';
 import { FooterItem } from './FooterItem';
 
 export function Footer() {

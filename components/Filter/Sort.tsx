@@ -4,8 +4,8 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment, useCallback, useMemo } from 'react';
 
-import { productSortOptions } from '@const/products';
-import { cn } from '@lib/classNames';
+import { productSortOptions } from '@/const/products';
+import { cn } from '@/lib/classNames';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function Sort() {

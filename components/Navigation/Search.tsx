@@ -1,13 +1,13 @@
 'use client';
 
-import Link from '@node_modules/next/link';
-import { MagnifyingGlassIcon } from '@node_modules/@heroicons/react/24/outline';
-import { useState } from 'react';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function Search() {
   const [open, setOpen] = useState<boolean>(false);
-  const SearchWindow = dynamic(() => import('@components/ui/SearchWindow'));
+  const SearchWindow = dynamic(() => import('@/components/ui/SearchWindow'));
 
   return (
     <>

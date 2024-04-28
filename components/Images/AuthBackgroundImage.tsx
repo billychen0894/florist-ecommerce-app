@@ -1,4 +1,4 @@
-import backgroundImage from '@public/images/cover2.jpg';
+import backgroundImage from '@/public/images/cover2.jpg';
 import Image from 'next/image';
 
 export default function AuthBackgroundImage() {

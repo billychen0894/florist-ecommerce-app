@@ -1,4 +1,4 @@
-import { validateEmail } from '@actions/emailActions';
+import { validateEmail } from '@/actions/emailActions';
 import { asyncCacheTest } from './asyncCacheTest';
 
 export const checkEmailIfExists = asyncCacheTest(

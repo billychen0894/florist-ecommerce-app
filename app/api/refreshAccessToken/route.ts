@@ -1,4 +1,4 @@
-import { signJwtAccessToken, verifyJwtRefreshToken } from '@lib/jwt';
+import { signJwtAccessToken, verifyJwtRefreshToken } from '@/lib/jwt';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {

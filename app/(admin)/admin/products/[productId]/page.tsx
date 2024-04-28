@@ -1,8 +1,8 @@
-import { fetchCategories } from '@actions/fetch-categories';
-import { getProductById } from '@actions/productsActions';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import AdminProductDetailsForm from '@components/Admin/AdminProductDetailsForm';
-import Spinner from '@components/ui/Spinner';
+import { fetchCategories } from '@/actions/fetch-categories';
+import { getProductById } from '@/actions/productsActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import AdminProductDetailsForm from '@/components/Admin/AdminProductDetailsForm';
+import Spinner from '@/components/ui/Spinner';
 import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 import { Suspense } from 'react';

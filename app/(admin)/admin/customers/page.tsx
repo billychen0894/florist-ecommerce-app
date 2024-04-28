@@ -1,5 +1,5 @@
-import { getAllUsers } from '@actions/adminActions';
-import CustomerCard from '@components/Admin/CustomerCard';
+import { getAllUsers } from '@/actions/adminActions';
+import CustomerCard from '@/components/Admin/CustomerCard';
 
 export default async function Customers() {
   const customers = await getAllUsers();

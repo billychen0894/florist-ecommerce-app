@@ -3,7 +3,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 
-import { cn } from '@lib/classNames';
+import { cn } from '@/lib/classNames';
 import Button from './Button';
 
 interface ModalProps {

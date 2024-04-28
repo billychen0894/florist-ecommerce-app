@@ -1,4 +1,4 @@
-import { TProducts } from '@lib/types/types';
+import { TProducts } from '@/lib/types/types';
 import { ProductItem } from './ProductItem';
 
 interface ProductListProps {

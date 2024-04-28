@@ -1,18 +1,18 @@
 'use server';
 
-import { options } from '@app/api/auth/[...nextauth]/options';
-import { transporter } from '@lib/emailTransporter';
-import { signJwtAccessToken } from '@lib/jwt';
-import { prisma } from '@lib/prisma';
-import { TOrders, UpdatedUserData } from '@lib/types/types';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { transporter } from '@/lib/emailTransporter';
+import { exclude } from '@/lib/exclude';
+import { signJwtAccessToken } from '@/lib/jwt';
+import { prisma } from '@/lib/prisma';
+import { SignUpFormSchema } from '@/lib/schemaValidator';
+import { stripe } from '@/lib/stripe';
+import { TOrders, UpdatedUserData } from '@/lib/types/types';
+import { PrismaPromise } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { getServerSession } from 'next-auth';
-import { exclude } from '@lib/exclude';
 import { revalidatePath } from 'next/cache';
-import { stripe } from '@lib/stripe';
 import Stripe from 'stripe';
-import { PrismaPromise } from '@prisma/client';
-import { SignUpFormSchema } from '@lib/schemaValidator';
 
 export const getUserWishlist = async (userId: string) => {
   try {

@@ -1,4 +1,4 @@
-import { fetchProducts } from '@actions/productsActions';
+import { fetchProducts } from '@/actions/productsActions';
 import { ProductItem } from './ProductItem';
 
 export default async function PopularProducts() {

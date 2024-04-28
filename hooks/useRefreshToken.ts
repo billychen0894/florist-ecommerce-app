@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 
-import { auth } from '@lib/api/auth';
+import { auth } from '@/lib/api/auth';
 
 export default function useRefreshToken() {
   const { data: session, update } = useSession();

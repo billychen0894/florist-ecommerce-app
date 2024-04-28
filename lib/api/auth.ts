@@ -1,7 +1,7 @@
-import axios from '@lib/axios';
+import axios from '@/lib/axios';
 import { AxiosResponse } from 'axios';
 
-import { RefreshAccessTokenResponse, SignInApiResponse } from '@lib/types/api';
+import { RefreshAccessTokenResponse, SignInApiResponse } from '@/lib/types/api';
 
 async function signIn(
   credentials: Record<'password' | 'email', string> | undefined

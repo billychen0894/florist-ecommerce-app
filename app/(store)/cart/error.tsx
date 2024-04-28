@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 
 export default function Error({
   error,
@@ -10,7 +10,7 @@ export default function Error({
   error: Error;
   reset: () => void;
 }) {
-  const Error = dynamic(() => import('@components/ui/Error'));
+  const Error = dynamic(() => import('@/components/ui/Error'));
 
   useEffect(() => {
     // Log the error to an error reporting service

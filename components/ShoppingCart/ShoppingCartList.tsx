@@ -4,9 +4,9 @@ import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { formatCurrency } from '@lib/formatCurrency';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import { formatCurrency } from '@/lib/formatCurrency';
 import { ShoppingCartCountSelect } from './ShoppingCartCountSelect';
-import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 export function ShoppingCartList() {
   const cartItems = useCartStore((state) => state.cartItems);

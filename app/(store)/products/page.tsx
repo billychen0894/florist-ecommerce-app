@@ -1,6 +1,6 @@
-import { Breadcrumb } from '@components/Breadcrumb';
-import { Filter, Sort } from '@components/Filter';
-import ProductListView from '@components/Product/ProductsListView';
+import { Breadcrumb } from '@/components/Breadcrumb';
+import { Filter, Sort } from '@/components/Filter';
+import ProductListView from '@/components/Product/ProductsListView';
 
 export default function Products({
   searchParams,

@@ -1,8 +1,8 @@
-import WishlistView from '@components/User/WishlistView';
+import { getUserWishlist } from '@/actions/userActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import WishlistView from '@/components/User/WishlistView';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
 import { redirect } from 'next/navigation';
-import { getUserWishlist } from '@actions/userActions';
 
 export default async function Wishlist() {
   const session = await getServerSession(options);

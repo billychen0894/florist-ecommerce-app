@@ -1,13 +1,13 @@
 'use client';
 
-import { Category } from '@prisma/client';
+import { deleteCategoryById } from '@/actions/adminActions';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/20/solid';
-import Modal from '@components/ui/Modal';
+import { Category } from '@prisma/client';
 import { useState } from 'react';
-import Button from '@components/ui/Button';
-import Spinner from '@components/ui/Spinner';
 import toast from 'react-hot-toast';
-import { deleteCategoryById } from '@actions/adminActions';
 
 interface AdminCategoryListItem {
   category: Category;

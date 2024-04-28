@@ -1,6 +1,6 @@
 'use client';
 
-import { createCartStore, type CartStore } from '@stores/cart-store';
+import { createCartStore, type CartStore } from '@/stores/cart-store';
 import { createContext, useContext, useRef } from 'react';
 import { useStore, type StoreApi } from 'zustand';
 

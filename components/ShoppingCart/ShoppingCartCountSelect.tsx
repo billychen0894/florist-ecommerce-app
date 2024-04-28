@@ -1,9 +1,9 @@
 'use client';
 
-import { useCartStore } from '@components/Providers/CartStoreProvider';
-import Button from '@components/ui/Button';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import Button from '@/components/ui/Button';
+import { TProduct } from '@/lib/types/types';
 import { XMarkIcon } from '@heroicons/react/20/solid';
-import { TProduct } from '@lib/types/types';
 
 interface ShoppingCartCountSelectProps {
   product: TProduct;

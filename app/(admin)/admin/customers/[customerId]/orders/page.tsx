@@ -1,12 +1,12 @@
-import StickyHeader from '@components/Table/StickyHeader';
-import Row from '@components/Table/Row';
-import RowData from '@components/Table/RowData';
-import Link from 'next/link';
+import { getUser, getUserOrders } from '@/actions/userActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import Row from '@/components/Table/Row';
+import RowData from '@/components/Table/RowData';
+import StickyHeader from '@/components/Table/StickyHeader';
+import { formatDate } from '@/lib/formatDate';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
-import { getUser, getUserOrders } from '@actions/userActions';
-import { formatDate } from '@lib/formatDate';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';

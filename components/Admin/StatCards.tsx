@@ -1,10 +1,10 @@
-import StatCard from '@components/ui/StatCard';
-import { formatCurrency } from '@lib/formatCurrency';
+import { getAllUsers, getOrders } from '@/actions/adminActions';
+import { fetchCategories } from '@/actions/fetch-categories';
+import { fetchProducts } from '@/actions/productsActions';
+import StatCard from '@/components/ui/StatCard';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TProducts, UserWithoutPass } from '@/lib/types/types';
 import { Category, Order } from '@prisma/client';
-import { TProducts, UserWithoutPass } from '@lib/types/types';
-import { getAllUsers, getOrders } from '@actions/adminActions';
-import { fetchProducts } from '@actions/productsActions';
-import { fetchCategories } from '@actions/fetch-categories';
 
 export default async function StatCards() {
   const promises: [

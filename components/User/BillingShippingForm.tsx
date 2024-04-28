@@ -3,19 +3,19 @@
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Spinner from '@components/ui/Spinner';
-import { shippingLocations } from '@const/shippingLocation';
-import { ErrorMessage } from '@hookform/error-message';
-import { UserWithoutPass } from '@lib/types/types';
-import Stripe from 'stripe';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Spinner from '@/components/ui/Spinner';
+import { shippingLocations } from '@/const/shippingLocation';
+import { onSubmitBillingShippingForm } from '@/lib/formActions';
 import {
   BillingShippingFormSchema,
   billingShippingFormSchema,
-} from '@lib/schemaValidator';
+} from '@/lib/schemaValidator';
+import { UserWithoutPass } from '@/lib/types/types';
+import { ErrorMessage } from '@hookform/error-message';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { onSubmitBillingShippingForm } from '@lib/formActions';
+import Stripe from 'stripe';
 
 interface BillingShippingFormProps {
   isInputsDisabled: boolean;

@@ -14,13 +14,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "types": ["@testing-library/jest-dom"],
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@*": ["./*"]
+      "@/*": ["./*"]
     }
   },
   "include": [
@@ -31,7 +32,8 @@
     "postcss.config.js",
     "next.config.js",
     "tailwind.config.js",
-    "middleware.ts"
+    "middleware.ts",
+    "jest-setup.ts"
   ],
   "exclude": ["node_modules"]
 }

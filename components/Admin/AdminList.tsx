@@ -1,8 +1,8 @@
 'use client';
 
-import Button from '@components/ui/Button';
+import { Input } from '@/components/ui';
+import Button from '@/components/ui/Button';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { Input } from '@components/ui';
 import { useRouter } from 'next/navigation';
 
 interface ProductListProps {

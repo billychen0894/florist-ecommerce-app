@@ -1,15 +1,12 @@
-import {
-  MinusCircleIcon,
-  PlusCircleIcon,
-} from '@node_modules/@heroicons/react/20/solid';
-import { cn } from '@lib/classNames';
-import { ErrorMessage } from '@node_modules/@hookform/error-message';
-import { Control, useFieldArray } from '@node_modules/react-hook-form';
-import { useFormContext } from 'react-hook-form';
-import { Input } from '@components/ui';
+import { Input } from '@/components/ui';
+import { cn } from '@/lib/classNames';
+import { ProductDetailsFormSchema } from '@/lib/schemaValidator';
+import { TProduct } from '@/lib/types/types';
+import { Control, useFieldArray } from '@/node_modules/react-hook-form';
+import { MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid';
+import { ErrorMessage } from '@hookform/error-message';
 import { useEffect } from 'react';
-import { ProductDetailsFormSchema } from '@lib/schemaValidator';
-import { TProduct } from '@lib/types/types';
+import { useFormContext } from 'react-hook-form';
 
 type ProductDetailSection = {
   control: Control<ProductDetailsFormSchema>;

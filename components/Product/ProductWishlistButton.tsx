@@ -1,9 +1,8 @@
-import Button from '@components/ui/Button';
-import { HeartIcon as HeartIconSolid } from '@node_modules/@heroicons/react/24/solid';
-import React from 'react';
-import { useSession } from '@node_modules/next-auth/react';
-import { TWishlistItem } from '@lib/types/types';
-import { removeProductFromWishlist } from '@actions/userActions';
+import { removeProductFromWishlist } from '@/actions/userActions';
+import Button from '@/components/ui/Button';
+import { TWishlistItem } from '@/lib/types/types';
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { useSession } from 'next-auth/react';
 
 type ProductWishlistButtonProps = {
   product: TWishlistItem;

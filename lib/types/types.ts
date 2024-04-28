@@ -1,8 +1,8 @@
-import { fetchProducts, getProductById } from '@actions/productsActions';
-import { getUserOrdersByUserId, getUserWishlist } from '@actions/userActions';
-import { ProductDetailsFormSchema } from '@lib/schemaValidator';
+import { fetchProducts, getProductById } from '@/actions/productsActions';
+import { getUserOrdersByUserId, getUserWishlist } from '@/actions/userActions';
+import { ProductDetailsFormSchema } from '@/lib/schemaValidator';
+import { Unpacked } from '@/utils';
 import { OrderStatus, Prisma, User } from '@prisma/client';
-import { Unpacked } from '@utils';
 import Stripe from 'stripe';
 
 export type TProducts = Prisma.PromiseReturnType<typeof fetchProducts>;

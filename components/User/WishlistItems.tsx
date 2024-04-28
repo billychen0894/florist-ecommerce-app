@@ -1,6 +1,5 @@
-import { ProductItem } from '@components/Product/ProductItem';
-import { TWishlist } from '@lib/types/types';
-import React from 'react';
+import { ProductItem } from '@/components/Product/ProductItem';
+import { TWishlist } from '@/lib/types/types';
 
 interface ProductListProps {
   productsList: TWishlist;

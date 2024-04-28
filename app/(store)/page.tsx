@@ -1,8 +1,8 @@
+import { Hero } from '@/components/Homepage/Hero';
+import PopularProducts from '@/components/Product/PopularProducts';
+import ProductListSkeleton from '@/components/Product/ProductListSkeleton';
 import Link from 'next/link';
-import { Hero } from '@components/Homepage/Hero';
 import { Suspense } from 'react';
-import PopularProducts from '@components/Product/PopularProducts';
-import ProductListSkeleton from '@components/Product/ProductListSkeleton';
 
 export default async function Home() {
   return (

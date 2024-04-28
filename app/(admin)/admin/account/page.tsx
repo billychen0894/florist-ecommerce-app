@@ -1,8 +1,8 @@
-import PersonalInfoForm from '@components/User/PersonalInfoForm';
-import { redirect } from '@node_modules/next/navigation';
+import { getUser } from '@/actions/userActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import PersonalInfoForm from '@/components/User/PersonalInfoForm';
+import { redirect } from '@/node_modules/next/navigation';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import { getUser } from '@actions/userActions';
 
 export default async function Account() {
   const session = await getServerSession(options);

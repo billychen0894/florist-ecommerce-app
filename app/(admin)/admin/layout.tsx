@@ -1,7 +1,7 @@
-import AdminNavigation from '@components/Admin/AdminNavigation';
-import { redirect } from '@node_modules/next/navigation';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import AdminNavigation from '@/components/Admin/AdminNavigation';
+import { redirect } from '@/node_modules/next/navigation';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
 
 export default async function AdminLayout({
   children,

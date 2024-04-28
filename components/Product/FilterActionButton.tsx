@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@components/ui/Button';
-import { MobileFilterDialog } from '@components/Filter/MobileFilterDialog';
-import { Filter } from '@components/Filter';
-import useFilterAction from '@hooks/useFilterAction';
+import { Filter } from '@/components/Filter';
+import { MobileFilterDialog } from '@/components/Filter/MobileFilterDialog';
+import Button from '@/components/ui/Button';
+import useFilterAction from '@/hooks/useFilterAction';
 
 type FilterActionButtionProps = {
   filters: Filter[];

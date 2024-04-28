@@ -1,9 +1,9 @@
 'use client';
 
-import Link from '@node_modules/next/link';
-import { ShoppingBagIcon } from '@node_modules/@heroicons/react/24/outline';
-import { cn } from '@lib/classNames';
-import { useCartStore } from '@components/Providers/CartStoreProvider';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import { cn } from '@/lib/classNames';
+import { ShoppingBagIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 export default function NavCart() {
   const cartItems = useCartStore((state) => state.cartItems);

@@ -1,6 +1,6 @@
-import { fetchProducts } from '@actions/productsActions';
-import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/types';
+import { fetchProducts } from '@/actions/productsActions';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TProduct } from '@/lib/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
 

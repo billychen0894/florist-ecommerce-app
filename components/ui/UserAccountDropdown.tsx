@@ -1,8 +1,8 @@
+import { cn } from '@/lib/classNames';
 import { Menu, Transition } from '@headlessui/react';
-import { cn } from '@lib/classNames';
+import Link from 'next/link';
 import React, { Fragment } from 'react';
 import Button from './Button';
-import Link from 'next/link';
 
 interface MenuItem {
   href: string;

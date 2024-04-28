@@ -5,10 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-import Button from '@components/ui/Button';
-import Modal from '@components/ui/Modal';
-import { emails } from '@lib/api/email';
-import { sendNewEmailVerificationLink } from '@lib/sendNewEmailVerificationLink';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import { emails } from '@/lib/api/email';
+import { sendNewEmailVerificationLink } from '@/lib/sendNewEmailVerificationLink';
 
 export const dynamic = 'force-static';
 

@@ -1,22 +1,22 @@
 'use client';
 
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { checkEmailIfExists } from '@/lib/checkEmailIfExists';
+import { cn } from '@/lib/classNames';
+import { onSubmitSignUpForm } from '@/lib/formActions';
+import { SignUpFormSchema, signUpFormSchema } from '@/lib/schemaValidator';
 import { FaceFrownIcon, FaceSmileIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { debounce } from 'lodash';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Modal from '@components/ui/Modal';
-import { cn } from '@lib/classNames';
-import Spinner from '@components/ui/Spinner';
-import { SignUpFormSchema, signUpFormSchema } from '@lib/schemaValidator';
-import { onSubmitSignUpForm } from '@lib/formActions';
-import { signIn } from 'next-auth/react';
-import { debounce } from 'lodash';
-import { checkEmailIfExists } from '@lib/checkEmailIfExists';
 
 export default function SignUpForm() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);

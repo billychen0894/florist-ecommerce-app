@@ -1,8 +1,8 @@
 'use server';
 
-import { prisma } from '@lib/prisma';
-import { stripe } from '@lib/stripe';
-import { TCartItem } from '@lib/types/types';
+import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
+import { TCartItem } from '@/lib/types/types';
 import Stripe from 'stripe';
 
 export const checkout = async (orderItems: TCartItem[], userId?: string) => {

@@ -1,12 +1,12 @@
-import StickyHeader from '@components/Table/StickyHeader';
-import Row from '@components/Table/Row';
-import RowData from '@components/Table/RowData';
-import Link from 'next/link';
+import { getOrders } from '@/actions/adminActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import Row from '@/components/Table/Row';
+import RowData from '@/components/Table/RowData';
+import StickyHeader from '@/components/Table/StickyHeader';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
-import { redirect } from 'next/navigation';
-import { options } from '@app/api/auth/[...nextauth]/options';
 import { getServerSession } from 'next-auth';
-import { getOrders } from '@actions/adminActions';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function Orders() {
   const session = await getServerSession(options);

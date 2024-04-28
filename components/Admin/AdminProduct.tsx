@@ -1,6 +1,6 @@
-import { TProducts } from '@lib/types/types';
+import AdminList from '@/components/Admin/AdminList';
+import { TProducts } from '@/lib/types/types';
 import AdminProductListItem from './AdminProductListItem';
-import AdminList from '@components/Admin/AdminList';
 
 type AdminProductProps = {
   products: TProducts;

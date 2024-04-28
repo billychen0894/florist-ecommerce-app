@@ -1,7 +1,7 @@
 'use client';
 
-import Button from '@components/ui/Button';
-import { TWishlist } from '@lib/types/types';
+import Button from '@/components/ui/Button';
+import { TWishlist } from '@/lib/types/types';
 import { useState } from 'react';
 import WishlistItems from './WishlistItems';
 

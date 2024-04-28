@@ -1,7 +1,7 @@
+import HeroImage from '@/public/images/cover2.jpg';
 import Link from 'next/link';
-import HeroImage from '@public/images/cover2.jpg';
 
-import { heroCTALabel, heroSubtitle, heroTitle } from '@const/hero';
+import { heroCTALabel, heroSubtitle, heroTitle } from '@/const/hero';
 import Image from 'next/image';
 
 export function Hero() {

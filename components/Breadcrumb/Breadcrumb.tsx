@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
-import capitalizeWords from '@lib/capitalizeWords';
+import capitalizeWords from '@/lib/capitalizeWords';
 import { Crumb } from './Crumb';
 
 interface Crumb {

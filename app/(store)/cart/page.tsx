@@ -1,4 +1,4 @@
-import { OrderSummary, ShoppingCartList } from '@components/ShoppingCart';
+import { OrderSummary, ShoppingCartList } from '@/components/ShoppingCart';
 
 export default function Cart() {
   return (

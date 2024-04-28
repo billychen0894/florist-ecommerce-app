@@ -1,9 +1,9 @@
-import { redirect } from '@node_modules/next/navigation';
-import StatCards from '@components/Admin/StatCards';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import StatCards from '@/components/Admin/StatCards';
+import Spinner from '@/components/ui/Spinner';
+import { redirect } from '@/node_modules/next/navigation';
 import { getServerSession } from 'next-auth/next';
-import { options } from '@app/api/auth/[...nextauth]/options';
 import { Suspense } from 'react';
-import Spinner from '@components/ui/Spinner';
 
 export default async function Dashboard() {
   const session = await getServerSession(options);

@@ -1,4 +1,4 @@
-import ProductListSkeleton from '@components/Product/ProductListSkeleton';
+import ProductListSkeleton from '@/components/Product/ProductListSkeleton';
 
 export default function WishlistLoading() {
   return (

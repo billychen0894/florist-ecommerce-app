@@ -1,5 +1,5 @@
+import { cn } from '@/lib/classNames';
 import Image from 'next/image';
-import { cn } from '@lib/classNames';
 
 interface AvatarProps {
   avatarImageUrl: string;

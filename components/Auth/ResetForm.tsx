@@ -1,22 +1,22 @@
 'use client';
 
+import { sendForgotPasswordEmail } from '@/actions/sendForgotPasswordEmail';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { onSubmitResetPassword } from '@/lib/formActions';
+import { verifyJwtAccessToken } from '@/lib/jwt';
+import { ResetFormSchema, resetFormSchema } from '@/lib/schemaValidator';
+import { FaceFrownIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
-import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Spinner from '@components/ui/Spinner';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
-import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { verifyJwtAccessToken } from '@lib/jwt';
-import { FaceFrownIcon } from '@node_modules/@heroicons/react/20/solid';
-import { sendForgotPasswordEmail } from '@actions/sendForgotPasswordEmail';
-import { ResetFormSchema, resetFormSchema } from '@lib/schemaValidator';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Modal from '@components/ui/Modal';
-import { onSubmitResetPassword } from '@lib/formActions';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 function ResetForm() {
   const token = useSearchParams().get('token');

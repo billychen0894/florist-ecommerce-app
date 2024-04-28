@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-import { cn } from '@lib/classNames';
+import { cn } from '@/lib/classNames';
 
 interface ButtonProps {
   type: 'button' | 'submit' | 'reset';

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { type Page } from '@const/navigation';
+import { type Page } from '@/const/navigation';
 
 interface FooterItemProps {
   pageTitle: string;

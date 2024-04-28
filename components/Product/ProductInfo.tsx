@@ -1,5 +1,5 @@
-import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/types';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TProduct } from '@/lib/types/types';
 
 interface ProductInfoProps {
   product: TProduct | null;

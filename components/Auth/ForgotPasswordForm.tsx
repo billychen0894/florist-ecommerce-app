@@ -1,18 +1,18 @@
 'use client';
 
-import { ErrorMessage } from '@hookform/error-message';
-import { useForm } from 'react-hook-form';
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Spinner from '@components/ui/Spinner';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Spinner from '@/components/ui/Spinner';
+import { onSubmitForgotPasswordForm } from '@/lib/formActions';
 import {
   ForgotPasswordFormSchema,
   forgotPasswordFormSchema,
-} from '@lib/schemaValidator';
+} from '@/lib/schemaValidator';
+import { ErrorMessage } from '@hookform/error-message';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { onSubmitForgotPasswordForm } from '@lib/formActions';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 function ForgotPassword() {
   const router = useRouter();

@@ -1,7 +1,7 @@
 'use client';
 
-import { TProduct } from '@lib/types/types';
-import Image from '@node_modules/next/image';
+import { TProduct } from '@/lib/types/types';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface AdminProductListItem {

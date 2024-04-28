@@ -1,31 +1,31 @@
 'use client';
 
-import { FormProvider, useForm } from 'react-hook-form';
-import { Input, Label } from '@components/ui';
-import { ErrorMessage } from '@hookform/error-message';
-import { Textarea } from '@components/ui/Textarea';
-import Button from '@components/ui/Button';
-import { useState } from 'react';
-import ImageUploadSection from '@components/Admin/ImageUploadSection';
-import CategoriesSection from '@components/Admin/CategoriesSection';
-import { Category } from '@prisma/client';
-import ProductDetailSection from '@components/Admin/ProductDetailSection';
-import toast from 'react-hot-toast';
-import Spinner from '@components/ui/Spinner';
-import Modal from '@components/ui/Modal';
-import { ExclamationTriangleIcon } from '@node_modules/@heroicons/react/20/solid';
-import { TProduct } from '@lib/types/types';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { deleteProductById } from '@/actions/adminActions';
+import CategoriesSection from '@/components/Admin/CategoriesSection';
+import ImageUploadSection from '@/components/Admin/ImageUploadSection';
+import ProductDetailSection from '@/components/Admin/ProductDetailSection';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { Textarea } from '@/components/ui/Textarea';
 import {
   onSubmitNewProductForm,
   onSubmitProductDetailsForm,
-} from '@lib/formActions';
+} from '@/lib/formActions';
 import {
   ProductDetailsFormSchema,
   productDetailsFormSchema,
-} from '@lib/schemaValidator';
+} from '@/lib/schemaValidator';
+import { TProduct } from '@/lib/types/types';
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
+import { ErrorMessage } from '@hookform/error-message';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Category } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { deleteProductById } from '@actions/adminActions';
+import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 type AdminProductDetailsForm = {
   categories: Category[] | null;

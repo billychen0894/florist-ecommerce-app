@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation';
 import Stripe from 'stripe';
 
-import Button from '@components/ui/Button';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import Button from '@/components/ui/Button';
 import { useEffect } from 'react';
-import { useCartStore } from '@components/Providers/CartStoreProvider';
 
 interface CheckoutSessionProps {
   customerDetails: Stripe.Checkout.Session.CustomerDetails | null;

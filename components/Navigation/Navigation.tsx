@@ -1,17 +1,14 @@
-import Link from '@node_modules/next/link';
-import { headerNavigation } from '@const/navigation';
-import AuthenticationButtons from '@components/Auth/AuthenticationButtons';
-import NavCart from '@components/Navigation/NavCart';
-import Search from '@components/Navigation/Search';
-import { PencilSquareIcon } from '@heroicons/react/24/outline';
-import Logo from '@public/images/logo.png';
+import AuthenticationButtons from '@/components/Auth/AuthenticationButtons';
+import NavCart from '@/components/Navigation/NavCart';
+import Search from '@/components/Navigation/Search';
+import { headerNavigation } from '@/const/navigation';
+import { NavMenuContextProvider } from '@/contexts/NavMenu';
+import Logo from '@/public/images/logo.png';
 import Image from 'next/image';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import { getServerSession } from 'next-auth';
-import { NavMenuContextProvider } from '@contexts/NavMenu';
-import MobileMenu from './MobileMenu';
-import MobileHamburger from './MobileHamburger';
+import Link from 'next/link';
 import AdminPortal from './AdminPortal';
+import MobileHamburger from './MobileHamburger';
+import MobileMenu from './MobileMenu';
 
 export async function Navigation() {
   return (

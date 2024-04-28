@@ -1,8 +1,8 @@
 'use server';
 
-import { signJwtAccessToken } from '@lib/jwt';
-import { transporter } from '@lib/emailTransporter';
-import { prisma } from '@lib/prisma';
+import { transporter } from '@/lib/emailTransporter';
+import { signJwtAccessToken } from '@/lib/jwt';
+import { prisma } from '@/lib/prisma';
 
 export const sendForgotPasswordEmail = async (email: string) => {
   try {

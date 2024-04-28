@@ -1,6 +1,6 @@
-import { TCartItem } from '@lib/types/types';
-import { createStore } from 'zustand/vanilla';
+import { TCartItem } from '@/lib/types/types';
 import { devtools, persist } from 'zustand/middleware';
+import { createStore } from 'zustand/vanilla';
 
 export type CartState = {
   cartItems: Record<string, TCartItem>;

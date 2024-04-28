@@ -1,19 +1,19 @@
 'use client';
 
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Spinner from '@/components/ui/Spinner';
+import { onSubmitPersonalInfoForm } from '@/lib/formActions';
+import {
+  PersonalInfoFormSchema,
+  personalInfoFormSchema,
+} from '@/lib/schemaValidator';
+import { UserWithoutPass } from '@/lib/types/types';
 import { ErrorMessage } from '@hookform/error-message';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { ChangeEvent, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Spinner from '@components/ui/Spinner';
-import { UserWithoutPass } from '@lib/types/types';
-import {
-  PersonalInfoFormSchema,
-  personalInfoFormSchema,
-} from '@lib/schemaValidator';
-import { onSubmitPersonalInfoForm } from '@lib/formActions';
 import toast from 'react-hot-toast';
 
 const defaultAvatarImage = (

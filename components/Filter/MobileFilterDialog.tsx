@@ -3,10 +3,10 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 
-import Button from '@components/ui/Button';
-import { cn } from '@lib/classNames';
+import Button from '@/components/ui/Button';
+import useFilterAction from '@/hooks/useFilterAction';
+import { cn } from '@/lib/classNames';
 import { type Filter } from './Filter';
-import useFilterAction from '@hooks/useFilterAction';
 
 interface MobileFilterDialogProps {
   filters: Filter[];

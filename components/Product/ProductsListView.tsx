@@ -1,9 +1,9 @@
+import { fetchProducts } from '@/actions/productsActions';
+import { Pagination } from '@/components/Pagination';
 import { Suspense } from 'react';
+import PaginationSkeleton from './PaginationSkeleton';
 import { ProductList } from './ProductList';
 import ProductListSkeleton from './ProductListSkeleton';
-import PaginationSkeleton from './PaginationSkeleton';
-import { Pagination } from '@components/Pagination';
-import { fetchProducts } from '@actions/productsActions';
 
 interface ProductListViewProps {
   page?: string;

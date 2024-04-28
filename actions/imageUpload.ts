@@ -1,6 +1,6 @@
 'use server';
 
-import { ImageUploadResult } from '@lib/types/types';
+import { ImageUploadResult } from '@/lib/types/types';
 import cloudinary, { UploadApiResponse } from 'cloudinary';
 
 cloudinary.v2.config({

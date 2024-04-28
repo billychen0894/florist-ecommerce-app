@@ -1,6 +1,6 @@
-import { fetchCategories } from '@actions/fetch-categories';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import AdminProductDetailsForm from '@components/Admin/AdminProductDetailsForm';
+import { fetchCategories } from '@/actions/fetch-categories';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import AdminProductDetailsForm from '@/components/Admin/AdminProductDetailsForm';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 

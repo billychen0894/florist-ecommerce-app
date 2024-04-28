@@ -3,8 +3,8 @@
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 
-import Button from '@components/ui/Button';
-import { cn } from '@lib/classNames';
+import Button from '@/components/ui/Button';
+import { cn } from '@/lib/classNames';
 
 interface OAuthProviderButtonProps {
   provider: string;

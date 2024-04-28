@@ -1,11 +1,11 @@
-import axios from '@lib/axios';
+import axios from '@/lib/axios';
 import {
   ApiResponse,
   User,
   VerifyingEmailData,
   VerifyingEmailTokenData,
   sendEmailData,
-} from '@lib/types/api';
+} from '@/lib/types/api';
 import { AxiosResponse } from 'axios';
 
 async function sendEmail(

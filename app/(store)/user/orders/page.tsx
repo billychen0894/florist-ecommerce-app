@@ -1,9 +1,9 @@
-import StickyHeader from '@components/Table/StickyHeader';
-import Row from '@components/Table/Row';
+import { getUser, getUserOrders } from '@/actions/userActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import Row from '@/components/Table/Row';
+import StickyHeader from '@/components/Table/StickyHeader';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
 import { redirect } from 'next/navigation';
-import { getUser, getUserOrders } from '@actions/userActions';
 
 export default async function Orders() {
   const session = await getServerSession(options);

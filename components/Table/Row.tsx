@@ -1,9 +1,9 @@
-import { formatCurrency } from '@lib/formatCurrency';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import { $Enums, Order } from '@prisma/client';
 import Link from 'next/link';
-import RowData from './RowData';
-import { DocumentTextIcon } from '@node_modules/@heroicons/react/24/outline';
 import Stripe from 'stripe';
+import RowData from './RowData';
 
 interface RowProps {
   rowIndex: number;

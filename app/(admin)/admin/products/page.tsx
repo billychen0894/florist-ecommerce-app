@@ -1,5 +1,5 @@
-import { fetchProducts } from '@actions/productsActions';
-import AdminProduct from '@components/Admin/AdminProduct';
+import { fetchProducts } from '@/actions/productsActions';
+import AdminProduct from '@/components/Admin/AdminProduct';
 
 export default async function Products({
   searchParams,

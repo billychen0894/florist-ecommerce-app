@@ -1,11 +1,11 @@
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import SignUpForm from '@/components/Auth/SignUpForm';
+import AuthBackgroundImage from '@/components/Images/AuthBackgroundImage';
+import Logo from '@/public/images/logo.png';
 import { getServerSession } from 'next-auth/next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import SignUpForm from '@components/Auth/SignUpForm';
-import AuthBackgroundImage from '@components/Images/AuthBackgroundImage';
-import Logo from '@public/images/logo.png';
 
 export default async function SignUp() {
   const session = await getServerSession(options);

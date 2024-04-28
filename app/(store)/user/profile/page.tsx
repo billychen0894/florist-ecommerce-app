@@ -1,10 +1,9 @@
-import { fetchUserByStripeId, getUser } from '@actions/userActions';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import BillingShippingForm from '@components/User/BillingShippingForm';
-import PersonalInfoForm from '@components/User/PersonalInfoForm';
+import { fetchUserByStripeId, getUser } from '@/actions/userActions';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import BillingShippingForm from '@/components/User/BillingShippingForm';
+import PersonalInfoForm from '@/components/User/PersonalInfoForm';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 
 export default async function Profile() {
   const session = await getServerSession(options);

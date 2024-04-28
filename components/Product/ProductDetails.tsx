@@ -3,8 +3,8 @@
 import { Disclosure } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
 
-import { cn } from '@lib/classNames';
-import { TFullProduct } from '@lib/types/types';
+import { cn } from '@/lib/classNames';
+import { TFullProduct } from '@/lib/types/types';
 
 interface ProductDetailsProps {
   product: TFullProduct;

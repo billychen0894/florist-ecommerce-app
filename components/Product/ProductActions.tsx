@@ -9,16 +9,16 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import Button from '@components/ui/Button';
-import Modal from '@components/ui/Modal';
-import Notification from '@components/ui/Notification';
-import { cn } from '@lib/classNames';
-import { TProduct, TWishlist } from '@lib/types/types';
 import {
   addToUserWishlist,
   removeProductFromWishlist,
-} from '@actions/userActions';
-import { useCartStore } from '@components/Providers/CartStoreProvider';
+} from '@/actions/userActions';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Notification from '@/components/ui/Notification';
+import { cn } from '@/lib/classNames';
+import { TProduct, TWishlist } from '@/lib/types/types';
 
 interface ProductActionsProps {
   productId: string;

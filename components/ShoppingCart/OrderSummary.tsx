@@ -1,11 +1,11 @@
 'use client';
 
-import { checkout } from '@actions/checkout';
-import { useCartStore } from '@components/Providers/CartStoreProvider';
-import { HoverCard } from '@components/ui';
-import Button from '@components/ui/Button';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/orderInfo';
-import { formatCurrency } from '@lib/formatCurrency';
+import { checkout } from '@/actions/checkout';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import { HoverCard } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@/const/orderInfo';
+import { formatCurrency } from '@/lib/formatCurrency';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';

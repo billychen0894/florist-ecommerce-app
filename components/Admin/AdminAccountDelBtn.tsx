@@ -1,10 +1,10 @@
 'use client';
 
-import { deleteUserById } from '@actions/adminActions';
-import Button from '@components/ui/Button';
-import Modal from '@components/ui/Modal';
+import { deleteUserById } from '@/actions/adminActions';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import { UserWithoutPass } from '@/lib/types/types';
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
-import { UserWithoutPass } from '@lib/types/types';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 

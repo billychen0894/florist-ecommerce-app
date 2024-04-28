@@ -3,9 +3,9 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
-import { Avatar } from '@components/ui';
-import { adminMenuItems } from '@components/Admin/AdminNavigation';
-import UserAccountDropdown from '@components/ui/UserAccountDropdown';
+import { adminMenuItems } from '@/components/Admin/AdminNavigation';
+import { Avatar } from '@/components/ui';
+import UserAccountDropdown from '@/components/ui/UserAccountDropdown';
 
 export const userMenuItems = [
   { href: '/user/profile', label: 'Profile' },

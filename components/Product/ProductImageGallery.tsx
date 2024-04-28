@@ -3,8 +3,8 @@
 import { Tab } from '@headlessui/react';
 import Image from 'next/image';
 
-import { cn } from '@lib/classNames';
-import { TProduct } from '@lib/types/types';
+import { cn } from '@/lib/classNames';
+import { TProduct } from '@/lib/types/types';
 
 interface ProductImageGalleryProps {
   product: TProduct | null;

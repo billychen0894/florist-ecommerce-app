@@ -1,19 +1,21 @@
 'use client';
 
-import Image from 'next/image';
+import { deleteUserById } from '@/actions/adminActions';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { cn } from '@/lib/classNames';
+import { formatDate } from '@/lib/formatDate';
+import { UserWithoutPass } from '@/lib/types/types';
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
-import { cn } from '@lib/classNames';
-import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
+import {
+  EllipsisHorizontalIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/20/solid';
+import Image from 'next/image';
 import Link from 'next/link';
-import Modal from '@components/ui/Modal';
-import Spinner from '@components/ui/Spinner';
-import { ExclamationTriangleIcon } from '@node_modules/@heroicons/react/20/solid';
-import Button from '@components/ui/Button';
+import { Fragment, useState } from 'react';
 import toast from 'react-hot-toast';
-import { UserWithoutPass } from '@lib/types/types';
-import { formatDate } from '@lib/formatDate';
-import { deleteUserById } from '@actions/adminActions';
 
 type CustomerCardProps = {
   customer: UserWithoutPass;

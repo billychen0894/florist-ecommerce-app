@@ -1,8 +1,8 @@
 'use client';
 
+import AdminCategoryListItem from '@/components/Admin/AdminCategoryListItem';
+import AdminList from '@/components/Admin/AdminList';
 import { Category } from '@prisma/client';
-import AdminCategoryListItem from '@components/Admin/AdminCategoryListItem';
-import AdminList from '@components/Admin/AdminList';
 
 type AdminCategoriesProps = {
   categories: Category[] | null;

@@ -1,11 +1,11 @@
-import ContextMenu from '@components/ui/ContextMenu';
-import { Controller } from '@node_modules/react-hook-form';
-import ImageUploadPreview from '@components/Admin/ImageUploadPreview';
-import { Input, Label } from '@components/ui';
-import { PlusIcon } from '@node_modules/@heroicons/react/20/solid';
-import { ErrorMessage } from '@node_modules/@hookform/error-message';
-import { useFormContext } from 'react-hook-form';
+import ImageUploadPreview from '@/components/Admin/ImageUploadPreview';
+import { Input, Label } from '@/components/ui';
+import ContextMenu from '@/components/ui/ContextMenu';
+import { Controller } from '@/node_modules/react-hook-form';
+import { PlusIcon } from '@heroicons/react/20/solid';
+import { ErrorMessage } from '@hookform/error-message';
 import { ChangeEvent } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 export default function ImageUploadSection() {
   const {

@@ -1,7 +1,7 @@
-import { redirect } from 'next/navigation';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import UserSubNav from '@/components/Navigation/UserSubNav';
 import { getServerSession } from 'next-auth';
-import { options } from '@app/api/auth/[...nextauth]/options';
-import UserSubNav from '@components/Navigation/UserSubNav';
+import { redirect } from 'next/navigation';
 
 export default async function User({
   children,

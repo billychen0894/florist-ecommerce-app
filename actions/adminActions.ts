@@ -1,14 +1,14 @@
 'use server';
 
-import { options } from '@app/api/auth/[...nextauth]/options';
-import { prisma } from '@lib/prisma';
-import { getServerSession } from 'next-auth';
-import { exclude } from '@lib/exclude';
-import { NewProductReqPayload, ProductReqPayload } from '@lib/types/types';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { exclude } from '@/lib/exclude';
+import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
+import { transformImageObj } from '@/lib/transformImageObj';
+import { NewProductReqPayload, ProductReqPayload } from '@/lib/types/types';
 import { OrderStatus } from '@prisma/client';
-import { stripe } from '@lib/stripe';
+import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
-import { transformImageObj } from '@lib/transformImageObj';
 import { getProductById } from './productsActions';
 
 export const getAllUsers = async () => {

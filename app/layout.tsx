@@ -1,11 +1,11 @@
+import AuthProvider from '@/components/Providers/AuthProvider';
+import { CartStoreProvider } from '@/components/Providers/CartStoreProvider';
+import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Toaster } from 'react-hot-toast';
 import { headers } from 'next/headers';
 import Script from 'next/script';
-import '@styles/globals.css';
-import { CartStoreProvider } from '@components/Providers/CartStoreProvider';
-import AuthProvider from '@components/Providers/AuthProvider';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700'] });
 

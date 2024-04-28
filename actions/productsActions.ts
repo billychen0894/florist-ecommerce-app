@@ -1,7 +1,7 @@
 'use server';
 
-import { parseSearchParams } from '@lib/parseSearchParams';
-import { prisma } from '@lib/prisma';
+import { parseSearchParams } from '@/lib/parseSearchParams';
+import { prisma } from '@/lib/prisma';
 
 export const fetchProducts = async (
   page?: string,

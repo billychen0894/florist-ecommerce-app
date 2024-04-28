@@ -1,5 +1,5 @@
-import CheckoutSession from '@components/Checkout/CheckoutSession';
-import { stripe } from '@lib/stripe';
+import CheckoutSession from '@/components/Checkout/CheckoutSession';
+import { stripe } from '@/lib/stripe';
 
 export const dynamic = 'force-dynamic';
 

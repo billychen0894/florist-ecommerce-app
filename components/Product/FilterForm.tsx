@@ -1,10 +1,10 @@
 'use client';
 
+import { Filter } from '@/components/Filter';
+import useFilterAction from '@/hooks/useFilterAction';
 import { Popover, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
-import { Filter } from '@components/Filter';
-import useFilterAction from '@hooks/useFilterAction';
 
 type FilterFormProps = {
   filters: Filter[];

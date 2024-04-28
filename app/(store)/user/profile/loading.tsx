@@ -1,4 +1,4 @@
-import ProfileAndSettingsSkeleton from '@components/User/ProfileAndSettingsSkeleton';
+import ProfileAndSettingsSkeleton from '@/components/User/ProfileAndSettingsSkeleton';
 
 export default function ProfileLoading() {
   return (

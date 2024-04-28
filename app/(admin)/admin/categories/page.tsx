@@ -1,5 +1,5 @@
-import { fetchCategories } from '@actions/fetch-categories';
-import AdminCategories from '@components/Admin/AdminCategories';
+import { fetchCategories } from '@/actions/fetch-categories';
+import AdminCategories from '@/components/Admin/AdminCategories';
 
 export default async function Categories() {
   const categories = await fetchCategories();

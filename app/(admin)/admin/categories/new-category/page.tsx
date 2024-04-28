@@ -1,15 +1,15 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { Input, Label } from '@components/ui';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Spinner from '@/components/ui/Spinner';
+import { onSubmitCategoryForm } from '@/lib/formActions';
+import { CategoryFormSchema, categoryFormSchema } from '@/lib/schemaValidator';
 import { ErrorMessage } from '@hookform/error-message';
-import Button from '@components/ui/Button';
-import toast from 'react-hot-toast';
-import Spinner from '@components/ui/Spinner';
-import { useRouter } from 'next/navigation';
-import { CategoryFormSchema, categoryFormSchema } from '@lib/schemaValidator';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { onSubmitCategoryForm } from '@lib/formActions';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 export default function NewCategory() {
   const router = useRouter();

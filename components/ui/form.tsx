@@ -9,7 +9,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 
-import { cn } from '@lib/classNames';
+import { cn } from '@/lib/classNames';
 
 // Initiate the FormProvider for useFormContext to work properly
 // https://react-hook-form.com/docs/formprovider
