@@ -50,6 +50,7 @@ function AuthenticationButtons() {
           signIn();
         }}
         className="text-sm font-medium text-gray-700 hover:text-secondary-500 cursor-pointer"
+        data-cy="header-nav-sign-in"
       >
         Sign in
       </span>
@@ -57,6 +58,7 @@ function AuthenticationButtons() {
       <Link
         href={{ pathname: '/auth/signup' }}
         className="text-sm font-medium text-gray-700 hover:text-secondary-500"
+        data-cy="header-nav-sign-up"
       >
         Create account
       </Link>

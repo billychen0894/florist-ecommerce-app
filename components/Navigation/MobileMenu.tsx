@@ -95,6 +95,7 @@ export default function MobileMenu() {
                       href={page.href}
                       className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
                       onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
+                      data-cy={`header-mobile-nav-${page.name}`}
                     >
                       {page.name}
                     </Link>
@@ -111,6 +112,7 @@ export default function MobileMenu() {
                       signIn();
                     }}
                     className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
+                    data-cy="header-mobile-nav-sign-in"
                   >
                     Sign in
                   </span>
@@ -120,6 +122,7 @@ export default function MobileMenu() {
                     href={{ pathname: '/auth/signup' }}
                     className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
                     onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
+                    data-cy="header-mobile-nav-sign-up"
                   >
                     Create account
                   </Link>

@@ -40,6 +40,7 @@ export async function Navigation() {
                     key={page.name}
                     href={page.href}
                     className="flex items-center text-sm font-medium text-gray-700 hover:text-secondary-500"
+                    data-cy={`header-nav-${page.name}`}
                   >
                     {page.name}
                   </Link>

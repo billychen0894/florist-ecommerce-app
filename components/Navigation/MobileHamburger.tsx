@@ -14,6 +14,7 @@ export default function MobileHamburger() {
       onClick={() => {
         navMenuCtx.setIsMobileMenuOpen(true);
       }}
+      data-cy="mobile-hamburger"
     >
       <span className="sr-only">Open menu</span>
       <Bars3Icon className="h-6 w-6" aria-hidden="true" />

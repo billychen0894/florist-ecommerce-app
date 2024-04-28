@@ -14,6 +14,7 @@ export default function NavCart() {
       <Link
         href={{ pathname: '/cart' }}
         className="group -m-2 flex items-center p-2"
+        data-cy="header-nav-cart"
       >
         <ShoppingBagIcon
           className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-secondary-500"
