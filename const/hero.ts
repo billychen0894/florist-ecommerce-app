@@ -1,4 +1,4 @@
-export const heroTitle: string = 'Bossom Lane';
+export const heroTitle: string = 'Blossom Lane';
 
 export const heroSubtitle: string =
   'Discover the enchantment of Blossom Lane, where floral dreams come to life with exquisite arrangements and vibrant blooms';
