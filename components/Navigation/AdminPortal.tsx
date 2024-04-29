@@ -14,6 +14,7 @@ export default function AdminPortal() {
       <Link
         href={{ pathname: '/admin/dashboard' }}
         className="group -m-2 flex items-center p-2"
+        data-cy="admin-portal-link"
       >
         <PencilSquareIcon
           className="h-6 w-6 flex-shrink-0 text-red-500 group-hover:text-red-400"

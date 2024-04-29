@@ -75,6 +75,7 @@ function SignInForm() {
             autoComplete="email"
             {...register('email')}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+            data-cy="email-input"
           />
         </div>
         <ErrorMessage
@@ -96,6 +97,7 @@ function SignInForm() {
             autoComplete="current-password"
             {...register('password')}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+            data-cy="password-input"
           />
         </div>
         <ErrorMessage
@@ -103,6 +105,7 @@ function SignInForm() {
           name="password"
           as="p"
           className="text-sm font-medium text-red-500 mt-1 ml-1"
+          data-cy="password-error-msg"
         />
       </div>
 
@@ -121,6 +124,7 @@ function SignInForm() {
         <Button
           type="submit"
           className="flex w-full justify-center px-3 py-1.5 leading-6"
+          data-cy="sign-in-button"
         >
           <div className="flex justify-center items-center">
             {isSubmitting && <Spinner />}
