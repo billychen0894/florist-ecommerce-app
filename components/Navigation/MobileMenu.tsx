@@ -40,6 +40,7 @@ export default function MobileMenu() {
             signOut();
           }}
           className="-m-2 block p-2 font-medium text-red-500 hover:text-red-600 cursor-pointer"
+          data-cy="header-mobile-nav-sign-out"
         >
           Sign Out
         </span>

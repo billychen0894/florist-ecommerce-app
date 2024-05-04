@@ -23,7 +23,10 @@ export default function UserAcccountDropdown({
   return (
     <Menu as="span" className="hidden relative sm:inline-block text-left">
       <div className="relative top-0.5">
-        <Menu.Button className="inline-block h-6 w-6 sm:h-7 sm:w-7 overflow-hidden rounded-full bg-gray-100">
+        <Menu.Button
+          className="inline-block h-6 w-6 sm:h-7 sm:w-7 overflow-hidden rounded-full bg-gray-100"
+          data-cy="user-avatar-btn"
+        >
           {avatar}
         </Menu.Button>
       </div>
@@ -74,6 +77,7 @@ export default function UserAcccountDropdown({
                     const { signOut } = await import('next-auth/react');
                     signOut();
                   }}
+                  data-cy="sign-out-btn"
                 >
                   Sign out
                 </Button>
