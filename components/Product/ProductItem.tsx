@@ -19,7 +19,7 @@ export function ProductItem({
 
   return (
     <>
-      <div className="group relative">
+      <div className="group relative" data-cy="product">
         <div className="aspect-h-4 aspect-w-3 overflow-hidden rounded-lg bg-gray-100 relative">
           <Image
             src={product.images[0].url}

@@ -15,7 +15,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
     <Tab.Group as="div" className="flex flex-col-reverse">
       {/* Image selector */}
       <div className="mx-auto mt-6 hidden w-full h-full max-w-2xl sm:block lg:max-w-none">
-        <Tab.List className="grid grid-cols-4 gap-6">
+        <Tab.List className="grid grid-cols-4 gap-6" data-cy="product-images">
           {product?.images.map((image) => (
             <Tab
               key={image.id}
@@ -50,7 +50,10 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
         </Tab.List>
       </div>
 
-      <Tab.Panels className="aspect-h-1 aspect-w-1 w-full h-full">
+      <Tab.Panels
+        className="aspect-h-1 aspect-w-1 w-full h-full"
+        data-cy="product-main-image"
+      >
         {product?.images.map((image) => (
           <Tab.Panel key={image.id}>
             <Image

@@ -38,7 +38,10 @@ export async function ProductsRecommendation({
         You may also like
       </h2>
 
-      <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+      <div
+        className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+        data-cy="products-recommendation"
+      >
         {recommendedFourProducts?.map((product: TProduct) => (
           <div key={product?.id} className="group relative">
             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md lg:aspect-none group-hover:opacity-75 lg:h-80">

@@ -146,6 +146,7 @@ export function ProductActions({
               name={`quantity-${product?.name}`}
               ref={quantityRef}
               className="max-w-full rounded-md border border-gray-300 py-1.5 text-center text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
+              data-cy="quantity-select"
             >
               {[...Array(10)].map((_, i) => {
                 const isProductUnitsLessThanSelectUnit =
@@ -171,6 +172,7 @@ export function ProductActions({
                 : ''
             )}
             onClick={handleAddToCart}
+            data-cy="product-add-to-cart"
           >
             {product?.units === 0 ? 'Out of stock' : 'Add to cart'}
           </Button>
@@ -182,6 +184,7 @@ export function ProductActions({
               handleAddToWishlist(session);
             }}
             title="Add Products to Wishlist"
+            data-cy="product-add-to-wishlist"
           >
             {userWishlistProductIdArr?.includes(productId) ? (
               <HeartIconSolid
