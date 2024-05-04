@@ -110,6 +110,8 @@ export default function SignUpForm() {
           }
           buttonAction={() => router.push('/')}
           backdropAction={() => router.push('/')}
+          dataCy="account-created-modal"
+          dataCyAction="account-created-modal-action"
         />
       ) : (
         <Modal
@@ -140,6 +142,7 @@ export default function SignUpForm() {
               autoComplete="given-name"
               {...register('firstName')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="firstName-input"
             />
           </div>
           <ErrorMessage
@@ -160,6 +163,7 @@ export default function SignUpForm() {
               autoComplete="family-name"
               {...register('lastName')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="lastName-input"
             />
           </div>
           <ErrorMessage
@@ -185,6 +189,7 @@ export default function SignUpForm() {
               }}
               onBlur={emailOnBlur}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="email-input"
             />
           </div>
           <ErrorMessage
@@ -192,6 +197,7 @@ export default function SignUpForm() {
             name="email"
             as="p"
             className="text-sm font-medium text-red-500 mt-1 ml-1"
+            data-cy="email-error"
           />
         </div>
 
@@ -206,6 +212,7 @@ export default function SignUpForm() {
               autoComplete="current-password"
               {...register('password')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="password-input"
             />
           </div>
           <ErrorMessage
@@ -227,6 +234,7 @@ export default function SignUpForm() {
               autoComplete="current-password"
               {...register('confirmPassword')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="confirmPassword-input"
             />
           </div>
           <ErrorMessage
@@ -246,6 +254,7 @@ export default function SignUpForm() {
                 'opacity-50 cursor-not-allowed': isSubmitting || !isValid,
               }
             )}
+            data-cy="signUp-button"
             disabled={isSubmitting || !isValid}
           >
             <div className="flex justify-center items-center">
