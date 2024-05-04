@@ -16,5 +16,12 @@
   "adminUser": {
     "email": "admin1@admin.com",
     "password": "AdminAdmin1"
+  },
+  "unregisteredUser": {
+    "firstName": "test10",
+    "lastName": "test10",
+    "email": "test10@test.com",
+    "password": "TestTest10",
+    "confirmPassword": "TestTest10"
   }
 }
