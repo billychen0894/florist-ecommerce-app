@@ -14,7 +14,10 @@ export default function FilterForm({ filters }: FilterFormProps) {
   const { handleFilterChange, categoryFilters } = useFilterAction();
 
   return (
-    <Popover.Group className="hidden sm:flex sm:items-baseline sm:space-x-8">
+    <Popover.Group
+      className="hidden sm:flex sm:items-baseline sm:space-x-8"
+      data-cy="filter-btn"
+    >
       {filters.map((section) => (
         <Popover
           as="div"
@@ -44,10 +47,17 @@ export default function FilterForm({ filters }: FilterFormProps) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Popover.Panel className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Popover.Panel
+              className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+              data-cy="filter-panel"
+            >
               <form className="space-y-4">
                 {section?.options?.map((option, optionIdx) => (
-                  <div key={option.name} className="flex items-center">
+                  <div
+                    key={option.name}
+                    className="flex items-center"
+                    data-cy={`filter-${option.name}-btn`}
+                  >
                     <input
                       id={`filter-${section.id}-${optionIdx}`}
                       name={`${section.id}[]`}

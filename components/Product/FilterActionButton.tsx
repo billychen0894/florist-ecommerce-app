@@ -20,6 +20,7 @@ export default function FilterActionButton({
         type="button"
         className="inline-block font-medium text-gray-700 hover:text-gray-900 bg-transparent hover:bg-transparent shadow-none sm:hidden"
         onClick={() => setIsMobileFilterOpen(true)}
+        data-cy="mobile-filter-btn"
       >
         <span className="text-sm font-medium text-gray-700">Filters</span>
       </Button>

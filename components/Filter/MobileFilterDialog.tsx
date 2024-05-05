@@ -49,7 +49,10 @@ export function MobileFilterDialog({ filters }: MobileFilterDialogProps) {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl">
+            <Dialog.Panel
+              className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-6 shadow-xl"
+              data-cy="mobile-filter-dialog"
+            >
               <div className="flex items-center justify-between px-4">
                 <h2 className="text-lg font-medium text-gray-900">Filters</h2>
                 <Button
@@ -73,7 +76,10 @@ export function MobileFilterDialog({ filters }: MobileFilterDialogProps) {
                     {({ open }) => (
                       <fieldset>
                         <legend className="w-full px-2">
-                          <Disclosure.Button className="flex w-full items-center justify-between p-2 text-gray-400 hover:text-gray-500">
+                          <Disclosure.Button
+                            className="flex w-full items-center justify-between p-2 text-gray-400 hover:text-gray-500"
+                            data-cy={`filter-${section.name}-btn`}
+                          >
                             <span className="text-sm font-medium text-gray-900">
                               {section.name}
                             </span>
@@ -95,7 +101,9 @@ export function MobileFilterDialog({ filters }: MobileFilterDialogProps) {
                                 key={option.name}
                                 className="flex items-center justify-between"
                               >
-                                <div>
+                                <div
+                                  data-cy={`filter-${section.name}-${option.name}-btn`}
+                                >
                                   <input
                                     id={`${section.id}-${optionIdx}-mobile`}
                                     name={`${section.id}[]`}
