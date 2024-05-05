@@ -133,6 +133,7 @@ export function ProductActions({
             const { signIn } = await import('next-auth/react');
             signIn();
           }}
+          dataCy="wishlist-sign-in-modal"
         />
       )}
       <form className="mt-6">
@@ -190,9 +191,14 @@ export function ProductActions({
               <HeartIconSolid
                 className="h-6 w-6 flex-shrink-0"
                 aria-hidden="true"
+                data-cy="wishlist-added-icon"
               />
             ) : (
-              <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+              <HeartIcon
+                className="h-6 w-6 flex-shrink-0"
+                aria-hidden="true"
+                data-cy="wishlist-not-added-icon"
+              />
             )}
             <span className="sr-only">Add to Wishlist</span>
           </Button>
