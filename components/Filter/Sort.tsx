@@ -35,7 +35,10 @@ export function Sort() {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+        <Menu.Button
+          className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+          data-cy="sort-btn"
+        >
           Sort
           {sortParams && (
             <span className="text-gray-500">: {getCurrSortLabel}</span>
@@ -72,6 +75,7 @@ export function Sort() {
                         `${pathname}?${createQueryString('sort', option.href)}`
                       );
                     }}
+                    data-cy={`sort-${option.href}`}
                   >
                     {option.name}
                   </button>
