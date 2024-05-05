@@ -18,12 +18,14 @@ export default function UserSubNav() {
       <ul
         role="list"
         className="flex min-w-full gap-x-6 px-4 text-sm font-semibold leading-6 text-gray-600 sm:px-6 lg:px-8"
+        data-cy="user-subnav"
       >
         {secondaryNavigation.map((item) => (
           <li key={item.name} className="hover:text-primary-300">
             <Link
               href={item.href}
               className={pathname === item.href ? 'text-primary-500' : ''}
+              data-cy={`user-subnav-${item.name}`}
             >
               {item.name}
             </Link>

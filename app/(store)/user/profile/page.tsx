@@ -23,7 +23,10 @@ export default async function Profile() {
     <div className="divide-y divide-white/5">
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <h2 className="text-base font-semibold leading-7 text-gray-800">
+          <h2
+            className="text-base font-semibold leading-7 text-gray-800"
+            data-cy="personal-info"
+          >
             Personal Information
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -36,7 +39,10 @@ export default async function Profile() {
 
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <h2 className="text-base font-semibold leading-7 text-gray-800">
+          <h2
+            className="text-base font-semibold leading-7 text-gray-800"
+            data-cy="billing-and-shipping-info"
+          >
             Billing and Shipping Information
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-400">

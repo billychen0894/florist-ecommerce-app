@@ -21,7 +21,10 @@ export default async function Orders() {
       <div className="my-10 flow-root">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle">
-            <table className="min-w-full border-separate border-spacing-0">
+            <table
+              className="min-w-full border-separate border-spacing-0"
+              data-cy="orders-table"
+            >
               <thead>
                 <tr>
                   <StickyHeader>Invoice Number</StickyHeader>
