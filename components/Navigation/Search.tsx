@@ -19,6 +19,7 @@ export default function Search() {
           onClick={() => {
             setOpen(true);
           }}
+          data-cy="header-search"
         >
           <span className="sr-only">Search</span>
           <MagnifyingGlassIcon className="h-6 w-6" aria-hidden="true" />

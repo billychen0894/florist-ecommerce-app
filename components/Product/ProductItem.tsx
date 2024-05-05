@@ -46,6 +46,7 @@ export function ProductItem({
             <Link
               href={`/products/${product.id}`}
               as={`/products/${product.id}`}
+              data-cy="product-name"
             >
               <span aria-hidden="true" className="absolute inset-0" />
               {product.name}
