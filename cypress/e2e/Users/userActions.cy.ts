@@ -6,6 +6,7 @@ describe('User Actions Tests', () => {
 
     context(`User Actions Test on ${size}`, () => {
       beforeEach(() => {
+        cy.viewport(size);
         cy.visit('/auth/signin');
         cy.url().should('include', '/auth/signin');
         cy.get('h2').should('contain', 'Sign in to your account');

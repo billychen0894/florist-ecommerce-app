@@ -6,6 +6,7 @@ describe('User Logout Tests', () => {
       const isMobile = size === 'iphone-6';
 
       beforeEach(() => {
+        cy.viewport(size);
         cy.visit('/auth/signin');
         cy.url().should('include', '/auth/signin');
         cy.get('h2').should('contain', 'Sign in to your account');
@@ -14,7 +15,6 @@ describe('User Logout Tests', () => {
           cy.dataCy('password-input').type(users.validUser.password);
           cy.dataCy('sign-in-button').click();
           cy.url().should('include', '/');
-          cy.dataCy('user-avatar-btn').should('be.visible');
         });
       });
 
@@ -24,6 +24,7 @@ describe('User Logout Tests', () => {
           cy.dataCy('header-mobile-nav-sign-out', { timeout: 5000 }).click();
           cy.dataCy('user-avatar-btn').should('not.exist');
         } else {
+          cy.dataCy('user-avatar-btn').should('be.visible');
           cy.dataCy('user-avatar-btn').click();
           cy.dataCy('sign-out-btn', { timeout: 5000 }).click();
           cy.dataCy('user-avatar-btn').should('not.exist');

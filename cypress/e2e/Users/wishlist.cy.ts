@@ -6,6 +6,7 @@ describe('Wishlist Tests', () => {
 
     context(`Wishlist Test on ${size}`, () => {
       beforeEach(() => {
+        cy.viewport(size);
         cy.visit('/products');
         cy.url().should('include', '/products');
         cy.get('[data-cy="products"] > div').should('have.length', 12);
