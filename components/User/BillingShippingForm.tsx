@@ -114,6 +114,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="shippingAddressLine1-input"
             />
           </div>
           <ErrorMessage
@@ -137,6 +138,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="shippingAddressLine2-input"
             />
           </div>
           <ErrorMessage
@@ -161,6 +163,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="shippingCity-input"
             />
           </div>
           <ErrorMessage
@@ -184,6 +187,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : null
               }`}
+              data-cy="shippingCountry-input"
             >
               <option value="" disabled>
                 Select a country
@@ -212,6 +216,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
                   : null
               }`}
+              data-cy="shippingArea-input"
             >
               <option value="" disabled>
                 Select a state / province
@@ -245,6 +250,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="shippingPostalCode-input"
             />
           </div>
           <ErrorMessage
@@ -276,6 +282,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="billingAddressLine1-input"
             />
           </div>
           <ErrorMessage
@@ -299,6 +306,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              datat-cy="billingAddressLine2-input"
             />
           </div>
           <ErrorMessage
@@ -323,6 +331,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="billingCity-input"
             />
           </div>
           <ErrorMessage
@@ -346,6 +355,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
                   : null
               }`}
+              data-cy="billingCountry-input"
             >
               <option value="" disabled>
                 Select a country
@@ -374,6 +384,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed '
                   : null
               }`}
+              data-cy="billingArea-input"
             >
               <option value="" disabled>
                 Select a state / province
@@ -407,6 +418,7 @@ export default function BillingShippingForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="billingPostalCode-input"
             />
           </div>
           <ErrorMessage
@@ -427,6 +439,7 @@ export default function BillingShippingForm({
                 : 'bg-secondary-500 hover:bg-secondary-400'
             }
             disabled={isSubmitting}
+            data-cy="address-save-btn"
           >
             <div className="flex">
               {isSubmitting && <Spinner />}

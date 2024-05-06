@@ -174,6 +174,7 @@ export default function PersonalInfoForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="firstName-input"
             />
           </div>
           <ErrorMessage
@@ -206,6 +207,7 @@ export default function PersonalInfoForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="lastName-input"
             />
           </div>
           <ErrorMessage
@@ -236,6 +238,7 @@ export default function PersonalInfoForm({
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300'
                   : null
               }`}
+              data-cy="phone-input"
             />
           </div>
           <ErrorMessage
@@ -254,6 +257,7 @@ export default function PersonalInfoForm({
                     : 'bg-secondary-500 hover:bg-secondary-400'
                 }
                 disabled={isSubmitting}
+                data-cy="personal-info-save-btn"
               >
                 <div className="flex">
                   {isSubmitting && <Spinner />}

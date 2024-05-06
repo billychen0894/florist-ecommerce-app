@@ -23,5 +23,16 @@
     "email": "test10@test.com",
     "password": "TestTest10",
     "confirmPassword": "TestTest10"
+  },
+  "testUser": {
+    "email": "test10@test.com",
+    "password": "TestTest10"
+  },
+  "addressInfo": {
+    "address": "test address",
+    "city": "Vancouver",
+    "area": "BC",
+    "postalCode": "V5Z 1A1",
+    "country": "CA"
   }
 }

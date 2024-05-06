@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -16,11 +17,13 @@ export default defineConfig({
           return null;
         },
         async seedTestUser() {
+          const hashedPassword = await bcrypt.hash('TestTest10', 10);
           await prisma.user.create({
             data: {
               name: 'test10 test10',
               email: 'test10@test.com',
-              password: 'TestTest10',
+              password: hashedPassword,
+              emailVerifyToken: '',
             },
           });
           return null;
