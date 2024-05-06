@@ -25,6 +25,7 @@ export function ShoppingCartList() {
         <ul
           role="list"
           className="divide-y divide-gray-200 border-b border-t border-gray-200"
+          data-cy="cart-items"
         >
           {cartItemsArr.map((orderItem) => (
             <li key={orderItem.id} className="flex py-6 sm:py-10">
