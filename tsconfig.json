@@ -14,7 +14,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["@testing-library/jest-dom"],
     "plugins": [
       {
         "name": "next"
@@ -32,8 +31,7 @@
     "postcss.config.js",
     "next.config.js",
     "tailwind.config.js",
-    "middleware.ts",
-    "jest-setup.ts"
+    "middleware.ts"
   ],
   "exclude": ["node_modules", "**/*.cy.*"]
 }
