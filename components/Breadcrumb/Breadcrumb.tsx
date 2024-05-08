@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
-import capitalizeWords from '@lib/capitalizeWords';
+import capitalizeWords from '@/lib/capitalizeWords';
 import { Crumb } from './Crumb';
 
 interface Crumb {
@@ -11,11 +11,11 @@ interface Crumb {
   crumbName: string;
 }
 
-export const Breadcrumb = () => {
+export function Breadcrumb() {
   const pathname = usePathname();
 
   // Memoize the function to prevent unnecessary re-renders
-  const generateCrumbList = useMemo((): Crumb[] => {
+  const crumbList = useMemo((): Crumb[] => {
     const breadcrumbList: Crumb[] = [{ href: '/', crumbName: 'Home' }];
     // Accessing the current pathname from URL then split it into segments
     // Filter out empty segments
@@ -39,10 +39,6 @@ export const Breadcrumb = () => {
     return breadcrumbList;
   }, [pathname]);
 
-  // memoized function should not be called directly as it is returned by useMemo
-  // instead, just access the value of the memoized function
-  const crumbList = generateCrumbList;
-
   return (
     <nav
       aria-label="Breadcrumb"
@@ -52,7 +48,7 @@ export const Breadcrumb = () => {
         {/* Map through CrumbList to dynamically generate Crumbs */}
         {crumbList.map((crumb, index) => (
           <Crumb
-            key={index}
+            key={crumb.href}
             href={crumb.href}
             crumbName={crumb.crumbName}
             last={index === crumbList.length - 1}
@@ -61,4 +57,4 @@ export const Breadcrumb = () => {
       </ol>
     </nav>
   );
-};
+}

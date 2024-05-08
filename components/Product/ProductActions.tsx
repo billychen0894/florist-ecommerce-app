@@ -4,52 +4,39 @@ import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { Session } from 'next-auth';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import Button from '@components/ui/Button';
-import Modal from '@components/ui/Modal';
-import Notification from '@components/ui/Notification';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import { users } from '@lib/api/users';
-import { TProduct } from '@lib/types/api';
-import { addItemToCart } from '@store/features/cartSlice';
 import {
-  addProductsToWishlist,
-  fetchUserWishlistById,
-  removeProductsFromWishlist,
-} from '@store/features/userSlice';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { cn } from '@lib/classNames';
+  addToUserWishlist,
+  removeProductFromWishlist,
+} from '@/actions/userActions';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Notification from '@/components/ui/Notification';
+import { cn } from '@/lib/classNames';
+import { TProduct, TWishlist } from '@/lib/types/types';
 
 interface ProductActionsProps {
   productId: string;
   product: TProduct | null;
+  userWishlist: TWishlist | null;
 }
 
-export function ProductActions({ productId, product }: ProductActionsProps) {
+export function ProductActions({
+  productId,
+  product,
+  userWishlist,
+}: ProductActionsProps) {
   const { data: session } = useSession();
+  const { addItemToCart, cartItems } = useCartStore((state) => state);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const quantityRef = useRef<HTMLSelectElement>(null);
-  const dispatch = useAppDispatch();
-  const userWishlist = useAppSelector((state) => state.userReducer.wishlist);
-  const userWishlistProductIdArr = userWishlist.map((product) => product.id);
-  const axiosWithAuth = useAxiosWithAuth();
+  const userWishlistProductIdArr = userWishlist?.map((product) => product?.id);
   const router = useRouter();
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
-
-  useEffect(() => {
-    if (session?.user.id) {
-      dispatch(
-        fetchUserWishlistById({
-          userId: session?.user.id,
-          axiosWithAuth: axiosWithAuth,
-        })
-      );
-    }
-  }, [dispatch, session?.user.id, axiosWithAuth]);
 
   const handleViewCart = () => {
     router.push('/cart');
@@ -57,30 +44,36 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
   };
 
   const handleAddToCart = () => {
-    if (product && product?.units === 0) {
+    if (!product) return toast.error('Oops! Something went wrong.');
+    if (!quantityRef.current) return;
+
+    const units = product?.units;
+    const quantity = Number(quantityRef.current.value);
+    const currProduct = cartItems[productId];
+
+    if (units <= 0) {
       return toast.error(
         'Oops! This product is out of stock. Please check back later.'
       );
     }
-    const currProductInCart = cartItems[productId];
-    if (
-      currProductInCart &&
-      quantityRef.current &&
-      product &&
-      currProductInCart?.quantity + +quantityRef.current?.value > product?.units
-    ) {
+
+    if (currProduct?.quantity + quantity > 10) {
+      return toast.error(
+        'Sorry, you can only add up to 10 of this product to your cart.'
+      );
+    }
+
+    if (currProduct?.quantity + quantity > units) {
       return toast.error(
         "Sorry, you can't add more of this product to your cart. It exceeds the available stock."
       );
     }
-    const dispatchPayload = {
+
+    addItemToCart({
       id: productId,
-      quantity: quantityRef.current?.value
-        ? Number(quantityRef.current.value)
-        : 0,
-      product: product as TProduct,
-    };
-    dispatch(addItemToCart(dispatchPayload));
+      quantity,
+      product: product,
+    });
 
     toast(
       () => (
@@ -98,27 +91,28 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
     );
   };
 
-  const handleAddToWishlist = (session: Session | null) => {
+  const handleAddToWishlist = async (session: Session | null) => {
     if (!session) {
       setIsModalOpen(true);
-    } else {
-      if (session?.user.role && session?.user.role !== 'user')
-        return toast.error('Admin cannot add products to wishlist');
+      return;
+    }
 
-      setIsModalOpen(false);
-      if (userWishlistProductIdArr.includes(productId) && product) {
-        users.deleteProductFromWishlist(
-          productId,
-          session?.user.id,
-          axiosWithAuth
-        );
-        dispatch(removeProductsFromWishlist(product as TProduct));
-      } else {
-        users.addToUserWishlist(productId, session?.user.id, axiosWithAuth);
-        dispatch(addProductsToWishlist(product as TProduct));
-      }
+    if (session?.user.role && session?.user.role !== 'user') {
+      return toast.error('Admin cannot add products to wishlist');
+    }
+
+    if (userWishlistProductIdArr?.includes(productId)) {
+      const result = await removeProductFromWishlist(
+        productId,
+        session?.user?.id
+      );
+      return result?.success === false ? toast.error(result?.message) : null;
+    } else {
+      const result = await addToUserWishlist(productId, session?.user?.id);
+      return result?.success === false ? toast.error(result?.message) : null;
     }
   };
+
   return (
     <>
       {isModalOpen && (
@@ -139,6 +133,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
             const { signIn } = await import('next-auth/react');
             signIn();
           }}
+          dataCy="wishlist-sign-in-modal"
         />
       )}
       <form className="mt-6">
@@ -152,6 +147,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
               name={`quantity-${product?.name}`}
               ref={quantityRef}
               className="max-w-full rounded-md border border-gray-300 py-1.5 text-center text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm"
+              data-cy="quantity-select"
             >
               {[...Array(10)].map((_, i) => {
                 const isProductUnitsLessThanSelectUnit =
@@ -177,6 +173,7 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
                 : ''
             )}
             onClick={handleAddToCart}
+            data-cy="product-add-to-cart"
           >
             {product?.units === 0 ? 'Out of stock' : 'Add to cart'}
           </Button>
@@ -188,14 +185,20 @@ export function ProductActions({ productId, product }: ProductActionsProps) {
               handleAddToWishlist(session);
             }}
             title="Add Products to Wishlist"
+            data-cy="product-add-to-wishlist"
           >
-            {userWishlistProductIdArr.includes(productId) ? (
+            {userWishlistProductIdArr?.includes(productId) ? (
               <HeartIconSolid
                 className="h-6 w-6 flex-shrink-0"
                 aria-hidden="true"
+                data-cy="wishlist-added-icon"
               />
             ) : (
-              <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+              <HeartIcon
+                className="h-6 w-6 flex-shrink-0"
+                aria-hidden="true"
+                data-cy="wishlist-not-added-icon"
+              />
             )}
             <span className="sr-only">Add to Wishlist</span>
           </Button>

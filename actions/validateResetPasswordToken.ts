@@ -1,6 +1,6 @@
 'use server';
-import { prisma } from '@lib/prisma';
-import { verifyJwtAccessToken } from '@lib/jwt';
+import { verifyJwtAccessToken } from '@/lib/jwt';
+import { prisma } from '@/lib/prisma';
 import { JwtPayload } from 'jsonwebtoken';
 
 export const validateTokenWithUserEmail = async (

@@ -1,5 +1,5 @@
-import { verifyJwtAccessToken } from '@lib/jwt';
-import { prisma } from '@lib/prisma';
+import { verifyJwtAccessToken } from '@/lib/jwt';
+import { prisma } from '@/lib/prisma';
 import { JwtPayload } from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 

@@ -4,12 +4,12 @@ import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { formatCurrency } from '@lib/formatCurrency';
-import { useAppSelector } from '@store/hooks';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import { formatCurrency } from '@/lib/formatCurrency';
 import { ShoppingCartCountSelect } from './ShoppingCartCountSelect';
 
 export function ShoppingCartList() {
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItems = useCartStore((state) => state.cartItems);
   const cartItemsArr = Object.values(cartItems);
 
   return (
@@ -25,6 +25,7 @@ export function ShoppingCartList() {
         <ul
           role="list"
           className="divide-y divide-gray-200 border-b border-t border-gray-200"
+          data-cy="cart-items"
         >
           {cartItemsArr.map((orderItem) => (
             <li key={orderItem.id} className="flex py-6 sm:py-10">

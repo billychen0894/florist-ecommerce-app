@@ -1,18 +1,17 @@
 'use client';
 
-import { checkout } from '@actions/checkout';
-import { HoverCard } from '@components/ui';
-import Button from '@components/ui/Button';
-import { shippingHoverCardInfo, taxHoverCardInfo } from '@const/OrderInfo';
-import { formatCurrency } from '@lib/formatCurrency';
-import { useAppSelector } from '@store/hooks';
+import { checkout } from '@/actions/checkout';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import { HoverCard } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import { shippingHoverCardInfo, taxHoverCardInfo } from '@/const/orderInfo';
+import { formatCurrency } from '@/lib/formatCurrency';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export function OrderSummary() {
-  const subtotal = useAppSelector((state) => state.cartReducer.subtotal);
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const { subtotal, cartItems } = useCartStore((state) => state);
   const cartItemsArr = Object.values(cartItems);
   const router = useRouter();
   const { data: session } = useSession();
@@ -42,12 +41,16 @@ export function OrderSummary() {
     }
 
     const data = await checkout(cartItemsArr, session?.user.id);
-    router.push(data.url);
+    if (data?.url) {
+      router.push(data.url);
+    }
   };
+
   return (
     <section
       aria-labelledby="summary-heading"
       className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+      data-cy="order-summary"
     >
       <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
         Order summary
@@ -100,6 +103,7 @@ export function OrderSummary() {
           }`}
           disabled={cartItemsArr.length === 0}
           onClick={handleCheckout}
+          data-cy="checkout-button"
         >
           Checkout
         </Button>

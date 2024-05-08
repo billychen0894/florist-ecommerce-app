@@ -21,35 +21,9 @@ services:
   stripe-cli:
     image: stripe/stripe-cli
     container_name: stripe-cli
-    command: 'listen --api-key ${STRIPE_SECRET_KEY} --forward-to http://localhost:3000/api/webhook'
+    environment:
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_DEVICE_NAME: 'f355e87f75fd'
+    command: 'listen --api-key ${STRIPE_SECRET_KEY} --forward-to http://host.docker.internal:3000/api/webhook'
     env_file:
       - .env
-
-  nextjs:
-    container_name: app
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=development
-    command: npm run dev
-    depends_on:
-      - db
-
-  prisma-studio:
-    image: node:latest
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: npx prisma studio
-    ports:
-      - '5555:5555'
-    environment:
-      POSTGRES_PRISMA_URL: ${POSTGRES_PRISMA_URL}
-    depends_on:
-      - db

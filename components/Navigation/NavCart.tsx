@@ -1,24 +1,12 @@
 'use client';
 
-import Link from '@node_modules/next/link';
-import { ShoppingBagIcon } from '@node_modules/@heroicons/react/24/outline';
-import { cn } from '@lib/classNames';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useEffect } from 'react';
-import { getCartItemsFromLocalStorage } from '@lib/getCartItemsFromLocalStorage';
-import { initializeCart } from '@store/features/cartSlice';
+import { useCartStore } from '@/components/Providers/CartStoreProvider';
+import { cn } from '@/lib/classNames';
+import { ShoppingBagIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 export default function NavCart() {
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      const cachedCartItems = getCartItemsFromLocalStorage();
-      dispatch(initializeCart(cachedCartItems));
-    }
-  }, [dispatch]);
-
-  const cartItems = useAppSelector((state) => state.cartReducer.cartItems);
+  const cartItems = useCartStore((state) => state.cartItems);
   const cartItemsArr = Object.values(cartItems);
 
   return (
@@ -26,6 +14,7 @@ export default function NavCart() {
       <Link
         href={{ pathname: '/cart' }}
         className="group -m-2 flex items-center p-2"
+        data-cy="header-nav-cart"
       >
         <ShoppingBagIcon
           className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-secondary-500"

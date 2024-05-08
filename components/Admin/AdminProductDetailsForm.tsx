@@ -1,252 +1,132 @@
 'use client';
 
-import { FormProvider, useForm } from 'react-hook-form';
+import { deleteProductById } from '@/actions/adminActions';
+import CategoriesSection from '@/components/Admin/CategoriesSection';
+import ImageUploadSection from '@/components/Admin/ImageUploadSection';
+import ProductDetailSection from '@/components/Admin/ProductDetailSection';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { Textarea } from '@/components/ui/Textarea';
 import {
-  defaultProductDetailsFromSchema,
+  onSubmitNewProductForm,
+  onSubmitProductDetailsForm,
+} from '@/lib/formActions';
+import {
   ProductDetailsFormSchema,
-} from '@components/Admin/ProductDetailsFormValidation';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Input, Label } from '@components/ui';
+  productDetailsFormSchema,
+} from '@/lib/schemaValidator';
+import { TProduct } from '@/lib/types/types';
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
-import { Textarea } from '@components/ui/Textarea';
-import Button from '@components/ui/Button';
-import { useEffect, useState } from 'react';
-import ImageUploadSection from '@components/Admin/ImageUploadSection';
-import CategoriesSection from '@components/Admin/CategoriesSection';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Category } from '@prisma/client';
-import { ProductReqPayload, TProduct } from '@lib/types/api';
-import ProductDetailSection from '@components/Admin/ProductDetailSection';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { multiImagesUpload } from '@actions/imageUpload';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
-import Spinner from '@components/ui/Spinner';
-import { admin } from '@lib/api/admin';
-import getQueryClient from '@lib/getQueryClient';
-import Modal from '@components/ui/Modal';
-import { ExclamationTriangleIcon } from '@node_modules/@heroicons/react/20/solid';
 
 type AdminProductDetailsForm = {
-  categories: Category[];
-  selectedProduct: TProduct | undefined;
+  categories: Category[] | null;
+  selectedProduct?: TProduct;
+  mode: 'edit' | 'create';
 };
 
 export default function AdminProductDetailsForm({
   categories,
   selectedProduct,
+  mode,
 }: AdminProductDetailsForm) {
-  const axiosWithAuth = useAxiosWithAuth();
-  const queryClient = getQueryClient();
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const selectedProductCategories = selectedProduct?.categories.map(
+    (category) => ({ name: category.name })
+  );
+  const selectedProductDetailItems =
+    selectedProduct?.productDetail?.productDetailItems.map((item) => ({
+      productDetailItemName: item.productDetailItemName,
+      items: item.items,
+    }));
+
   const methods = useForm<ProductDetailsFormSchema>({
-    resolver: yupResolver(defaultProductDetailsFromSchema),
+    resolver: zodResolver(productDetailsFormSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      price: 0,
-      images: { existingImages: [], newImages: [] },
-      categories: [],
-      units: 1,
-      inStock: true,
-      leadTime: '',
-      productDetail: {
-        productDetailItems:
-          selectedProduct?.productDetail?.productDetailItems.map((item) => ({
-            productDetailItemName: item.productDetailItemName,
-            items: item.items,
-          })),
+      name: selectedProduct?.name || '',
+      description: selectedProduct?.description || '',
+      price: selectedProduct?.price || 0,
+      images: {
+        existingImages:
+          mode === 'edit'
+            ? selectedProduct?.images?.map((image) => ({
+                url: image.url,
+                publicId: image.publicId,
+              }))
+            : [],
+        newImages: [],
       },
+      categories: selectedProductCategories || [],
+      units: selectedProduct?.units || 1,
+      inStock: mode === 'edit' ? selectedProduct?.inStock : true,
+      leadTime: selectedProduct?.leadTime || '',
+      productDetail: {
+        productDetailItems: selectedProductDetailItems || [],
+      },
+      selectedProductId: mode === 'edit' ? selectedProduct?.id : 'newProduct',
     },
   });
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    watch,
+    formState: { errors, isSubmitting, isDirty },
     control,
-    setValue,
+    watch,
   } = methods;
 
-  useEffect(() => {
-    if (selectedProduct) {
-      const existingProductImages = selectedProduct.images.map(
-        (image) => image.url
-      );
-
-      const existingProductCategories = selectedProduct.categories.map(
-        (category) => ({ name: category.name })
-      );
-
-      const existingProductDetailItems =
-        selectedProduct?.productDetail?.productDetailItems.map((item) => ({
-          productDetailItemName: item.productDetailItemName,
-          items: item.items,
-        }));
-
-      const formDefaultValues: { [key: string]: string | {} } = {
-        name: selectedProduct.name || '',
-        description: selectedProduct.description || '',
-        price: selectedProduct.price || '',
-        images: {
-          existingImages: existingProductImages,
-          newImages: [],
-        },
-        categories: existingProductCategories,
-        units: selectedProduct.units || 0,
-        inStock: selectedProduct.inStock || false,
-        leadTime: selectedProduct.leadTime || '',
-        productDetail: {
-          productDetailItems: existingProductDetailItems,
-        },
-      };
-
-      Object.keys(formDefaultValues).forEach((key) =>
-        // @ts-ignore
-        setValue(key, formDefaultValues[key] as never, { shouldValidate: true })
-      );
-    }
-  }, [selectedProduct, setValue]);
-
   const onSubmit = async (data: ProductDetailsFormSchema) => {
+    const isImagesDirty =
+      data?.images?.newImages?.length > 0 ||
+      data?.images?.existingImages?.length !== selectedProduct?.images?.length;
+    if (mode === 'edit' && !isDirty && !isImagesDirty) {
+      toast.error('Please make some changes before submitting');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    formData.append('price', data.price.toString());
+    formData.append('units', data.units.toString());
+    formData.append('inStock', data.inStock.toString());
+    formData.append('leadTime', data.leadTime);
+    formData.append('categories', JSON.stringify(data.categories));
+    formData.append('productDetail', JSON.stringify(data.productDetail));
+    formData.append('selectedProductId', selectedProduct?.id || '');
+    formData.append(
+      'existingImages',
+      JSON.stringify(mode === 'edit' ? data.images.existingImages : [])
+    );
+    for (let i = 0; i < data.images.newImages.length; i++) {
+      formData.append('newImages[]', data.images.newImages[i]);
+    }
+
     try {
-      const {
-        images,
-        name,
-        description,
-        price,
-        inStock,
-        categories,
-        units,
-        leadTime,
-        productDetail,
-      } = data;
-      const reqPayload: ProductReqPayload = {
-        ...data,
-        images: {
-          existingImages: [...data.images.existingImages],
-          newImages: [],
-        },
-      };
+      const result =
+        mode === 'edit'
+          ? await onSubmitProductDetailsForm(formData)
+          : await onSubmitNewProductForm(formData);
 
-      const isCategoriesMatching = categories.every((category) => {
-        return selectedProduct?.categories
-          .map((category) => category.name)
-          .includes(category.name);
-      });
-
-      const isProductDetailMatching = productDetail.productDetailItems.every(
-        (productDetail, idx) => {
-          if (
-            productDetail.productDetailItemName ===
-            selectedProduct?.productDetail.productDetailItems[idx]
-              .productDetailItemName
-          ) {
-            return productDetail.items.every((item, subIdx) => {
-              return (
-                item ===
-                selectedProduct?.productDetail?.productDetailItems[idx].items[
-                  subIdx
-                ]
-              );
-            });
-          }
-          return false;
-        }
-      );
-
-      if (
-        name === selectedProduct?.name &&
-        description === selectedProduct?.description &&
-        price === selectedProduct?.price &&
-        inStock === selectedProduct?.inStock &&
-        units === selectedProduct?.units &&
-        leadTime === selectedProduct?.leadTime &&
-        images.newImages.length === 0 &&
-        selectedProduct?.images.length === data.images.existingImages.length &&
-        isCategoriesMatching &&
-        isProductDetailMatching
-      ) {
-        toast.error('No changes to current product. Cannot be saved.');
-        return;
+      if (!result?.success) {
+        return toast.error(result?.message);
       }
 
-      // if there's prevImages, meaning that there's deleted existing images
-      const prevImages = selectedProduct?.images.filter((image) => {
-        return !images.existingImages.includes(image.url);
-      });
-
-      const newImageFilesPromises = images.newImages.map((image, idx) => {
-        return new Promise<{
-          imageFile: string | ArrayBuffer;
-          publicId?: string;
-        } | null>(async (resolve) => {
-          try {
-            const reader = new FileReader();
-
-            reader.onload = (event) => {
-              if (
-                event.target &&
-                event.target.result &&
-                prevImages &&
-                prevImages.length > 0 &&
-                prevImages[idx]?.publicId &&
-                prevImages[idx]?.url.startsWith('http')
-              ) {
-                resolve({
-                  imageFile: event.target.result,
-                  publicId: prevImages[idx]?.publicId!,
-                });
-              } else if (event.target && event.target.result) {
-                resolve({ imageFile: event.target.result });
-              } else {
-                resolve(null);
-              }
-            };
-
-            reader.readAsDataURL(image);
-          } catch (err: any) {
-            console.error('Something went wrong', err.message);
-            resolve(null);
-          }
-        });
-      });
-
-      const newImagesFilesResult = await Promise.all(newImageFilesPromises);
-      const newImagesFiles = newImagesFilesResult.filter(
-        (item) => item !== null
-      ) as { imageFile: string | ArrayBuffer; publicId?: string }[];
-
-      if (newImagesFiles.length > 0) {
-        const result = await multiImagesUpload(newImagesFiles);
-
-        if (result && result?.length > 0) {
-          reqPayload.images.newImages = result.filter((item) => item !== null);
-        }
-      }
-
-      if (selectedProduct?.id && reqPayload) {
-        const response = await admin.updateProductById(
-          selectedProduct?.id,
-          reqPayload,
-          axiosWithAuth
-        );
-
-        if (response.status === 200) {
-          toast.success('Product is updated successfully');
-          if (typeof window !== undefined) {
-            setTimeout(() => {
-              window.location.reload();
-            }, 500);
-          }
-          return;
-        } else {
-          return toast.error('Something went wrong while updating product');
-        }
-      }
-    } catch (err: any) {
-      console.error('Error during saving product info: ', err.message);
-      return toast.error('Something went wrong while updating product');
+      toast.success(result?.message);
+      mode === 'create' ? router.push('/admin/products') : null;
+    } catch (err) {
+      console.error('Error during saving product info: ', err);
+      return toast.error('Something went wrong');
     }
   };
 
@@ -272,20 +152,12 @@ export default function AdminProductDetailsForm({
           try {
             setIsLoading(true);
             if (selectedProduct) {
-              const response = await admin.deleteProductById(
-                selectedProduct?.id,
-                axiosWithAuth
-              );
-              if (response.status === 200) {
+              const result = await deleteProductById(selectedProduct.id);
+              if (result?.success) {
                 toast.success('Product is successfully deleted');
                 setIsLoading(false);
-                setTimeout(() => {
-                  setIsModalOpen(false);
-                  queryClient.invalidateQueries({ queryKey: ['query'] });
-                  if (window !== undefined) {
-                    window.location.reload();
-                  }
-                }, 1500);
+                setIsModalOpen(false);
+                router.push('/admin/products');
               } else {
                 toast.error('Something went wrong during deleting product');
                 setIsLoading(false);
@@ -317,7 +189,7 @@ export default function AdminProductDetailsForm({
           onSubmit={handleSubmit(onSubmit)}
           className="w-full bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl"
         >
-          <div className="px-4 py-6 sm:p-8">
+          <div className="px-4 py-6 sm:p-8 flex justify-center">
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-full">
                 <Label htmlFor="name">Product name</Label>
@@ -432,30 +304,37 @@ export default function AdminProductDetailsForm({
               <ProductDetailSection
                 control={control}
                 selectedProduct={selectedProduct}
+                isEdit={mode === 'edit'}
               />
             </div>
           </div>
-          <div className="flex items-center justify-between gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
-            <Button
-              type="button"
-              disabled={isSubmitting}
-              className="disabled:bg-gray-300 disabled:cursor-not-allowed bg-red-500 hover:bg-red-400"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
-              <div className="flex justify-center items-center">
-                <span>Delete</span>
-              </div>
-            </Button>
+          <div
+            className={`flex items-center gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8 ${
+              mode === 'create' ? 'justify-end' : 'justify-between'
+            }`}
+          >
+            {mode === 'edit' ? (
+              <Button
+                type="button"
+                disabled={isSubmitting}
+                className="disabled:bg-gray-300 disabled:cursor-not-allowed bg-red-500 hover:bg-red-400"
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+              >
+                <div className="flex justify-center items-center">
+                  <span>Delete</span>
+                </div>
+              </Button>
+            ) : null}
             <Button
               type="submit"
               disabled={isSubmitting}
               className="disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-              <div className="flex justify-center items-center">
+              <div className="flex justify-end items-center">
                 {isSubmitting && <Spinner />}
-                <span>Save</span>
+                <span>{mode === 'edit' ? 'Save' : 'Create'}</span>
               </div>
             </Button>
           </div>

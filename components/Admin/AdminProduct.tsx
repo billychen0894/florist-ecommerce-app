@@ -1,110 +1,22 @@
-'use client';
-
-import AdminProductList from '@components/Admin/AdminList';
-import AdminProductDetailsForm from '@components/Admin/AdminProductDetailsForm';
-import { TProduct } from '@lib/types/api';
-import { Category } from '@node_modules/@prisma/client';
-import { Fragment, useEffect, useState } from 'react';
-import SlideOver from '@components/ui/SlideOver';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import AdminProductListItem from '@components/Admin/AdminProductListItem';
-import { useRouter } from 'next/navigation';
-import { products as fetchProducts } from '@lib/api/products';
+import AdminList from '@/components/Admin/AdminList';
+import { TProducts } from '@/lib/types/types';
+import AdminProductListItem from './AdminProductListItem';
 
 type AdminProductProps = {
-  products: TProduct[];
-  keyword: string | undefined;
-  categories: Category[];
-  productId: string | null;
+  products: TProducts;
 };
 
-export default function AdminProduct({
-  products,
-  keyword,
-  categories,
-  productId,
-}: AdminProductProps) {
-  const router = useRouter();
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedProduct, setSelectedProduct] = useState<TProduct>();
-  const sortedProducts = [...products].sort(
-    (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
-  );
-
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ['query', keyword],
-      queryFn: async ({ pageParam = 1 }) => {
-        const responseData = await fetchProducts.getAllProducts(
-          pageParam,
-          12,
-          'newest',
-          undefined,
-          keyword
-        );
-        const response = responseData.data as TProduct[];
-        return (
-          response &&
-          [...response]?.sort(
-            (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)
-          )
-        );
-      },
-      getNextPageParam: (lastPage, allPages) => {
-        const limit = 12;
-        return lastPage && lastPage?.length === limit
-          ? allPages.length + 1
-          : undefined;
-      },
-      initialData: {
-        pages: [sortedProducts],
-        pageParams: [1],
-      },
-    });
-
-  useEffect(() => {
-    if (data && productId) {
-      const products = data.pages.flat();
-      const product = products.find((product) => product?.id === productId);
-
-      if (product) {
-        setSelectedProduct(product);
-      }
-    }
-  }, [data, productId]);
+export default function AdminProduct({ products }: AdminProductProps) {
   return (
-    <>
-      <div className="grid grid-cols-1 gap-x-8 gap-y-8">
-        <AdminProductList
-          isFetchingNextPage={isFetchingNextPage}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          list={data?.pages.map((productsPage, idx) => (
-            <Fragment key={idx}>
-              {productsPage &&
-                productsPage?.map((product) => (
-                  <AdminProductListItem
-                    product={product}
-                    key={product.id}
-                    setOpen={setOpen}
-                  />
-                ))}
-            </Fragment>
-          ))}
-          btnOnClick={() => {
-            router.push('/admin/products/new-product');
-          }}
-          btnLabel="Add Product"
-          pageHeading="Product List"
-          isSearch
-        />
-        <SlideOver open={open} setOpen={setOpen}>
-          <AdminProductDetailsForm
-            categories={categories}
-            selectedProduct={selectedProduct}
-          />
-        </SlideOver>
-      </div>
-    </>
+    <div className="grid grid-cols-1 gap-x-8 gap-y-8">
+      <AdminList
+        list={products?.map((product) => (
+          <AdminProductListItem key={product.id} product={product} />
+        ))}
+        btnLabel="Add Product"
+        btnUrl="/admin/products/new-product"
+        isSearch
+      />
+    </div>
   );
 }

@@ -3,8 +3,8 @@
 import { Tab } from '@headlessui/react';
 import Image from 'next/image';
 
-import { cn } from '@lib/classNames';
-import { TProduct } from '@lib/types/api';
+import { cn } from '@/lib/classNames';
+import { TProduct } from '@/lib/types/types';
 
 interface ProductImageGalleryProps {
   product: TProduct | null;
@@ -14,8 +14,8 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
   return (
     <Tab.Group as="div" className="flex flex-col-reverse">
       {/* Image selector */}
-      <div className="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
-        <Tab.List className="grid grid-cols-4 gap-6">
+      <div className="mx-auto mt-6 hidden w-full h-full max-w-2xl sm:block lg:max-w-none">
+        <Tab.List className="grid grid-cols-4 gap-6" data-cy="product-images">
           {product?.images.map((image) => (
             <Tab
               key={image.id}
@@ -30,9 +30,10 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
                       alt={image.alt}
                       className="h-full w-full object-cover object-center"
                       width={130}
-                      height={112}
+                      height={130}
                       sizes="(min-width: 1360px) 130px, (min-width: 1040px) 10vw, (min-width: 780px) 150px, calc(16.67vw + 23px)"
-                      quality={60}
+                      quality={50}
+                      priority
                     />
                   </span>
                   <span
@@ -49,7 +50,10 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
         </Tab.List>
       </div>
 
-      <Tab.Panels className="aspect-h-1 aspect-w-1 w-full">
+      <Tab.Panels
+        className="aspect-h-1 aspect-w-1 w-full h-full"
+        data-cy="product-main-image"
+      >
         {product?.images.map((image) => (
           <Tab.Panel key={image.id}>
             <Image
@@ -59,7 +63,7 @@ export function ProductImageGallery({ product }: ProductImageGalleryProps) {
               width={672}
               height={672}
               sizes="(min-width: 1360px) 592px, (min-width: 1040px) calc(40vw + 56px), (min-width: 780px) 672px, (min-width: 640px) calc(66.67vw + 165px), 100vw"
-              quality={60}
+              quality={50}
               priority
             />
           </Tab.Panel>

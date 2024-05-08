@@ -1,8 +1,8 @@
+import { cn } from '@/lib/classNames';
 import { Menu, Transition } from '@headlessui/react';
-import { cn } from '@lib/classNames';
+import Link from 'next/link';
 import React, { Fragment } from 'react';
 import Button from './Button';
-import Link from 'next/link';
 
 interface MenuItem {
   href: string;
@@ -23,7 +23,10 @@ export default function UserAcccountDropdown({
   return (
     <Menu as="span" className="hidden relative sm:inline-block text-left">
       <div className="relative top-0.5">
-        <Menu.Button className="inline-block h-6 w-6 sm:h-7 sm:w-7 overflow-hidden rounded-full bg-gray-100">
+        <Menu.Button
+          className="inline-block h-6 w-6 sm:h-7 sm:w-7 overflow-hidden rounded-full bg-gray-100"
+          data-cy="user-avatar-btn"
+        >
           {avatar}
         </Menu.Button>
       </div>
@@ -54,6 +57,7 @@ export default function UserAcccountDropdown({
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block px-4 py-2 text-sm'
                     )}
+                    data-cy={`${item.label}-link`}
                   >
                     {item.label}
                   </Link>
@@ -74,6 +78,7 @@ export default function UserAcccountDropdown({
                     const { signOut } = await import('next-auth/react');
                     signOut();
                   }}
+                  data-cy="sign-out-btn"
                 >
                   Sign out
                 </Button>

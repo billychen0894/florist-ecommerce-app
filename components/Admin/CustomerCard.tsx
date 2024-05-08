@@ -1,20 +1,24 @@
-import Image from 'next/image';
-import { User } from '@lib/types/api';
+'use client';
+
+import { deleteUserById } from '@/actions/adminActions';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { cn } from '@/lib/classNames';
+import { formatDate } from '@/lib/formatDate';
+import { UserWithoutPass } from '@/lib/types/types';
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
-import { cn } from '@lib/classNames';
-import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid';
+import {
+  EllipsisHorizontalIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/20/solid';
+import Image from 'next/image';
 import Link from 'next/link';
-import Modal from '@components/ui/Modal';
-import Spinner from '@components/ui/Spinner';
-import { ExclamationTriangleIcon } from '@node_modules/@heroicons/react/20/solid';
-import { admin } from '@lib/api/admin';
-import Button from '@components/ui/Button';
-import useAxiosWithAuth from '@hooks/useAxiosAuth';
+import { Fragment, useState } from 'react';
 import toast from 'react-hot-toast';
 
 type CustomerCardProps = {
-  customer: User;
+  customer: UserWithoutPass;
 };
 
 const defualtAvatar = (
@@ -26,9 +30,9 @@ const defualtAvatar = (
 );
 
 export default function CustomerCard({ customer }: CustomerCardProps) {
-  const axiosWithAuth = useAxiosWithAuth();
   const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const joinDate = formatDate(customer?.createdAt);
 
   const deleteModal = (
     <Modal
@@ -49,19 +53,11 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
         try {
           setIsLoading(true);
           if (customer?.id) {
-            const response = await admin.deleteUserById(
-              customer?.id,
-              axiosWithAuth
-            );
-            if (response.status === 200) {
+            const result = await deleteUserById(customer?.id);
+            if (result?.success) {
               toast.success('Customer is successfully deleted');
               setIsLoading(false);
-              setTimeout(() => {
-                setOpen(false);
-                if (window !== undefined) {
-                  window.location.reload();
-                }
-              }, 1500);
+              setOpen(false);
             } else {
               toast.error('Something went wrong during deleting customers');
               setIsLoading(false);
@@ -175,11 +171,7 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
           <div className="flex justify-between gap-x-4 py-3">
             <dt className="text-gray-500">Join</dt>
             <dd className="text-gray-700">
-              <time
-                dateTime={new Date(customer?.createdAt).toLocaleDateString()}
-              >
-                {new Date(customer?.createdAt).toLocaleDateString()}
-              </time>
+              <time dateTime={joinDate}>{joinDate}</time>
             </dd>
           </div>
         </dl>

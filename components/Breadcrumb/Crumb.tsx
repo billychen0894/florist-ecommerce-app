@@ -6,7 +6,7 @@ interface CrumbProps {
   last: boolean;
 }
 
-export const Crumb = ({ href, crumbName, last = false }: CrumbProps) => {
+export function Crumb({ href, crumbName, last = false }: CrumbProps) {
   // if it's the last crumb, don't make it a link
   if (last) {
     return (
@@ -36,4 +36,4 @@ export const Crumb = ({ href, crumbName, last = false }: CrumbProps) => {
       </div>
     </li>
   );
-};
+}

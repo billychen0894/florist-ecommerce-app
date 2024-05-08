@@ -1,14 +1,14 @@
-import { Label } from '@components/ui';
-import Button from '@components/ui/Button';
+import { Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import ContextMenu from '@/components/ui/ContextMenu';
 import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
-import { Controller, useFormContext } from 'react-hook-form';
-import ContextMenu from '@components/ui/ContextMenu';
 import { Category } from '@prisma/client';
 import { useRef } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 type CategoriesSection = {
-  categories: Category[];
+  categories: Category[] | null;
 };
 
 export default function CategoriesSection({ categories }: CategoriesSection) {
@@ -44,7 +44,7 @@ export default function CategoriesSection({ categories }: CategoriesSection) {
                 <option value="" disabled>
                   Select categories
                 </option>
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <option key={category.id} value={category.name}>
                     {category.name}
                   </option>

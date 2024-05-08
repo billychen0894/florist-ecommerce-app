@@ -1,6 +1,6 @@
 'use server';
 
-import { stripe } from '@lib/stripe';
+import { stripe } from '@/lib/stripe';
 
 export const updateStripeCustomer = async (customerId: string, data: {}) => {
   try {

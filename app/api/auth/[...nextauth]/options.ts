@@ -1,4 +1,4 @@
-import { auth } from '@lib/api/auth';
+import { auth } from '@/lib/api/auth';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 

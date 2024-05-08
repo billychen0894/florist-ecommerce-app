@@ -1,102 +1,24 @@
 'use client';
 
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { checkEmailIfExists } from '@/lib/checkEmailIfExists';
+import { cn } from '@/lib/classNames';
+import { onSubmitSignUpForm } from '@/lib/formActions';
+import { SignUpFormSchema, signUpFormSchema } from '@/lib/schemaValidator';
 import { FaceFrownIcon, FaceSmileIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { debounce } from 'lodash';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import * as yup from 'yup';
 
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Modal from '@components/ui/Modal';
-import { emails } from '@lib/api/email';
-import { users } from '@lib/api/users';
-import { asyncCacheTest } from '@lib/asyncCacheTest';
-import { cn } from '@lib/classNames';
-import Spinner from '@components/ui/Spinner';
-
-// Override default email regex
-yup.addMethod(yup.string, 'email', function validateEmail(message) {
-  return this.matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-    message,
-    excludeEmptyString: true,
-  });
-});
-
-// If the email validation result same as the previous one, return the previous result instead of calling the API again
-const actualValidityTest = asyncCacheTest(
-  (value: string) =>
-    new Promise((resolve) => {
-      const result = emails
-        .validateEmail(value)
-        .then((res) => {
-          if (res.status === 200) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        })
-        .catch((error) => {
-          console.error('Error while validating email:', error);
-          resolve(false);
-        });
-      return result;
-    })
-);
-
-export const signUpFormSchema = yup.object().shape({
-  firstName: yup
-    .string()
-    .required('Your first name is required')
-    .max(50, 'Your first name is too long'),
-  lastName: yup
-    .string()
-    .required('Your last name is required')
-    .max(50, 'Your last name is too long'),
-  // If the email validation fails inside the test method, it will throw validationError, which prevents calling the API in every keystroke
-  // source from this github issue: https://github.com/jquense/yup/issues/256
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Your email is required')
-    .test('unique-email', 'This email is already registered', async (value) => {
-      await yup
-        .object({
-          email: yup
-            .string()
-            .email('Invalid email address')
-            .required('Your email is required'),
-        })
-        .validate({ email: value });
-
-      const result = await actualValidityTest(value);
-
-      return result as boolean;
-    }),
-  // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
-  password: yup
-    .string()
-    .required('Your password is required')
-    .min(8, 'Password must be at least 8 characters long')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      'Password must contain at least one uppercase and lowercase letter, and one number'
-    ),
-  // confirm password must match password
-  confirmPassword: yup
-    .string()
-    .required('Please confirm your password')
-    .test('passwords-match', 'Passwords must match', function (value) {
-      return this.parent.password === value;
-    }),
-});
-
-export type SignUpFormData = yup.InferType<typeof signUpFormSchema>;
-
-function SignUpForm() {
+export default function SignUpForm() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [isAccountCreated, setIsAccountCreated] = useState<boolean>(false);
   const router = useRouter();
@@ -104,8 +26,16 @@ function SignUpForm() {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<SignUpFormData>({
-    resolver: yupResolver(signUpFormSchema),
+  } = useForm<SignUpFormSchema>({
+    resolver: zodResolver(
+      signUpFormSchema.refine(
+        async (data) => {
+          const emailExists = await checkEmailIfExists(data.email);
+          return !emailExists;
+        },
+        { message: 'Email already exists', path: ['email'] }
+      )
+    ),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -113,29 +43,27 @@ function SignUpForm() {
       password: '',
       confirmPassword: '',
     },
-    mode: 'onChange',
+    mode: 'onBlur',
   });
 
-  const onSubmit = async (data: SignUpFormData) => {
+  const onSubmit = async (data: SignUpFormSchema) => {
+    const formData = new FormData();
+    formData.append('firstName', data.firstName);
+    formData.append('lastName', data.lastName);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('confirmPassword', data.confirmPassword);
+
     try {
-      const { toast } = await import('react-hot-toast');
       toast.loading('Creating your account...');
-      setIsAccountCreated(false);
+      const result = await onSubmitSignUpForm(formData);
 
-      const userRegisteredResult = await users.createUser(data);
-
-      // throw error with status code and message in the request response
-      if (userRegisteredResult.success === false) {
+      if (!result.success) {
         toast.dismiss();
-        setIsAccountCreated(false);
         setModalOpen(true);
-        throw new Error(
-          userRegisteredResult.message || 'Something went wrong!'
-        );
+        throw new Error(result.message || 'Something went wrong!');
       }
 
-      // SignIn the user after successful registration
-      const { signIn } = await import('next-auth/react');
       const userSignInResult = await signIn('credentials', {
         redirect: false,
         email: data.email,
@@ -144,7 +72,6 @@ function SignUpForm() {
 
       if (userSignInResult && !userSignInResult.ok) {
         toast.dismiss();
-        setIsAccountCreated(false);
         setModalOpen(true);
         throw new Error(userSignInResult.error || 'Something went wrong!');
       }
@@ -152,21 +79,13 @@ function SignUpForm() {
       toast.dismiss();
       setIsAccountCreated(true);
       setModalOpen(true);
-      return userRegisteredResult;
     } catch (error) {
-      toast.dismiss();
-      setIsAccountCreated(false);
-      setModalOpen(true);
       console.error(error);
+      toast.dismiss();
+      setModalOpen(true);
     }
   };
 
-  // Desctructure the register method to register the email input field to be debounced in order
-  // to prevent extra api calls when the email is valid but the user is still typing.
-  // Reasoning: if the debounce is implemented directly in the yup schema, it will make a weird behaviour for the error message of the email input
-  // , which will be displayed only the previous validation error message, not the current one.
-  // Also, when other input fields are entered, the async api call will be sent again, which is not necessary.
-  // Becasue the yup schema makes the form validation as a whole asynchoronously, instead of field by field.
   const {
     ref: emailRef,
     onChange: emailOnChange,
@@ -191,6 +110,8 @@ function SignUpForm() {
           }
           buttonAction={() => router.push('/')}
           backdropAction={() => router.push('/')}
+          dataCy="account-created-modal"
+          dataCyAction="account-created-modal-action"
         />
       ) : (
         <Modal
@@ -221,6 +142,7 @@ function SignUpForm() {
               autoComplete="given-name"
               {...register('firstName')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="firstName-input"
             />
           </div>
           <ErrorMessage
@@ -241,6 +163,7 @@ function SignUpForm() {
               autoComplete="family-name"
               {...register('lastName')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="lastName-input"
             />
           </div>
           <ErrorMessage
@@ -262,11 +185,11 @@ function SignUpForm() {
               name={emailName}
               ref={emailRef}
               onChange={async () => {
-                const { debounce } = await import('lodash');
                 debounce(emailOnChange, 1000);
               }}
               onBlur={emailOnBlur}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="email-input"
             />
           </div>
           <ErrorMessage
@@ -274,6 +197,7 @@ function SignUpForm() {
             name="email"
             as="p"
             className="text-sm font-medium text-red-500 mt-1 ml-1"
+            data-cy="email-error"
           />
         </div>
 
@@ -288,6 +212,7 @@ function SignUpForm() {
               autoComplete="current-password"
               {...register('password')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="password-input"
             />
           </div>
           <ErrorMessage
@@ -309,6 +234,7 @@ function SignUpForm() {
               autoComplete="current-password"
               {...register('confirmPassword')}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+              data-cy="confirmPassword-input"
             />
           </div>
           <ErrorMessage
@@ -328,6 +254,7 @@ function SignUpForm() {
                 'opacity-50 cursor-not-allowed': isSubmitting || !isValid,
               }
             )}
+            data-cy="signUp-button"
             disabled={isSubmitting || !isValid}
           >
             <div className="flex justify-center items-center">
@@ -340,5 +267,3 @@ function SignUpForm() {
     </>
   );
 }
-
-export default SignUpForm;

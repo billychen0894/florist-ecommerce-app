@@ -1,9 +1,8 @@
-import { ProductItem } from '@components/Product/ProductItem';
-import { TProduct } from '@lib/types/api';
-import React from 'react';
+import { ProductItem } from '@/components/Product/ProductItem';
+import { TWishlist } from '@/lib/types/types';
 
 interface ProductListProps {
-  productsList: TProduct[];
+  productsList: TWishlist;
   showCategory?: boolean;
   isWishlistBtnToggle?: boolean;
 }
@@ -15,7 +14,7 @@ export default function WishlistItems({
 }: ProductListProps) {
   return (
     <>
-      {productsList.map((product) => (
+      {productsList?.map((product) => (
         <ProductItem
           key={product.id}
           product={product}

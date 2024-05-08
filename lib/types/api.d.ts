@@ -107,11 +107,6 @@ export type Sort =
   | 'Price-low-to-high'
   | 'Price-high-to-low';
 
-export interface OrderPayload {
-  formData: yup.InferType<typeof orderFormDataSchema>;
-  orderData: yup.InferType<typeof orderSummarySchema>;
-}
-
 export interface commonAddressFields {
   addressLine1: string;
   addressLine2?: string;

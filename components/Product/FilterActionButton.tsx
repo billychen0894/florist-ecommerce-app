@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@components/ui/Button';
-import { MobileFilterDialog } from '@components/Filter/MobileFilterDialog';
-import { useState } from 'react';
-import { Filter } from '@components/Filter';
+import { Filter } from '@/components/Filter';
+import { MobileFilterDialog } from '@/components/Filter/MobileFilterDialog';
+import Button from '@/components/ui/Button';
+import useFilterAction from '@/hooks/useFilterAction';
 
 type FilterActionButtionProps = {
   filters: Filter[];
@@ -11,18 +11,16 @@ type FilterActionButtionProps = {
 export default function FilterActionButton({
   filters,
 }: FilterActionButtionProps) {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState<boolean>(false);
+  const { setIsMobileFilterOpen } = useFilterAction();
+
   return (
     <>
-      <MobileFilterDialog
-        isMobileFiltersOpen={mobileFiltersOpen}
-        handleMobileFiltersOpen={setMobileFiltersOpen}
-        filters={filters}
-      />
+      <MobileFilterDialog filters={filters} />
       <Button
         type="button"
         className="inline-block font-medium text-gray-700 hover:text-gray-900 bg-transparent hover:bg-transparent shadow-none sm:hidden"
-        onClick={() => setMobileFiltersOpen(true)}
+        onClick={() => setIsMobileFilterOpen(true)}
+        data-cy="mobile-filter-btn"
       >
         <span className="text-sm font-medium text-gray-700">Filters</span>
       </Button>

@@ -3,11 +3,11 @@
 import { Disclosure } from '@headlessui/react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
 
-import { cn } from '@lib/classNames';
-import { TProduct } from '@lib/types/api';
+import { cn } from '@/lib/classNames';
+import { TFullProduct } from '@/lib/types/types';
 
 interface ProductDetailsProps {
-  product: TProduct | null;
+  product: TFullProduct;
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
@@ -17,18 +17,29 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         Additional details
       </h2>
 
-      <div className="divide-y divide-gray-200 border-t">
-        {product?.productDetail.productDetailItems.map((detailItem) => (
-          <Disclosure as="div" key={detailItem.id}>
+      <div
+        className="divide-y divide-gray-200 border-t"
+        data-cy="productDetailItems"
+      >
+        {product?.productDetail?.productDetailItems.map((detailItem) => (
+          <Disclosure
+            as="div"
+            key={detailItem.id}
+            data-cy={`productDetailItems-${detailItem.productDetailItemName}`}
+          >
             {({ open }) => (
               <>
                 <h3>
-                  <Disclosure.Button className="group relative flex w-full items-center justify-between py-6 text-left">
+                  <Disclosure.Button
+                    className="group relative flex w-full items-center justify-between py-6 text-left"
+                    data-cy={`productDetailItems-${detailItem.productDetailItemName}-btn`}
+                  >
                     <span
                       className={cn(
                         open ? 'text-primary-500' : 'text-gray-900',
                         'text-sm font-medium'
                       )}
+                      data-cy={detailItem.productDetailItemName}
                     >
                       {detailItem.productDetailItemName}
                     </span>
@@ -48,7 +59,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   </Disclosure.Button>
                 </h3>
                 <Disclosure.Panel as="div" className="prose prose-sm pb-6">
-                  <ul role="list">
+                  <ul
+                    role="list"
+                    data-cy={`productDetailItems-${detailItem.productDetailItemName}-detailList`}
+                  >
                     {detailItem.items.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}

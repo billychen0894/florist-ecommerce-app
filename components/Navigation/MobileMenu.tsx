@@ -1,46 +1,39 @@
 'use client';
 
+import Button from '@/components/ui/Button';
+import { headerNavigation } from '@/const/navigation';
+import useNavMenuCtx from '@/hooks/useNavMenuCtx';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-import Button from '@components/ui/Button';
-import { headerNavigation } from '@const/navigation';
-import { useSession } from 'next-auth/react';
-import useNavMenuCtx from '@hooks/useNavMenuCtx';
+
+const mobileUserAccountMenu = [
+  { href: '/user/profile', label: 'Profile' },
+  { href: '/user/orders', label: 'Orders' },
+  { href: '/user/wishlist', label: 'Wishlist' },
+  { href: '/user/settings', label: 'Settings' },
+];
 
 export default function MobileMenu() {
   const navMenuCtx = useNavMenuCtx();
   const { data: session, status } = useSession();
+
   const MobileUserAccountMenu = (
     <>
-      <div className="flow-root">
-        <Link
-          href="/user/profile"
-          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-        >
-          Profile
-        </Link>
-      </div>
-      <div className="flow-root">
-        <Link
-          href="/user/orders"
-          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-        >
-          Manage Orders
-        </Link>
-      </div>
-      <div className="flow-root">
-        <Link
-          href="/user/settings"
-          className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-          onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-        >
-          Settings
-        </Link>
-      </div>
+      {mobileUserAccountMenu.map((item) => (
+        <div key={item.href} className="flow-root">
+          <Link
+            href={item.href}
+            className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+            onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
+            data-cy={`header-mobile-nav-${item.label}`}
+          >
+            {item.label}
+          </Link>
+        </div>
+      ))}
       <div className="flow-root">
         <span
           onClick={async () => {
@@ -49,6 +42,7 @@ export default function MobileMenu() {
             signOut();
           }}
           className="-m-2 block p-2 font-medium text-red-500 hover:text-red-600 cursor-pointer"
+          data-cy="header-mobile-nav-sign-out"
         >
           Sign Out
         </span>
@@ -104,6 +98,7 @@ export default function MobileMenu() {
                       href={page.href}
                       className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
                       onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
+                      data-cy={`header-mobile-nav-${page.name}`}
                     >
                       {page.name}
                     </Link>
@@ -113,27 +108,34 @@ export default function MobileMenu() {
 
               <div className="space-y-6 border-t border-gray-200 px-4 py-6">
                 {/*<AuthenticationButtons />*/}
-                <div className="flow-root">
-                  <span
-                    onClick={async () => {
-                      const { signIn } = await import('next-auth/react');
-                      signIn();
-                    }}
-                    className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
-                  >
-                    Sign in
-                  </span>
-                </div>
-                <div className="flow-root">
-                  <Link
-                    href={{ pathname: '/auth/signup' }}
-                    className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
-                    onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
-                  >
-                    Create account
-                  </Link>
-                </div>
-                {session && status === 'authenticated' && MobileUserAccountMenu}
+                {session && status === 'authenticated' ? (
+                  MobileUserAccountMenu
+                ) : (
+                  <>
+                    <div className="flow-root">
+                      <span
+                        onClick={async () => {
+                          const { signIn } = await import('next-auth/react');
+                          signIn();
+                        }}
+                        className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500 cursor-pointer"
+                        data-cy="header-mobile-nav-sign-in"
+                      >
+                        Sign in
+                      </span>
+                    </div>
+                    <div className="flow-root">
+                      <Link
+                        href={{ pathname: '/auth/signup' }}
+                        className="-m-2 block p-2 font-medium text-gray-900 hover:text-secondary-500"
+                        onClick={() => navMenuCtx.setIsMobileMenuOpen(false)}
+                        data-cy="header-mobile-nav-sign-up"
+                      >
+                        Create account
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             </Dialog.Panel>
           </Transition.Child>

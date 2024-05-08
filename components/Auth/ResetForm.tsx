@@ -1,109 +1,45 @@
 'use client';
 
+import { sendForgotPasswordEmail } from '@/actions/sendForgotPasswordEmail';
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
+import { onSubmitResetPassword } from '@/lib/formActions';
+import { verifyJwtAccessToken } from '@/lib/jwt';
+import { ResetFormSchema, resetFormSchema } from '@/lib/schemaValidator';
+import { FaceFrownIcon } from '@heroicons/react/20/solid';
 import { ErrorMessage } from '@hookform/error-message';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { asyncCacheTest } from '@lib/asyncCacheTest';
-import * as yup from 'yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
-import dynamic from 'next/dynamic';
-
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import { fetchUserByEmail } from '@actions/fetchUserByEmail';
-import Spinner from '@components/ui/Spinner';
-import { validateTokenWithUserEmail } from '@actions/validateResetPasswordToken';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { updateUserPasswordByEmail } from '@actions/updateUserByEmail';
-import toast from 'react-hot-toast';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { verifyJwtAccessToken } from '@lib/jwt';
-import { FaceFrownIcon } from '@node_modules/@heroicons/react/20/solid';
-import { sendForgotPasswordEmail } from '@actions/sendForgotPasswordEmail';
-
-// Override default email regex
-yup.addMethod(yup.string, 'email', function validateEmail(message) {
-  return this.matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-    message,
-    excludeEmptyString: true,
-  });
-});
-
-const checkEmailIfExists = asyncCacheTest(
-  (value: string) =>
-    new Promise((resolve) => {
-      fetchUserByEmail(value)
-        .then((res) => {
-          if (res) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        })
-        .catch((error) => {
-          console.error('Error while validating email:', error);
-          resolve(false);
-        });
-    })
-);
-
-const resetFormSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Your email is required')
-    .test('unique-email', 'This email is not registered', async (value) => {
-      await yup
-        .object({
-          email: yup
-            .string()
-            .email('Invalid email address')
-            .required('Your email is required'),
-        })
-        .validate({ email: value });
-
-      const result = await checkEmailIfExists(value);
-
-      return result as boolean;
-    }),
-  newPassword: yup
-    .string()
-    .required('Your new password is required')
-    .min(8, 'Password must be at least 8 characters long')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      'Password must contain at least one uppercase and lowercase letter, and one number'
-    ),
-  confirmNewPassword: yup
-    .string()
-    .required('Please confirm your new password')
-    .test('passwords-match', 'Passwords must match', function (value) {
-      return this.parent.newPassword === value;
-    }),
-});
-
-export type ResetFormData = yup.InferType<typeof resetFormSchema>;
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 function ResetForm() {
+  const token = useSearchParams().get('token');
+  if (!token) {
+    redirect('/');
+  }
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
-  } = useForm<ResetFormData>({
-    resolver: yupResolver(resetFormSchema),
+  } = useForm<ResetFormSchema>({
+    resolver: zodResolver(resetFormSchema),
     defaultValues: {
       email: '',
       newPassword: '',
       confirmNewPassword: '',
+      token: token || '',
     },
-    mode: 'onChange',
+    mode: 'onBlur',
   });
-  const token = useSearchParams().get('token');
   const [isTokenExpired, setIsTokenExpired] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const router = useRouter();
-  const Modal = dynamic(() => import('@components/ui/Modal'));
 
   useEffect(() => {
     if (token && token !== '') {
@@ -119,43 +55,37 @@ function ResetForm() {
     }
   }, [token]);
 
-  // For some reason, yup test api does not work with error message react-form-hook
-  // this is a workaround to register input explicitly
   const {
     ref: emailRef,
-    onChange: emailOnChange,
     onBlur: emailOnBlur,
     name: emailName,
   } = register('email');
 
-  const onSubmit = async (data: ResetFormData) => {
+  const onSubmit = async (data: ResetFormSchema) => {
     try {
-      const { email, newPassword, confirmNewPassword } = data;
       if (!token) {
+        toast.error('Invalid reset email link. Please request a new one');
         throw new Error('No token supplied');
       }
 
-      if (newPassword !== confirmNewPassword) {
-        throw new Error('passwords do not match');
-      }
+      const formData = new FormData();
+      formData.append('email', data.email);
+      formData.append('newPassword', data.newPassword);
+      formData.append('confirmNewPassword', data.confirmNewPassword);
+      formData.append('token', token);
 
-      const validationResult = await validateTokenWithUserEmail(email, token);
+      const result = await onSubmitResetPassword(formData);
 
-      if (!validationResult) {
-        throw new Error('Token validation failed');
-      }
-
-      const updateResult = await updateUserPasswordByEmail(email, newPassword);
-
-      const { toast } = await import('react-hot-toast');
-      if (updateResult) {
+      if (result?.success) {
         toast.success('Successfully reset your password');
         router.push('/');
       } else {
-        throw new Error('Something went wrong during user update');
+        toast.error(
+          result?.message || 'Something went wrong during reset your password'
+        );
       }
     } catch (err: any) {
-      console.log('Error: ', err.message);
+      console.error('Error: ', err.message);
       toast.error('Something went wrong during reset your password');
     }
   };
@@ -210,10 +140,6 @@ function ResetForm() {
               autoComplete="email"
               name={emailName}
               ref={emailRef}
-              onChange={async () => {
-                const { debounce } = await import('lodash');
-                debounce(emailOnChange, 1000);
-              }}
               onBlur={emailOnBlur}
               className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
             />

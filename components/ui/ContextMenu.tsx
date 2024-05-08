@@ -1,4 +1,4 @@
-import { cn } from '@lib/classNames';
+import { cn } from '@/lib/classNames';
 
 export default function ContextMenu({
   children,

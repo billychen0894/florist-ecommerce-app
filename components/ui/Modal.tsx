@@ -3,7 +3,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Dispatch, Fragment, SetStateAction } from 'react';
 
-import { cn } from '@lib/classNames';
+import { cn } from '@/lib/classNames';
 import Button from './Button';
 
 interface ModalProps {
@@ -17,6 +17,8 @@ interface ModalProps {
   buttonAction?: () => void;
   backdropAction?: () => void;
   additionalBtns?: React.ReactElement;
+  dataCy?: string;
+  dataCyAction?: string;
 }
 
 export default function Modal({
@@ -30,6 +32,8 @@ export default function Modal({
   buttonAction,
   backdropAction,
   additionalBtns,
+  dataCy,
+  dataCyAction,
 }: ModalProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -78,6 +82,7 @@ export default function Modal({
                     <Dialog.Title
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
+                      data-cy={dataCy}
                     >
                       {title}
                     </Dialog.Title>
@@ -94,6 +99,7 @@ export default function Modal({
                       setOpen(false);
                       buttonAction && buttonAction();
                     }}
+                    data-cy={dataCyAction}
                   >
                     {buttonText}
                   </Button>

@@ -1,38 +1,50 @@
-'use client';
+import { getAllUsers, getOrders } from '@/actions/adminActions';
+import { fetchCategories } from '@/actions/fetch-categories';
+import { fetchProducts } from '@/actions/productsActions';
+import StatCard from '@/components/ui/StatCard';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TProducts, UserWithoutPass } from '@/lib/types/types';
+import { Category, Order } from '@prisma/client';
 
-import { useAppSelector } from '@store/hooks';
-import StatCard from '@components/ui/StatCard';
-import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/api';
-import { Category } from '@prisma/client';
+export default async function StatCards() {
+  const promises: [
+    Promise<UserWithoutPass[] | null>,
+    Promise<Order[] | null>,
+    Promise<TProducts | null>,
+    Promise<Category[] | null>
+  ] = [
+    getAllUsers(),
+    getOrders(),
+    fetchProducts('1', 0, 'newest', undefined, undefined),
+    fetchCategories(),
+  ];
 
-type StatCardsProps = {
-  products: TProduct[];
-  categories: Category[];
-};
-
-export default function StatCards({ products, categories }: StatCardsProps) {
-  const accountUsers = useAppSelector(
-    (state) => state.adminReducer.accountUsers
+  const [accountUsers, orders, products, categories] = await Promise.all(
+    promises
   );
-  const orders = useAppSelector((state) => state.adminReducer.orders);
-  const totalRevenue = orders.reduce((pre, curr) => {
-    return pre + curr.total;
-  }, 0);
+
+  const totalRevenue = orders
+    ? orders?.reduce((pre, curr) => {
+        return pre + curr.total;
+      }, 0)
+    : 0;
 
   return (
     <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
       <StatCard
         name="Total Account Users"
-        stat={accountUsers.length.toString()}
+        stat={accountUsers?.length.toString() || ''}
       />
-      <StatCard name="Total Orders" stat={orders.length.toString()} />
+      <StatCard name="Total Orders" stat={orders?.length.toString() || ''} />
       <StatCard
         name="Revenue"
         stat={formatCurrency(totalRevenue, 'en-CA', 'CAD')}
       />
-      <StatCard name="Total SKU" stat={products.length.toString()} />
-      <StatCard name="Total Categories" stat={categories.length.toString()} />
+      <StatCard name="Total SKU" stat={products?.length.toString() || ''} />
+      <StatCard
+        name="Total Categories"
+        stat={categories?.length.toString() || ''}
+      />
     </dl>
   );
 }

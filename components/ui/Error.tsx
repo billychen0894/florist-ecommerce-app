@@ -1,7 +1,7 @@
-import Image from '@node_modules/next/image';
-import Link from '@node_modules/next/link';
-import { ArrowSmallLeftIcon } from '@node_modules/@heroicons/react/20/solid';
-import Button from '@components/ui/Button';
+import Button from '@/components/ui/Button';
+import { ArrowSmallLeftIcon } from '@heroicons/react/20/solid';
+import Image from 'next/image';
+import Link from 'next/link';
 
 type ErrorProps = {
   reset: () => void;

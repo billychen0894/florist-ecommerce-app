@@ -1,12 +1,11 @@
-import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/api';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TWishlistItem } from '@/lib/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import React from 'react';
+import ProductWishlistButton from './ProductWishlistButton';
 
 interface ProductItemProps {
-  product: TProduct;
+  product: TWishlistItem;
   showCategory?: boolean;
   isWishlistBtnToggle?: boolean;
 }
@@ -16,13 +15,11 @@ export function ProductItem({
   showCategory = false,
   isWishlistBtnToggle,
 }: ProductItemProps) {
-  const ProductWishlistButton = dynamic(
-    () => import('@components/Product/ProductWishlistButton')
-  );
+  if (!product) return null;
 
   return (
     <>
-      <div className="group relative">
+      <div className="group relative" data-cy="product">
         <div className="aspect-h-4 aspect-w-3 overflow-hidden rounded-lg bg-gray-100 relative">
           <Image
             src={product.images[0].url}
@@ -30,7 +27,7 @@ export function ProductItem({
             className="w-full h-full object-cover object-center"
             fill
             priority
-            quality={60}
+            quality={50}
             sizes="(min-width: 1340px) 384px, (min-width: 640px) calc(29.85vw - 10px), calc(100vw - 32px)"
           />
           {isWishlistBtnToggle && <ProductWishlistButton product={product} />}
@@ -49,6 +46,7 @@ export function ProductItem({
             <Link
               href={`/products/${product.id}`}
               as={`/products/${product.id}`}
+              data-cy="product-name"
             >
               <span aria-hidden="true" className="absolute inset-0" />
               {product.name}
@@ -59,8 +57,8 @@ export function ProductItem({
           </p>
         </div>
         {showCategory &&
-          product.categories &&
-          product.categories.map((category) => (
+          product?.categories &&
+          product?.categories.map((category) => (
             <p
               key={category.id}
               className="mt-1 text-sm text-shades-500 shrink"

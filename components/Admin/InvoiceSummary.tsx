@@ -1,10 +1,10 @@
+import { formatCurrency } from '@/lib/formatCurrency';
 import {
   CreditCardIcon,
   EnvelopeIcon,
   PhoneIcon,
   UserCircleIcon,
-} from '@node_modules/@heroicons/react/20/solid';
-import { formatCurrency } from '@lib/formatCurrency';
+} from '@heroicons/react/20/solid';
 import Link from 'next/link';
 
 interface InvoiceSummaryProps {

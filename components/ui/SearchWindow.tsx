@@ -69,6 +69,7 @@ export default function SearchWindow({ open, onOpen }: SearchWindowProps) {
                           onOpen(!open);
                         }
                       }}
+                      data-cy="search-input"
                     />
                   </div>
                 </Combobox>

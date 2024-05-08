@@ -1,39 +1,25 @@
-import Image from '@node_modules/next/image';
-import { TProduct } from '@lib/types/api';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dispatch, SetStateAction } from 'react';
+'use client';
+
+import { TProduct } from '@/lib/types/types';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface AdminProductListItem {
   product: TProduct;
-  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 export default function AdminProductListItem({
   product,
-  setOpen,
 }: AdminProductListItem) {
   const router = useRouter();
   const pathname = usePathname();
-  const productId = useSearchParams().get('productId');
 
   return (
     <li
-      className={`flex gap-x-4 px-3 py-5 hover:bg-primary-100 cursor-pointer ${
-        productId === product.id ? 'bg-primary-200' : ''
-      }`}
-      data-productid={product.id}
+      className="flex gap-x-4 px-3 py-5 hover:bg-primary-100 cursor-pointer"
+      data-productid={product?.id}
       onClick={(e) => {
-        setOpen(true);
-        const params = new URLSearchParams(window.location.search);
-        if (params.has('productId') && e.currentTarget.dataset.productid) {
-          params.delete('productId');
-          params.append('productId', e.currentTarget.dataset.productid);
-        } else if (
-          !params.has('productId') &&
-          e.currentTarget.dataset.productid
-        ) {
-          params.append('productId', e.currentTarget.dataset.productid);
-        }
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        const productId = e.currentTarget.getAttribute('data-productid');
+        router.push(`${pathname}/${productId}`);
       }}
     >
       <Image

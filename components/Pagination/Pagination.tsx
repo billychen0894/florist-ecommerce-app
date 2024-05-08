@@ -1,38 +1,69 @@
-import { generatePagination } from '@lib/generatePagination';
+import { generatePagination } from '@/lib/generatePagination';
+import { parseSearchParams } from '@/lib/parseSearchParams';
+import { TProducts } from '@/lib/types/types';
 import { PaginationLink } from './PaginationLink';
-import { fetchProducts } from '@actions/fetch-products';
 
-interface PaginationProps {
-  pageCount: number;
-  searchParams: { [key: string]: string | string[] | undefined };
+function constructURL(
+  baseURL: string,
+  page?: string,
+  sort?: string,
+  keyword?: string,
+  category?: string[]
+) {
+  const params = new URLSearchParams();
+  if (page) {
+    params.set('page', page);
+  }
+
+  if (sort) {
+    params.set('sort', sort);
+  }
+
+  if (keyword) {
+    params.set('keyword', keyword);
+  }
+
+  if (category) {
+    if (category?.length > 1) {
+      category.forEach((cat) => {
+        params.append('category', cat);
+      });
+    }
+
+    if (category?.length === 1) {
+      params.set('category', category[0]);
+    }
+  }
+
+  return `${baseURL}?${params.toString()}`;
 }
 
-export async function Pagination({ searchParams, pageCount }: PaginationProps) {
-  const currentPage =
-    typeof searchParams.page === 'string' ? searchParams.page : '1';
-  const sort = typeof searchParams.sort === 'string' ? searchParams.sort : '';
-  const search =
-    typeof searchParams.keyword === 'string' ? searchParams.keyword : undefined;
-  const categoryFilters = searchParams.category;
+interface PaginationProps {
+  page?: string;
+  limit: number;
+  sort?: string;
+  keyword?: string;
+  category?: string | string[];
+  products: TProducts;
+}
 
-  const products = await fetchProducts(
-    undefined,
-    undefined,
-    sort,
-    categoryFilters,
-    search
-  );
+export async function Pagination({
+  page,
+  limit,
+  sort,
+  keyword,
+  category,
+  products,
+}: PaginationProps) {
+  const {
+    page: currentPage,
+    sort: sortOption,
+    keyword: search,
+    category: categoryFilters,
+  } = parseSearchParams(page, limit, sort, keyword, category);
 
-  const totalPages = Math.ceil(products.length / pageCount);
-  const pagination = generatePagination(parseInt(currentPage), totalPages);
-
-  const categoryFiltersURLParams = Array.isArray(categoryFilters)
-    ? categoryFilters.length > 1
-      ? `&category=${categoryFilters.join('&category=')}`
-      : `&category=${categoryFilters.join('')}`
-    : typeof categoryFilters === 'string'
-    ? `&category=${categoryFilters}`
-    : '';
+  const totalPages = products ? Math.ceil(products?.length / limit) : 0;
+  const pagination = generatePagination(currentPage, totalPages);
 
   return (
     <nav
@@ -42,21 +73,23 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
       <div className="min-w-0 flex-1">
         <PaginationLink
           href={
-            currentPage === '1'
+            String(currentPage) === '1'
               ? '#'
-              : `/products?page=${String(Number(currentPage) - 1)}${
-                  sort ? '&sort=' + sort : ''
-                }${categoryFiltersURLParams}${
-                  search ? '&keyword=' + search : ''
-                }`
+              : constructURL(
+                  '/products',
+                  String(currentPage - 1),
+                  sortOption,
+                  search,
+                  categoryFilters
+                )
           }
-          disabled={currentPage === '1'}
+          disabled={String(currentPage) === '1'}
         >
           Previous
         </PaginationLink>
       </div>
       <div className="hidden space-x-2 sm:flex">
-        {pagination.map((page, idx) =>
+        {pagination?.map((page, idx) =>
           page === '...' ? (
             <span
               key={idx}
@@ -67,12 +100,14 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
           ) : (
             <PaginationLink
               key={idx}
-              href={`/products?page=${page}${
-                sort ? '&sort=' + sort : ''
-              }${categoryFiltersURLParams}${
-                search ? '&keyword=' + search : ''
-              }`}
-              current={page === currentPage}
+              href={constructURL(
+                '/products',
+                page,
+                sortOption,
+                search,
+                categoryFilters
+              )}
+              current={page === String(currentPage)}
             >
               {page}
             </PaginationLink>
@@ -82,15 +117,17 @@ export async function Pagination({ searchParams, pageCount }: PaginationProps) {
       <div className="flex min-w-0 flex-1 justify-end">
         <PaginationLink
           href={
-            currentPage === pagination[pagination.length - 1]
+            String(currentPage) === pagination[pagination.length - 1]
               ? '#'
-              : `/products?page=${String(Number(currentPage) + 1)}${
-                  sort ? '&sort=' + sort : ''
-                }${categoryFiltersURLParams}${
-                  search ? '&keyword=' + search : ''
-                }`
+              : constructURL(
+                  '/products',
+                  String(currentPage + 1),
+                  sortOption,
+                  search,
+                  categoryFilters
+                )
           }
-          disabled={currentPage === pagination[pagination.length - 1]}
+          disabled={String(currentPage) === pagination[pagination.length - 1]}
         >
           Next
         </PaginationLink>

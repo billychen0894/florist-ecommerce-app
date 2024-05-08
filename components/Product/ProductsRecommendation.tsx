@@ -1,6 +1,6 @@
-import { fetchProducts } from '@actions/fetch-products';
-import { formatCurrency } from '@lib/formatCurrency';
-import { TProduct } from '@lib/types/api';
+import { fetchProducts } from '@/actions/productsActions';
+import { formatCurrency } from '@/lib/formatCurrency';
+import { TProduct } from '@/lib/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -21,10 +21,12 @@ export async function ProductsRecommendation({
     undefined,
     undefined,
     'newest',
+    undefined,
     productCategories
   );
+
   const recommendedFourProducts = products
-    .filter((product: TProduct) => product.id !== currProductId)
+    ?.filter((product: TProduct) => product?.id !== currProductId)
     .slice(0, 4);
 
   return (
@@ -36,13 +38,16 @@ export async function ProductsRecommendation({
         You may also like
       </h2>
 
-      <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-        {recommendedFourProducts.map((product: TProduct) => (
-          <div key={product.id} className="group relative">
+      <div
+        className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+        data-cy="products-recommendation"
+      >
+        {recommendedFourProducts?.map((product: TProduct) => (
+          <div key={product?.id} className="group relative">
             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md lg:aspect-none group-hover:opacity-75 lg:h-80">
               <Image
-                src={product.images[0].url}
-                alt={product.images[0].alt}
+                src={product?.images[0].url || ''}
+                alt={product?.images[0].alt || ''}
                 className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 width={280}
                 height={320}
@@ -53,21 +58,21 @@ export async function ProductsRecommendation({
               <div>
                 <h3 className="text-sm text-gray-900">
                   <Link
-                    href={`/products/${product.id}`}
-                    as={`/products/${product.id}`}
+                    href={`/products/${product?.id}`}
+                    as={`/products/${product?.id}`}
                   >
                     <span aria-hidden="true" className="absolute inset-0" />
-                    {product.name}
+                    {product?.name}
                   </Link>
                 </h3>
                 <p className="mt-1 text-sm text-shades-500">
-                  {product.categories
+                  {product?.categories
                     .map((category) => category.name)
                     .join(', ')}
                 </p>
               </div>
               <p className="text-sm font-medium text-secondary-500">
-                {formatCurrency(product.price, 'en-CA', 'CAD')}
+                {formatCurrency(product?.price!, 'en-CA', 'CAD')}
               </p>
             </div>
           </div>

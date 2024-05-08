@@ -1,4 +1,4 @@
-import { transporter } from '@lib/emailTransporter';
+import { transporter } from '@/lib/emailTransporter';
 import { NextResponse } from 'next/server';
 
 interface emailPayload {

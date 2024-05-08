@@ -1,5 +1,4 @@
-import { cn } from '@lib/classNames';
-import React from 'react';
+import { cn } from '@/lib/classNames';
 
 export default function ProductListSkeleton({
   length,

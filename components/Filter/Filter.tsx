@@ -1,12 +1,13 @@
+import { fetchCategories } from '@/actions/fetch-categories';
+import FilterActionButton from '@/components/Product/FilterActionButton';
+import FilterForm from '@/components/Product/FilterForm';
+import { FilterActionCtxProvider } from '@/contexts/Filter';
 import { Category } from '@prisma/client';
-import FilterForm from '@components/Product/FilterForm';
-import FilterActionButton from '@components/Product/FilterActionButton';
-import { fetchCategories } from '@actions/fetch-categories';
 
 export interface Filter {
   id: string;
   name: string;
-  options: Category[];
+  options: Category[] | null;
 }
 
 export async function Filter() {
@@ -21,9 +22,9 @@ export async function Filter() {
   ];
 
   return (
-    <>
+    <FilterActionCtxProvider>
       <FilterActionButton filters={filters} />
       <FilterForm filters={filters} />
-    </>
+    </FilterActionCtxProvider>
   );
 }

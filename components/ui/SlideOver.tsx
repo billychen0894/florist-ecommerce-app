@@ -1,6 +1,6 @@
-import { Dialog, Transition } from '@node_modules/@headlessui/react';
+import { cn } from '@/lib/classNames';
+import { Dialog, Transition } from '@headlessui/react';
 import { Dispatch, Fragment, SetStateAction } from 'react';
-import { cn } from '@lib/classNames';
 
 type SlideOverProps = {
   children: React.ReactNode;

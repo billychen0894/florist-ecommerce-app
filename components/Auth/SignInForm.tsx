@@ -1,41 +1,15 @@
 'use client';
 
+import { Input, Label } from '@/components/ui';
+import Button from '@/components/ui/Button';
+import Spinner from '@/components/ui/Spinner';
+import { SignInFormSchema, signInFormSchema } from '@/lib/schemaValidator';
 import { ErrorMessage } from '@hookform/error-message';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
-
-import { Input, Label } from '@components/ui';
-import Button from '@components/ui/Button';
-import Spinner from '@components/ui/Spinner';
-
-// Override default email regex
-yup.addMethod(yup.string, 'email', function validateEmail(message) {
-  return this.matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-    message,
-    excludeEmptyString: true,
-  });
-});
-
-const signInFormSchema = yup.object({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('Email is required'),
-  // password must contain at least 8 characters, at least one uppercase letter, one lowercase letter, one number
-  password: yup
-    .string()
-    .min(8, 'Password must be at least 8 characters long')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      'Password must contain at least one uppercase and lowercase letter, and one number'
-    )
-    .required('Password is required'),
-});
-
-export type SignInFormData = yup.InferType<typeof signInFormSchema>;
 
 function SignInForm() {
   const router = useRouter();
@@ -44,21 +18,27 @@ function SignInForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm<SignInFormData>({
-    resolver: yupResolver(signInFormSchema),
+  } = useForm<SignInFormSchema>({
+    resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
+
   const callbackUrlEncoded = useSearchParams().get('callbackUrl');
   const callbackUrl = callbackUrlEncoded
     ? decodeURIComponent(callbackUrlEncoded)
     : '/';
 
-  const onSubmit = async (data: SignInFormData) => {
+  const onSubmit = async (data: SignInFormSchema) => {
     try {
-      const { signIn } = await import('next-auth/react');
+      const parsedData = signInFormSchema.safeParse(data);
+
+      if (!parsedData.success) {
+        console.log('Error: ', parsedData.error.errors);
+        return;
+      }
 
       const signInRes = await signIn('credentials', {
         email: data.email,
@@ -95,6 +75,7 @@ function SignInForm() {
             autoComplete="email"
             {...register('email')}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+            data-cy="email-input"
           />
         </div>
         <ErrorMessage
@@ -116,6 +97,7 @@ function SignInForm() {
             autoComplete="current-password"
             {...register('password')}
             className="border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:leading-6"
+            data-cy="password-input"
           />
         </div>
         <ErrorMessage
@@ -123,6 +105,7 @@ function SignInForm() {
           name="password"
           as="p"
           className="text-sm font-medium text-red-500 mt-1 ml-1"
+          data-cy="password-error-msg"
         />
       </div>
 
@@ -141,6 +124,7 @@ function SignInForm() {
         <Button
           type="submit"
           className="flex w-full justify-center px-3 py-1.5 leading-6"
+          data-cy="sign-in-button"
         >
           <div className="flex justify-center items-center">
             {isSubmitting && <Spinner />}
