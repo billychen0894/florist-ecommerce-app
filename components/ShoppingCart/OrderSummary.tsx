@@ -103,6 +103,7 @@ export function OrderSummary() {
           }`}
           disabled={cartItemsArr.length === 0}
           onClick={handleCheckout}
+          data-cy="checkout-button"
         >
           Checkout
         </Button>
