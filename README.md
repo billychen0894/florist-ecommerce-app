@@ -19,6 +19,7 @@
       </ul>
     </li>
     <li><a href="#features">Features</a></li>
+    <li><a href="#performance-enhancements">Performance Enhancements</a></li>
   </ol>
 </details>
 
@@ -39,10 +40,11 @@ An eCommerce app to get started for small businesses. This application prioritiz
 ### Built With
 [![Next][Next.js]][Next-url]
 [![React][React.js]][React-url]
+[![Zustand][Zustand]][Zustand-url]
 [![TailwindCSS][TailwindCSS]][TailwindCSS-url]
 [![TypeScript][TypeScript]][TypeScript-url]
 [![Prisma][Prisma]][Prisma-url]
-[![ReduxToolkit][ReduxToolkit]][ReduxToolkit-url]
+[![Cypress][Cypress]][Cypress-url]
 [![Stripe][Stripe]][Stripe-url]
 [![Next-Auth.js][Next-Auth.js]][Next-Auth-url]
 [![Cloudinary][Cloudinary]][Cloudinary-url]
@@ -62,7 +64,7 @@ Feel free to use the following test accounts to explore the features of the [Dem
 2. **Username email:** test2@test.com
    - **Password:** TestTest2
 
-### Admin Account (please do not delete this account in the demo):
+### Admin Account:
 
 - **Username email:** admin1@admin.com
   - **Password:** AdminAdmin1
@@ -87,7 +89,7 @@ git clone https://github.com/billychen0894/florist-ecommerce-app.git
 ```sh
 npm install
 ```
-* Set environment variables based on [.env.example](https://github.com/billychen0894/florist-ecommerce-app/blob/main/.env.example)
+* Set environment variables based on [.env.example](https://github.com/billychen0894/florist-ecommerce-app/blob/refactor/tech-upgrade/.env.example)
 * Start the project with
 ```
 npm run dev
@@ -162,7 +164,26 @@ npx prisma studio
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- PERFORMANCE ENHANCEMENTS -->
+## Performance Enhancements
 
+This section highlights the significant technical upgrades and refactoring efforts that have been implemented to boost the performance of the florist eCommerce app:
+
+- **Comprehensive Cypress E2E Testing:** We have fully integrated Cypress for end-to-end testing to ensure that all user flows are thoroughly tested. This robust testing framework allows us to simulate real user interactions across the entire application, helping to identify and resolve any issues before deployment. The result is a more reliable and user-friendly product, as all major functionalities are validated under near-real conditions.
+
+- **Server-Side Rendering (SSR) Optimization:** We have fine-tuned SSR capabilities in Next.js, which has substantially reduced the Time to First Byte (TTFB) by approximately 6ms. This optimization has not only improved the initial load performance but also achieved perfect Lighthouse scores of 100, enhancing both user experience and SEO.
+
+- **Image Optimization:** We leverage Next.js's built-in image optimization features by efficiently handling local images. This includes dynamic resizing and compression techniques that significantly enhance page load speeds without compromising image quality, thus improving overall page responsiveness.
+
+- **Server-side State Management:** We've enhanced server-side state management by integrating Next.js Server Actions, which streamline workflows and eliminate the need for third-party libraries like React-Query. This shift has refined our architecture, reducing overhead and improving the scalability and maintainability of our application.
+
+- **Client-side State Management:** We transitioned our client-side state management from Redux to Zustand. This move was driven by the need for a more lightweight and straightforward solution, as Redux proved to be overly complex for our needs. Zustand offers a more direct and efficient approach to state management, which has simplified our codebase and accelerated development.
+
+These strategic enhancements have significantly increased the responsiveness and efficiency of the application, ensuring an uninterrupted and smooth user experience.
+
+For more details on these enhancements or to report any issues, please visit our [Issues page](https://github.com/billychen0894/florist-ecommerce-app/issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -192,3 +213,7 @@ npx prisma studio
 [Cloudinary-url]: https://cloudinary.com/
 [Docker]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
 [Docker-url]: https://www.docker.com/
+[Cypress]: https://img.shields.io/badge/-cypress-%23E5E5E5?style=for-the-badge&logo=cypress&logoColor=058a5e
+[Cypress-url]: https://www.cypress.io/
+[Zustand]: https://img.shields.io/badge/zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
+[Zustand-url]: https://zustand-demo.pmnd.rs/
